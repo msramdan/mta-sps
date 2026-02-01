@@ -5,3 +5,14 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::middleware(['auth', 'web'])->group(function () {
+    Route::get('/profile', App\Http\Controllers\ProfileController::class)->name('profile');
+    Route::resource('users', App\Http\Controllers\UserController::class);
+    Route::resource('roles', App\Http\Controllers\RoleAndPermissionController::class);
+});
+
+
+Route::controller(App\Http\Controllers\Frontend\WebController::class)->group(function () {
+    Route::get('/', 'index')->name('web.landing.page');
+});
