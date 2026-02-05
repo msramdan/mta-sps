@@ -3,45 +3,44 @@
 @section('title', __(key: 'Roles'))
 
 @section('content')
-    <div class="page-heading">
-        <div class="page-title">
-            <div class="row">
-                <div class="col-12 col-md-8 order-md-1 order-last">
-                    <h3>{{ __(key: 'Roles') }}</h3>
-                    <p class="text-subtitle text-muted">
-                        {{ __(key: 'Below is a list of all roles.') }}
-                    </p>
+    <main>
+        <div class="container-fluid">
+            <div class="row m-1">
+                <div class="col-12 ">
+                    <h4 class="main-title">Roles</h4>
+                    <ul class="app-line-breadcrumbs mb-3">
+                        <li class="">
+                            <a class="f-s-14 f-w-500" href="/">
+                                <span>
+                                    <i class="ph-duotone ph-newspaper f-s-16"></i> Dashboard
+                                </span>
+                            </a>
+                        </li>
+                        <li class="active">
+                            <a class="f-s-14 f-w-500" href="#">Roles</a>
+                        </li>
+                    </ul>
                 </div>
-                <x-breadcrumb>
-                    <li class="breadcrumb-item"><a href="/">{{ __(key: 'Dashboard') }}</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">{{ __(key: 'Role') }}</li>
-                </x-breadcrumb>
             </div>
-        </div>
-
-        <section class="section">
-            <x-alert></x-alert>
 
             @can('role & permission create')
                 <div class="d-flex justify-content-end">
                     <a href="{{ route(name: 'roles.create') }}" class="btn btn-primary mb-3">
                         <i class="fas fa-plus"></i>
-                        {{ __(key: 'Create a new role') }}
+                        {{ __(key: 'Tambah') }}
                     </a>
                 </div>
             @endcan
 
             <div class="row">
-                <div class="col-md-12">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="table-responsive p-1">
-                                <table class="table table-striped" id="data-table" width="100%">
+                <div class="col-12">
+                    <div class="card ">
+                        <div class="card-body p-0">
+                            <div class="app-datatable-default overflow-auto">
+                                <table class="display w-100 row-border-table table-responsive" id="data-table">
                                     <thead>
                                         <tr>
                                             <th>{{ __(key: 'Name') }}</th>
-                                            <th>{{ __(key: 'Created At') }}</th>
-                                            <th>{{ __(key: 'Updated At') }}</th>
                                             <th>{{ __(key: 'Action') }}</th>
                                         </tr>
                                     </thead>
@@ -51,18 +50,11 @@
                     </div>
                 </div>
             </div>
-        </section>
-    </div>
+        </div>
+    </main>
 @endsection
 
-@push('css')
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs5/dt-1.12.0/datatables.min.css" />
-@endpush
-
 @push('js')
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script type="text/javascript" src="https://cdn.datatables.net/v/bs5/dt-1.12.0/datatables.min.js"></script>
     <script>
         $('#data-table').DataTable({
             processing: true,
@@ -71,14 +63,6 @@
             columns: [{
                     data: 'name',
                     name: 'name'
-                },
-                {
-                    data: 'created_at',
-                    name: 'created_at'
-                },
-                {
-                    data: 'updated_at',
-                    name: 'updated_at'
                 },
                 {
                     data: 'action',

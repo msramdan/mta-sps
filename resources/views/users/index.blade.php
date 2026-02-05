@@ -22,6 +22,15 @@
                     </ul>
                 </div>
             </div>
+            @can('role & permission create')
+                <div class="d-flex justify-content-end">
+                    <a href="{{ route(name: 'users.create') }}" class="btn btn-primary mb-3">
+                        <i class="fas fa-plus"></i>
+                        {{ __(key: 'Tambah') }}
+                    </a>
+                </div>
+            @endcan
+
             <div class="row">
                 <div class="col-12">
                     <div class="card ">
