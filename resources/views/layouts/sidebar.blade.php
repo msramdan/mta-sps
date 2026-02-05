@@ -10,14 +10,24 @@
 
                 <div class="d-flex align-items-center nav-profile p-3">
                     <span class="h-45 w-45 d-flex-center b-r-10 position-relative bg-danger m-auto">
-                        <img alt="avatar" class="img-fluid b-r-10"
-                            src="{{ asset('backend') }}/assets/images/avatar/woman.jpg">
+                        @if (!auth()?->user()?->avatar)
+                            <img alt="avatar" class="img-fluid b-r-10"
+                                src="{{ asset('backend') }}/assets/images/avatar/woman.jpg">
+                        @else
+                            {{-- <img alt="avatar" class="img-fluid b-r-10"
+                                src="{{ asset('/uploads/images/avatars/' . auth()?->user()?->avatar) }}"> --}}
+                            <img alt="avatar" class="img-fluid b-r-10"
+                                src="{{ asset('backend') }}/assets/images/avatar/woman.jpg">
+                        @endif
+
                         <span
                             class="position-absolute top-0 end-0 p-1 bg-success border border-light rounded-circle"></span>
                     </span>
                     <div class="flex-grow-1 ps-2">
-                        <h6 class="text-primary mb-0"> Ninfa Monaldo</h6>
-                        <p class="text-muted f-s-12 mb-0">Web Developer</p>
+                        <h6 class="text-primary mb-0"> {{ auth()?->user()?->name }}</h6>
+                        <p class="text-muted f-s-12 mb-0">
+                            {{ isset(auth()?->user()?->roles) ? implode(auth()?->user()?->roles?->map(fn($role) => $role->name)->toArray()) : '-' }}
+                        </p>
                     </div>
 
                     <div class="dropdown profile-menu-dropdown">
@@ -28,13 +38,13 @@
                         <ul class="dropdown-menu">
                             <li class="dropdown-item">
                                 <a class="f-w-500" href="profile.html" target="_blank">
-                                    <i class="ph-duotone ph-user-circle pe-1 f-s-20"></i> Profile Details
+                                    <i class="ph-duotone ph-user-circle pe-1 f-s-20"></i> Detail Profile
                                 </a>
                             </li>
                             <li class="app-divider-v dotted py-1"></li>
                             <li class="dropdown-item">
                                 <a class="mb-0 text-danger" href="sign_in.html" target="_blank">
-                                    <i class="ph-duotone ph-sign-out pe-1 f-s-20"></i> Log Out
+                                    <i class="ph-duotone ph-sign-out pe-1 f-s-20"></i> Keluar
                                 </a>
                             </li>
                         </ul>
