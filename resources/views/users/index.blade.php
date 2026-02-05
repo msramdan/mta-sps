@@ -30,12 +30,9 @@
                                 <table class="table table-striped" id="data-table" width="100%">
                                     <thead>
                                         <tr>
-                                            <th>{{ __(key: 'Avatar') }}</th>
                                             <th>{{ __(key: 'Name') }}</th>
                                             <th>{{ __(key: 'Email') }}</th>
                                             <th>{{ __(key: 'Role') }}</th>
-                                            <th>{{ __(key: 'Created At') }}</th>
-                                            <th>{{ __(key: 'Updated At') }}</th>
                                             <th>{{ __(key: 'Action') }}</th>
                                         </tr>
                                     </thead>
@@ -60,15 +57,23 @@
                     name: 'avatar',
                     orderable: false,
                     searchable: false,
-                    render: function(data, type, full, meta) {
-                        return `<div class="avatar">
-                            <img src="${data}" alt="avatar">
+                render: function(data, type, full, meta) {
+                    if (data) {
+                        return `<div class="d-flex align-items-center">
+                            <div class="h-30 w-30 d-flex-center b-r-50 overflow-hidden text-bg-info">
+                                <img alt="${full.nama || 'User'}" class="img-fluid" src="${data}">
+                            </div>
+                            <p class="mb-0 ps-2">${full.name || 'Unknown'}</p>
+                        </div>`;
+                    } else {
+                        return `<div class="d-flex align-items-center">
+                            <div class="h-30 w-30 d-flex-center b-r-50 overflow-hidden text-bg-info">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <p class="mb-0 ps-2">${full.name || 'Unknown'}</p>
                         </div>`;
                     }
-                },
-                {
-                    data: 'name',
-                    name: 'name'
+                }
                 },
                 {
                     data: 'email',
@@ -77,14 +82,6 @@
                 {
                     data: 'role',
                     name: 'role'
-                },
-                {
-                    data: 'created_at',
-                    name: 'created_at'
-                },
-                {
-                    data: 'updated_at',
-                    name: 'updated_at'
                 },
                 {
                     data: 'action',
