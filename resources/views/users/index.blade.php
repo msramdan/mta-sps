@@ -23,11 +23,11 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-12">
-                    <div class="card">
+                <div class="col-12">
+                    <div class="card ">
                         <div class="card-body p-0">
                             <div class="app-datatable-default overflow-auto">
-                                <table class="display app-data-table default-data-table" id="data-table">
+                                <table class="display w-100 row-border-table table-responsive" id="data-table">
                                     <thead>
                                         <tr>
                                             <th>{{ __(key: 'Name') }}</th>
