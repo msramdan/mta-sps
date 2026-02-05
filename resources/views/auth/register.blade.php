@@ -18,7 +18,7 @@
                                     <form class="app-form p-3" method="POST" action="">
                                         @csrf
                                         <div class="mb-3 text-center">
-                                            <img alt="#" src="{{ asset('logo.png') }}" style="width: 160px; margin-bottom:10px">
+                                            <img alt="#" src="{{ asset('frontend/logo.png') }}" style="width: 180px; margin-bottom:15px">
                                             <p class="f-s-12 text-secondary">Daftar sekarang dan mulailah mengelola bisnis
                                                 Anda dengan
                                                 lebih efisien.</p>

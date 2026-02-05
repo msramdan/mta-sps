@@ -14,8 +14,8 @@
                                     <form class="app-form" method="POST" action="{{ route('login') }}">
                                         @csrf
                                         <div class="mb-3 text-center">
-                                            <img alt="#" src="{{ asset('logo.png') }}"
-                                                style="width: 160px; margin-bottom:10px">
+                                            <img alt="#" src="{{ asset('frontend/logo.png') }}"
+                                                style="width: 180px; margin-bottom:15px">
                                             <p class="f-s-12 text-secondary">Mulai dengan aplikasi kami, cukup masuk dan
                                                 nikmati pengalamannya.</p>
                                         </div>
