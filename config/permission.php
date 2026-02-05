@@ -221,12 +221,6 @@ return [
                 'role & permission edit',
                 'role & permission delete',
             ],
-        ],
-        [
-            'group' => 'tests',
-            'access' => [
-                'test view',
-            ],
-        ],
+        ]
     ],
 ];

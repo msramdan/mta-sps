@@ -112,26 +112,6 @@ return [
      */
     'sidebars' => [
         [
-            'header' => 'Main',
-            'permissions' => ['test view'],
-            'menus' => [
-                [
-                    'title' => 'Main Data',
-                    'icon' => '<i class="bi bi-collection-fill"></i>',
-                    'route' => null,
-                    'permission' => null,
-                    'permissions' => ['test view'],
-                    'submenus' => [
-                        [
-                            'title' => 'Tests',
-                            'route' => '/tests',
-                            'permission' => 'test view',
-                        ],
-                    ],
-                ],
-            ],
-        ],
-        [
             'header' => 'Users',
             'permissions' => ['user view', 'role & permission view'],
             'menus' => [

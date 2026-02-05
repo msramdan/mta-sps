@@ -102,54 +102,6 @@
                         @endcanany
                     @endif
                 @endforeach
-
-                @if (env('APP_ENV') === 'local')
-                    <li class="sidebar-title">{{ __(key: 'Generators') }}</li>
-
-                    <li class="sidebar-item{{ request()->is(patterns: 'generators/create') ? ' active' : '' }}">
-                        <a class="sidebar-link" href="{{ route(name: 'generators.create') }}">
-                            <i class="bi bi-fire"></i>
-                            <span> {{ __(key: 'CRUD Generator') }}</span>
-                        </a>
-                    </li>
-
-                    <li class="sidebar-item{{ request()->is(patterns: 'api-generators/create') ? ' active' : '' }}">
-                        <a class="sidebar-link" href="/api-generators/create">
-                            <i class="bi bi-rocket"></i>
-                            <span> {{ __(key: 'API CRUD Generator') }}</span>
-                        </a>
-                    </li>
-
-                    <li class="sidebar-item{{ request()->is(patterns: 'simple-generators/create') ? ' active' : '' }}">
-                        <a class="sidebar-link" href="/simple-generators/create">
-                            <i class="bi bi-droplet"></i>
-                            <span> {{ __(key: 'Simple CRUD Generator') }}</span>
-                        </a>
-                    </li>
-                @endif
-
-                @auth
-                    <li class="sidebar-title">Account</li>
-
-                    <li class="sidebar-item{{ request()->is(patterns: 'profile') ? ' active' : '' }}">
-                        <a class="sidebar-link" href="{{ route(name: 'profile') }}">
-                            <i class="bi bi-person-badge-fill"></i>
-                            <span> {{ __(key: 'Profile') }}</span>
-                        </a>
-                    </li>
-
-                    <li class="sidebar-item">
-                        <a class="sidebar-link" href="{{ route(name: 'logout') }}"
-                            onclick="event.preventDefault();document.getElementById('logout-form').submit();">
-                            <i class="bi bi-door-open-fill"></i>
-                            <span> {{ __(key: 'Logout') }}</span>
-                        </a>
-
-                        <form id="logout-form" action="{{ route(name: 'logout') }}" method="POST" class="d-none">
-                            @csrf
-                        </form>
-                    </li>
-                @endauth
             </ul>
         </div>
         <button class="sidebar-toggler btn x"><i data-feather="x"></i></button>
