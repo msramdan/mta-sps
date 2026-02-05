@@ -1,109 +1,74 @@
-<div id="sidebar" class="active">
-    <div class="sidebar-wrapper active">
-        <div class="sidebar-header position-relative">
-            <div class="d-flex justify-content-between align-items-center">
-                <div class="logo">
-                    <a href="/">
-                        <img src="{{ asset(path: 'mazer') }}/static/images/logo/logo.svg" alt="Logo">
-                    </a>
-                </div>
-                <div class="theme-toggle d-flex gap-2  align-items-center mt-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-                        aria-hidden="true" role="img" class="iconify iconify--system-uicons" width="20"
-                        height="20" preserveAspectRatio="xMidYMid meet" viewBox="0 0 21 21">
-                        <g fill="none" fill-rule="evenodd" stroke="currentColor" stroke-linecap="round"
-                            stroke-linejoin="round">
-                            <path
-                                d="M10.5 14.5c2.219 0 4-1.763 4-3.982a4.003 4.003 0 0 0-4-4.018c-2.219 0-4 1.781-4 4c0 2.219 1.781 4 4 4zM4.136 4.136L5.55 5.55m9.9 9.9l1.414 1.414M1.5 10.5h2m14 0h2M4.135 16.863L5.55 15.45m9.899-9.9l1.414-1.415M10.5 19.5v-2m0-14v-2"
-                                opacity=".3"></path>
-                            <g transform="translate(-210 -1)">
-                                <path d="M220.5 2.5v2m6.5.5l-1.5 1.5"></path>
-                                <circle cx="220.5" cy="11.5" r="4"></circle>
-                                <path d="m214 5l1.5 1.5m5 14v-2m6.5-.5l-1.5-1.5M214 18l1.5-1.5m-4-5h2m14 0h2">
-                                </path>
-                            </g>
-                        </g>
-                    </svg>
-                    <div class="form-check form-switch fs-6">
-                        <input class="form-check-input me-0" type="checkbox" id="toggle-dark">
-                        <label class="form-check-label"></label>
+        <nav>
+            <div class="app-logo">
+                <a class="logo d-inline-block" href="index.html">
+                    <img alt="QRIN Logo" src="{{ asset('frontend/logo.png') }}" style="width: 110px">
+                </a>
+
+                <span class="bg-light-primary toggle-semi-nav d-flex-center">
+                    <i class="ti ti-chevron-right"></i>
+                </span>
+
+                <div class="d-flex align-items-center nav-profile p-3">
+                    <span class="h-45 w-45 d-flex-center b-r-10 position-relative bg-danger m-auto">
+                        <img alt="avatar" class="img-fluid b-r-10"
+                            src="{{ asset('backend') }}/assets/images/avatar/woman.jpg">
+                        <span
+                            class="position-absolute top-0 end-0 p-1 bg-success border border-light rounded-circle"></span>
+                    </span>
+                    <div class="flex-grow-1 ps-2">
+                        <h6 class="text-primary mb-0"> Ninfa Monaldo</h6>
+                        <p class="text-muted f-s-12 mb-0">Web Developer</p>
                     </div>
-                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-                        aria-hidden="true" role="img" class="iconify iconify--mdi" width="20" height="20"
-                        preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24">
-                        <path fill="currentColor"
-                            d="m17.75 4.09l-2.53 1.94l.91 3.06l-2.63-1.81l-2.63 1.81l.91-3.06l-2.53-1.94L12.44 4l1.06-3l1.06 3l3.19.09m3.5 6.91l-1.64 1.25l.59 1.98l-1.7-1.17l-1.7 1.17l.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95l2.06.05m-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85c-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14c.4-.4.82-.76 1.27-1.08c.75-.53 1.93.36 1.85 1.19c-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82c-2.81 3.14-2.7 7.96.31 10.98c3.02 3.01 7.84 3.12 10.98.31Z">
-                        </path>
-                    </svg>
-                </div>
-                <div class="sidebar-toggler x">
-                    <a href="#" class="sidebar-hide d-xl-none d-block"><i class="bi bi-x bi-middle"></i></a>
+
+                    <div class="dropdown profile-menu-dropdown">
+                        <a aria-expanded="false" data-bs-auto-close="true" data-bs-placement="top"
+                            data-bs-toggle="dropdown" role="button">
+                            <i class="ti ti-settings fs-5"></i>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li class="dropdown-item">
+                                <a class="f-w-500" href="profile.html" target="_blank">
+                                    <i class="ph-duotone ph-user-circle pe-1 f-s-20"></i> Profile Details
+                                </a>
+                            </li>
+                            <li class="app-divider-v dotted py-1"></li>
+                            <li class="dropdown-item">
+                                <a class="mb-0 text-danger" href="sign_in.html" target="_blank">
+                                    <i class="ph-duotone ph-sign-out pe-1 f-s-20"></i> Log Out
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="sidebar-menu">
-            <ul class="menu">
-                @auth
-                    <li class="sidebar-item{{ request()->is(patterns: '/') || request()->is(patterns: 'dashboard') ? ' active' : '' }}">
-                        <a class="sidebar-link" href="/">
-                            <i class="bi bi-speedometer"></i>
-                            <span> {{ __(key: 'Dashboard') }}</span>
+            <div class="app-nav" id="app-simple-bar">
+                <ul class="main-nav p-0 mt-2">
+                    <li class="no-sub">
+                        <a href="widget.html">
+                            <svg stroke="currentColor" stroke-width="1.5">
+                                <use xlink:href="{{ asset('backend') }}/assets/svg/_sprite.svg#squares"></use>
+                            </svg>
+                            Dashboard
                         </a>
                     </li>
-                @endauth
+                    <li>
+                        <a aria-expanded="false" data-bs-toggle="collapse" href="#maps">
+                            <svg stroke="currentColor" stroke-width="1.5">
+                                <use xlink:href="{{ asset('backend') }}/assets/svg/_sprite.svg#location"></use>
+                            </svg>
+                            User & Roles
+                        </a>
+                        <ul class="collapse" id="maps">
+                            <li><a href="google-map.html">Users</a></li>
+                            <li><a href="leaflet-map.html">Roles</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
 
-                @foreach (config(key: 'generator.sidebars') as $sidebar)
-                    @if (isset($sidebar['permissions']))
-                        @canany($sidebar['permissions'])
-                            <li class="sidebar-title">{{ $sidebar['header'] }}</li>
 
-                            @foreach ($sidebar['menus'] as $menu)
-                                @php
-                                    $permissions = empty($menu['permission'])
-                                        ? $menu['permissions']
-                                        : [$menu['permission']];
-                                @endphp
-
-                                @canany($permissions)
-                                    @if (empty($menu['submenus']))
-                                        @can($menu['permission'])
-                                            <li class="sidebar-item{{ is_active_menu(route: $menu['route']) }}">
-                                                <a href="{{ route(name: str(string: $menu['route'])->remove('/')->singular()->plural() . '.index') }}"
-                                                    class="sidebar-link">
-                                                    {!! $menu['icon'] !!}
-                                                    <span>{{ __(key: $menu['title']) }}</span>
-                                                </a>
-                                            </li>
-                                        @endcan
-                                    @else
-                                        <li class="sidebar-item has-sub{{ is_active_menu(route: $menu['permissions']) }}">
-                                            <a href="#" class="sidebar-link">
-                                                {!! $menu['icon'] !!}
-                                                <span>{{ __(key: $menu['title']) }}</span>
-                                            </a>
-                                            <ul class="submenu">
-                                                @canany($menu['permissions'])
-                                                    @foreach ($menu['submenus'] as $submenu)
-                                                        @can($submenu['permission'])
-                                                            <li class="submenu-item{{ is_active_menu(route: $submenu['route']) }}">
-                                                                <a
-                                                                    href="{{ route(name: str(string: $submenu['route'])->remove('/')->singular()->plural() . '.index') }}">
-                                                                    {{ __(key: $submenu['title']) }}
-                                                                </a>
-                                                            </li>
-                                                        @endcan
-                                                    @endforeach
-                                                @endcanany
-                                            </ul>
-                                        </li>
-                                    @endif
-                                @endcanany
-                            @endforeach
-                        @endcanany
-                    @endif
-                @endforeach
-            </ul>
-        </div>
-        <button class="sidebar-toggler btn x"><i data-feather="x"></i></button>
-    </div>
-</div>
+            <div class="menu-navs">
+                <span class="menu-previous"><i class="ti ti-chevron-left"></i></span>
+                <span class="menu-next"><i class="ti ti-chevron-right"></i></span>
+            </div>
+        </nav>

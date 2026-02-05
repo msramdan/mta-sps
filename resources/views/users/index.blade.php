@@ -3,34 +3,25 @@
 @section('title', __(key: 'Users'))
 
 @section('content')
-    <div class="page-heading">
-        <div class="page-title">
-            <div class="row">
-                <div class="col-12 col-md-8 order-md-1 order-last">
-                    <h3>{{ __(key: 'User') }}</h3>
-                    <p class="text-subtitle text-muted">
-                        {{ __(key: 'Below is a list of all users.') }}
-                    </p>
+    <main>
+        <div class="container-fluid">
+            <div class="row m-1">
+                <div class="col-12 ">
+                    <h4 class="main-title">Users</h4>
+                    <ul class="app-line-breadcrumbs mb-3">
+                        <li class="">
+                            <a class="f-s-14 f-w-500" href="#">
+                                <span>
+                                    <i class="ph-duotone ph-newspaper f-s-16"></i> Dashboard
+                                </span>
+                            </a>
+                        </li>
+                        <li class="active">
+                            <a class="f-s-14 f-w-500" href="#">Users</a>
+                        </li>
+                    </ul>
                 </div>
-                <x-breadcrumb>
-                    <li class="breadcrumb-item"><a href="/">{{ __(key: 'Dashboard') }}</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">{{ __(key: 'User') }}</li>
-                </x-breadcrumb>
             </div>
-        </div>
-
-        <section class="section">
-            <x-alert></x-alert>
-
-            @can('user create')
-                <div class="d-flex justify-content-end">
-                    <a href="{{ route(name: 'users.create') }}" class="btn btn-primary mb-3">
-                        <i class="fas fa-plus"></i>
-                        {{ __(key: 'Create a new user') }}
-                    </a>
-                </div>
-            @endcan
-
             <div class="row">
                 <div class="col-md-12">
                     <div class="card">
@@ -39,7 +30,6 @@
                                 <table class="table table-striped" id="data-table" width="100%">
                                     <thead>
                                         <tr>
-                                            {{-- <th>No</th> --}}
                                             <th>{{ __(key: 'Avatar') }}</th>
                                             <th>{{ __(key: 'Name') }}</th>
                                             <th>{{ __(key: 'Email') }}</th>
@@ -55,31 +45,17 @@
                     </div>
                 </div>
             </div>
-        </section>
-    </div>
+        </div>
+    </main>
 @endsection
 
-@push('css')
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs5/dt-1.12.0/datatables.min.css" />
-@endpush
-
 @push('js')
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script type="text/javascript" src="https://cdn.datatables.net/v/bs5/dt-1.12.0/datatables.min.js"></script>
     <script>
         $('#data-table').DataTable({
             processing: true,
             serverSide: true,
             ajax: "{{ route(name: 'users.index') }}",
-            columns: [
-                // {
-                //     data: 'DT_RowIndex',
-                //     name: 'DT_RowIndex',
-                //     orderable: false,
-                //     searchable: false
-                // },
-                {
+            columns: [{
                     data: 'avatar',
                     name: 'avatar',
                     orderable: false,
