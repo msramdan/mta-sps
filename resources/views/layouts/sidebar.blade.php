@@ -1,6 +1,6 @@
 <nav>
     <div class="app-logo">
-        <a class="logo d-inline-block" href="index.html">
+        <a class="logo d-inline-block" href="/dashboard">
             <img alt="QRIN Logo" src="{{ asset('frontend/logo.png') }}" style="width: 110px">
         </a>
 
