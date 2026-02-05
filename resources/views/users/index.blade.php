@@ -25,9 +25,9 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="card">
-                        <div class="card-body">
-                            <div class="table-responsive p-1">
-                                <table class="table table-striped" id="data-table" width="100%">
+                        <div class="card-body p-0">
+                            <div class="app-datatable-default overflow-auto">
+                                <table class="display app-data-table default-data-table" id="data-table">
                                     <thead>
                                         <tr>
                                             <th>{{ __(key: 'Name') }}</th>
@@ -57,23 +57,23 @@
                     name: 'avatar',
                     orderable: false,
                     searchable: false,
-                render: function(data, type, full, meta) {
-                    if (data) {
-                        return `<div class="d-flex align-items-center">
+                    render: function(data, type, full, meta) {
+                        if (data) {
+                            return `<div class="d-flex align-items-center">
                             <div class="h-30 w-30 d-flex-center b-r-50 overflow-hidden text-bg-info">
                                 <img alt="${full.nama || 'User'}" class="img-fluid" src="${data}">
                             </div>
                             <p class="mb-0 ps-2">${full.name || 'Unknown'}</p>
                         </div>`;
-                    } else {
-                        return `<div class="d-flex align-items-center">
+                        } else {
+                            return `<div class="d-flex align-items-center">
                             <div class="h-30 w-30 d-flex-center b-r-50 overflow-hidden text-bg-info">
                                 <i class="fas fa-user"></i>
                             </div>
                             <p class="mb-0 ps-2">${full.name || 'Unknown'}</p>
                         </div>`;
+                        }
                     }
-                }
                 },
                 {
                     data: 'email',

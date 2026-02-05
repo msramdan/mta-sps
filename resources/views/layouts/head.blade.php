@@ -51,12 +51,11 @@
         integrity="sha512-gzw5zNP2TRq+DKyAqZfDclaTG4dOrGJrwob2Fc8xwcJPDPVij0HowLIMZ8c1NefFM0OZZYUUUNoPfcoI5jqudw=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link href="{{ asset('backend') }}/assets/vendor/animation/animate.min.css" rel="stylesheet">
-    <link href="{{ asset('backend') }}/assets/vendor/flag-icons-master/flag-icon.css" rel="stylesheet" type="text/css">
     <link href="{{ asset('backend') }}/assets/vendor/bootstrap/bootstrap.min.css" rel="stylesheet" type="text/css">
     <link href="{{ asset('backend') }}/assets/vendor/simplebar/simplebar.css" rel="stylesheet" type="text/css">
     <link href="{{ asset('backend') }}/assets/css/style.css" rel="stylesheet" type="text/css">
     <link href="{{ asset('backend') }}/assets/css/responsive.css" rel="stylesheet" type="text/css">
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs5/dt-1.12.0/datatables.min.css" />
+    <link href="{{ asset('backend') }}/assets/vendor/datatable/jquery.dataTables.min.css" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"
         integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
