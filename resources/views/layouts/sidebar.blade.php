@@ -44,7 +44,7 @@
             <div class="app-nav" id="app-simple-bar">
                 <ul class="main-nav p-0 mt-2">
                     <li class="no-sub">
-                        <a href="widget.html">
+                        <a href="/dashboard">
                             <svg stroke="currentColor" stroke-width="1.5">
                                 <use xlink:href="{{ asset('backend') }}/assets/svg/_sprite.svg#squares"></use>
                             </svg>
@@ -59,8 +59,8 @@
                             User & Roles
                         </a>
                         <ul class="collapse" id="maps">
-                            <li><a href="google-map.html">Users</a></li>
-                            <li><a href="leaflet-map.html">Roles</a></li>
+                            <li><a href="/users">Users</a></li>
+                            <li><a href="/roles">Roles</a></li>
                         </ul>
                     </li>
                 </ul>

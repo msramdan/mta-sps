@@ -15429,10 +15429,6 @@ button:focus:not(:focus-visible) {
   padding: 0.8rem 0.75rem;
 }
 
-.ti {
-  letter-spacing: -0.43em;
-}
-
 .icon-list {
   display: flex;
   flex-wrap: wrap;
