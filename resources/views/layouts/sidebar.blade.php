@@ -29,7 +29,7 @@
                 </a>
                 <ul class="dropdown-menu">
                     <li class="dropdown-item">
-                        <a class="f-w-500" href="{{ route('profile') }}" target="_blank">
+                        <a class="f-w-500" href="{{ route('profile') }}">
                             <i class="ti ti-user-circle pe-1 f-s-20"></i> Detail Profile
                         </a>
                     </li>
