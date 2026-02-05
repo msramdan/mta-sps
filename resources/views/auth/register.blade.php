@@ -19,9 +19,7 @@
                                         @csrf
                                         <div class="mb-3 text-center">
                                             <img alt="#" src="{{ asset('frontend/logo.png') }}" style="width: 180px; margin-bottom:15px">
-                                            <p class="f-s-12 text-secondary">Daftar sekarang dan mulailah mengelola bisnis
-                                                Anda dengan
-                                                lebih efisien.</p>
+                                            <p class="f-s-12 text-secondary">Buat akun QRIN dan nikmati integrasi mudah untuk terima pembayaran digital dengan biaya kompetitif.</p>
                                         </div>
 
                                         @if ($errors->any())
