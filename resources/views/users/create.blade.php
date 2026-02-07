@@ -3,33 +3,33 @@
 @section('title', __(key: 'Create User'))
 
 @section('content')
-    <div class="page-heading">
-        <div class="page-title">
-            <div class="row">
-                <div class="col-12 col-md-8 order-md-1 order-last">
-                    <h3>{{ __(key: 'User') }}</h3>
-                    <p class="text-subtitle text-muted">
-                        {{ __(key: 'Create a new user.') }}
-                    </p>
+    <main>
+        <div class="container-fluid">
+            <div class="row m-1">
+                <div class="col-12 ">
+                    <h4 class="main-title">{{ __(key: 'User') }}</h4>
+                    <ul class="app-line-breadcrumbs mb-3">
+                        <li class="">
+                            <a class="f-s-14 f-w-500" href="/">
+                                <span>
+                                    <i class="ph-duotone ph-newspaper f-s-16"></i> {{ __(key: 'Dashboard') }}
+                                </span>
+                            </a>
+                        </li>
+                        <li class="">
+                            <a class="f-s-14 f-w-500" href="{{ route(name: 'users.index') }}">
+                                {{ __(key: 'User') }}
+                            </a>
+                        </li>
+                        <li class="active">
+                            <a class="f-s-14 f-w-500" href="#">{{ __(key: 'Create') }}</a>
+                        </li>
+                    </ul>
                 </div>
-
-                <x-breadcrumb>
-                    <li class="breadcrumb-item">
-                        <a href="/">{{ __(key: 'Dashboard') }}</a>
-                    </li>
-                    <li class="breadcrumb-item">
-                        <a href="{{ route(name: 'users.index') }}">{{ __(key: 'User') }}</a>
-                    </li>
-                    <li class="breadcrumb-item active" aria-current="page">
-                        {{ __(key: 'Create') }}
-                    </li>
-                </x-breadcrumb>
             </div>
-        </div>
 
-        <section class="section">
             <div class="row">
-                <div class="col-md-12">
+                <div class="col-12">
                     <div class="card">
                         <div class="card-body">
                             <form action="{{ route(name: 'users.store') }}" method="POST" enctype="multipart/form-data">
@@ -46,6 +46,6 @@
                     </div>
                 </div>
             </div>
-        </section>
-    </div>
+        </div>
+    </main>
 @endsection
