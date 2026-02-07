@@ -141,21 +141,5 @@ return [
                 ]
             ]
         ],
-        [
-            'header' => 'Produks',
-            'permissions' => [
-                'produk view'
-            ],
-            'menus' => [
-                [
-                    'title' => 'Produks',
-                    'icon' => '<i class="ti ti-layout-dashboard fs-5 me-2"></i>',
-                    'route' => '/produks',
-                    'permission' => 'produk view',
-                    'permissions' => [],
-                    'submenus' => []
-                ]
-            ]
-        ]
     ],
 ];
