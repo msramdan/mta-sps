@@ -19,5 +19,3 @@ Route::middleware(['auth', 'web'])->group(function () {
 Route::controller(App\Http\Controllers\Frontend\WebController::class)->group(function () {
     Route::get('/', 'index')->name('web.landing.page');
 });
-
-Route::resource('produks', App\Http\Controllers\ProdukController::class)->middleware('auth');
