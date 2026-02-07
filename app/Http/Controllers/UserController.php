@@ -14,6 +14,7 @@ use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
 use Yajra\DataTables\Facades\DataTables;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class UserController extends Controller implements HasMiddleware
 {
@@ -22,9 +23,7 @@ class UserController extends Controller implements HasMiddleware
         //
     }
 
-    /**
-     * Get the middleware that should be assigned to the controller.
-     */
+
     public static function middleware(): array
     {
         return [
@@ -45,7 +44,7 @@ class UserController extends Controller implements HasMiddleware
 
             return Datatables::of(source: $users)
                 ->addColumn(name: 'action', content: 'users.include.action')
-                ->addColumn(name: 'role', content: fn ($row) => $row->getRoleNames()->toArray() !== [] ? $row->getRoleNames()[0] : '-')
+                ->addColumn(name: 'role', content: fn($row) => $row->getRoleNames()->toArray() !== [] ? $row->getRoleNames()[0] : '-')
                 ->toJson();
         }
 
@@ -75,8 +74,8 @@ class UserController extends Controller implements HasMiddleware
             $role = Role::select(columns: ['id', 'name'])->find(id: $request->role);
 
             $user->assignRole(roles: $role->name);
-
-            return to_route(route: 'users.index')->with(key: 'success', value: __(key: 'The user was created successfully.'));
+            Alert::success('Berhasil', 'User berhasil dibuat.');
+            return redirect()->route('users.index');
         });
     }
 
