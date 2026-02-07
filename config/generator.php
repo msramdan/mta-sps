@@ -112,26 +112,34 @@ return [
      */
     'sidebars' => [
         [
-            'header' => 'Users',
-            'permissions' => ['user view', 'role & permission view'],
+            'header' => 'Utilities',
+            'permissions' => [
+                'user view',
+                'role & permission view'
+            ],
             'menus' => [
                 [
-                    'title' => 'Users',
-                    'icon' => '<i class="bi bi-people-fill"></i>',
-                    'route' => '/users',
-                    'permission' => 'user view',
-                    'permissions' => [],
-                    'submenus' => [],
-                ],
-                [
-                    'title' => 'Roles & permissions',
-                    'icon' => '<i class="bi bi-person-check-fill"></i>',
-                    'route' => '/roles',
-                    'permission' => 'role & permission view',
-                    'permissions' => [],
-                    'submenus' => [],
-                ],
-            ],
+                    'title' => 'User & Roles',
+                    'icon' => '<i class="ti ti-users fs-5 me-2"></i>',
+                    'route' => null,
+                    'permissions' => [
+                        'user view',
+                        'role & permission view'
+                    ],
+                    'submenus' => [
+                        [
+                            'title' => 'Users',
+                            'route' => 'users',
+                            'permission' => 'user view'
+                        ],
+                        [
+                            'title' => 'Roles',
+                            'route' => 'roles',
+                            'permission' => 'role & permission view'
+                        ]
+                    ]
+                ]
+            ]
         ],
     ],
 ];
