@@ -49,8 +49,8 @@
 
     <div class="app-nav" id="app-simple-bar">
         <ul class="main-nav p-0 mt-2">
-            <li class="no-sub{{ request()->is('dashboard') ? ' active' : '' }}">
-                <a href="/dashboard">
+            <li class="no-sub{{ request()->routeIs('dashboard.*') || request()->is('dashboard') ? ' active' : '' }}">
+                <a href="{{ route('dashboard') }}">
                     <i class="ti ti-layout-dashboard fs-5 me-2"></i>
                     Dashboard
                 </a>
@@ -65,47 +65,65 @@
                                     ? $menu['permissions']
                                     : [$menu['permission']];
 
-                                // Generate collapse ID
-                                $collapseId = str($menu['title'])->slug()->toString();
-
-                                // Check if parent menu is active
-                                $isParentActive = false;
-                                $activeSubmenuRoute = '';
-
-                                if (!empty($menu['submenus'])) {
-                                    foreach ($menu['submenus'] as $submenu) {
-                                        if (is_submenu_active($submenu['route'])) {
-                                            $isParentActive = true;
-                                            $activeSubmenuRoute = $submenu['route'];
-                                            break;
-                                        }
-                                    }
-                                }
+                                $routePrefix = $menu['route'] ? str($menu['route'])->remove('/') : null;
                             @endphp
 
                             @canany($permissions)
                                 @if (empty($menu['submenus']))
                                     @can($menu['permission'])
-                                        <li class="{{ is_menu_active($menu['route']) ? 'active' : '' }}">
-                                            <a href="{{ route($menu['route'] . '.index') }}">
+                                        @php
+                                            $isActive = false;
+                                            if ($routePrefix) {
+                                                $isActive = request()->routeIs($routePrefix . '.*') ||
+                                                           request()->routeIs($routePrefix . '.index') ||
+                                                           request()->is($routePrefix) ||
+                                                           request()->is($routePrefix . '/*');
+                                            }
+                                        @endphp
+                                        <li class="no-sub{{ $isActive ? ' active' : '' }}">
+                                            <a href="{{ $routePrefix ? route($routePrefix . '.index') : '#' }}">
                                                 {!! $menu['icon'] !!}
                                                 {{ __($menu['title']) }}
                                             </a>
                                         </li>
                                     @endcan
                                 @else
+                                    @php
+                                        $collapseId = str($menu['title'])->slug()->toString();
+                                        $isParentActive = false;
+                                        foreach ($menu['submenus'] as $submenu) {
+                                            $submenuRoute = str($submenu['route'])->remove('/');
+                                            if (request()->routeIs($submenuRoute . '.*') ||
+                                                request()->routeIs($submenuRoute . '.index') ||
+                                                request()->is($submenuRoute) ||
+                                                request()->is($submenuRoute . '/*')) {
+                                                $isParentActive = true;
+                                                break;
+                                            }
+                                        }
+                                    @endphp
+
                                     <li class="{{ $isParentActive ? 'active' : '' }}">
-                                        <a aria-expanded="{{ $isParentActive ? 'true' : 'false' }}" data-bs-toggle="collapse"
-                                            href="#{{ $collapseId }}" class="{{ $isParentActive ? 'active' : '' }}">
+                                        <a aria-expanded="{{ $isParentActive ? 'true' : 'false' }}"
+                                           data-bs-toggle="collapse"
+                                           href="#{{ $collapseId }}"
+                                           class="{{ $isParentActive ? 'active' : '' }}">
                                             {!! $menu['icon'] !!}
                                             {{ __($menu['title']) }}
                                         </a>
                                         <ul class="collapse{{ $isParentActive ? ' show' : '' }}" id="{{ $collapseId }}">
                                             @foreach ($menu['submenus'] as $submenu)
                                                 @can($submenu['permission'])
-                                                    <li class="{{ is_submenu_active($submenu['route']) ? 'active' : '' }}">
-                                                        <a href="{{ route($submenu['route'] . '.index') }}"
-                                                            class="{{ is_submenu_active($submenu['route']) ? 'active' : '' }}">
+                                                    @php
+                                                        $submenuRoute = str($submenu['route'])->remove('/');
+                                                        $isSubmenuActive = request()->routeIs($submenuRoute . '.*') ||
+                                                                           request()->routeIs($submenuRoute . '.index') ||
+                                                                           request()->is($submenuRoute) ||
+                                                                           request()->is($submenuRoute . '/*');
+                                                    @endphp
+                                                    <li class="{{ $isSubmenuActive ? 'active' : '' }}">
+                                                        <a href="{{ route($submenuRoute . '.index') }}"
+                                                           class="{{ $isSubmenuActive ? 'active' : '' }}">
                                                             {{ __($submenu['title']) }}
                                                         </a>
                                                     </li>

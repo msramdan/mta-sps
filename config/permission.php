@@ -218,6 +218,7 @@ return [
                 'role & permission edit',
                 'role & permission delete',
             ],
-        ]
+        ],
+        ['group' => 'produks', 'access' => ['produk view', 'produk create', 'produk edit', 'produk delete']],
     ],
 ];
