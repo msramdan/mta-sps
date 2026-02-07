@@ -17,9 +17,6 @@ class ViewComposerServiceProvider extends ServiceProvider
         //
     }
 
-    /**
-     * Bootstrap services.
-     */
     public function boot(): void
     {
         View::composer(views: ['users.create', 'users.edit'], callback: fn (ViewContract $view) => $view->with(
