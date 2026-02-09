@@ -27,13 +27,21 @@ class WebController extends Controller
         // Validasi input
         $validator = Validator::make($request->all(), [
             'nama_pemilik' => 'required|string|max:255',
-            'nama_perusahaan' => 'required|string|max:150',
-            'no_wa' => 'required|string|max:14|starts_with:62',
+            'nama_perusahaan' => 'required|string|max:150|unique:merchants,nama_merchant',
+            'no_wa' => 'required|string|max:14|starts_with:62|unique:users,no_wa',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|confirmed|min:8',
         ], [
+            'nama_perusahaan.required' => 'Nama merchant/perusahaan harus diisi.',
+            'nama_perusahaan.max' => 'Nama merchant maksimal 150 karakter.',
+            'nama_perusahaan.unique' => 'Nama merchant/perusahaan sudah terdaftar.',
             'no_wa.starts_with' => 'Nomor WhatsApp harus diawali dengan 62.',
             'no_wa.max' => 'Nomor WhatsApp maksimal 14 digit.',
+            'no_wa.unique' => 'Nomor WhatsApp sudah terdaftar.',
+            'email.unique' => 'Email sudah terdaftar.',
+            'password.required' => 'Password harus diisi.',
+            'password.confirmed' => 'Konfirmasi password tidak cocok.',
+            'password.min' => 'Password minimal 8 karakter.',
         ]);
 
         if ($validator->fails()) {
@@ -101,15 +109,16 @@ class WebController extends Controller
                 $user->assignRole('User Merchant');
             }
 
-            Alert::success('Berhasil', 'Pendaftaran merchant berhasil! Akun Anda sedang dalam proses review oleh admin.');
-            return redirect()->route('login');
-
+            // Redirect ke login dengan session success (sama seperti di login page)
+            return redirect()->route('login')->with('success', 'Pendaftaran berhasil! Silakan login untuk melengkapi data merchant Anda.');
         } catch (\Exception $e) {
             // Rollback transaction jika ada error
             DB::rollBack();
 
-            Alert::error('Gagal', 'Terjadi kesalahan saat mendaftar. Silakan coba lagi.');
-            return redirect()->back()->withInput();
+            // Kembali dengan error session
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Terjadi kesalahan saat mendaftar. Silakan coba lagi.');
         }
     }
 }

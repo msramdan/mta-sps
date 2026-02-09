@@ -28,12 +28,20 @@
                                                 <div class="d-flex">
                                                     <ul class="ms-0 mb-0 flex-grow-1">
                                                         @foreach ($errors->all() as $error)
-                                                            <li>{{ $error }}</li>
+                                                            <li class="text-white fw-normal">{{ $error }}</li>
                                                         @endforeach
                                                     </ul>
                                                     <button type="button" class="btn-close btn-close-white"
                                                         data-bs-dismiss="alert" aria-label="Close"></button>
                                                 </div>
+                                            </div>
+                                        @endif
+
+                                        @if (session('error'))
+                                            <div class="alert alert-danger alert-dismissible show fade">
+                                                {{ session('error') }}
+                                                <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                                    aria-label="Close"></button>
                                             </div>
                                         @endif
 
@@ -75,7 +83,7 @@
                                                 @enderror
                                                 <small class="text-muted">
                                                     <i class="fas fa-info-circle"></i>
-                                                    Format harus diawali dengan 62
+                                                    Format harus diawali dengan 62 (contoh: 6281234567890)
                                                 </small>
                                             </div>
 
