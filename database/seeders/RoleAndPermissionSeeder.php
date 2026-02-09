@@ -17,14 +17,14 @@ class RoleAndPermissionSeeder extends Seeder
     {
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
-        $superAdmin = Role::firstOrCreate(['name' => 'Super Admin']);
+        $superAdmin = Role::firstOrCreate(['name' => 'admin']);
         foreach (config('permission.permissions') as $permission) {
             foreach ($permission['access'] as $access) {
                 Permission::firstOrCreate(['name' => $access]);
             }
         }
         $userAdmin = User::first();
-        $userAdmin->assignRole('Super Admin');
+        $userAdmin->assignRole('admin');
         $superAdmin->givePermissionTo(Permission::all());
     }
 }

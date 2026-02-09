@@ -19,3 +19,6 @@ Route::middleware(['auth', 'web'])->group(function () {
 Route::controller(App\Http\Controllers\Frontend\WebController::class)->group(function () {
     Route::get('/', 'index')->name('web.landing.page');
 });
+
+Route::resource('banks', App\Http\Controllers\BankController::class)->middleware('auth');
+Route::resource('merchants', App\Http\Controllers\MerchantController::class)->middleware('auth');

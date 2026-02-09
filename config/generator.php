@@ -112,6 +112,38 @@ return [
      */
     'sidebars' => [
         [
+            'header' => 'Merchant',
+            'permissions' => [
+                'merchant view'
+            ],
+            'menus' => [
+                [
+                    'title' => 'Merchant',
+                    'icon' => '<i class="ti ti-building-store fs-5 me-2"></i>',
+                    'route' => '/merchants',
+                    'permission' => 'merchant view',
+                    'permissions' => [],
+                    'submenus' => []
+                ]
+            ]
+        ],
+        [
+            'header' => 'Bank',
+            'permissions' => [
+                'bank view'
+            ],
+            'menus' => [
+                [
+                    'title' => 'Bank',
+                    'icon' => '<i class="ti ti-building-bank fs-5 me-2"></i>',
+                    'route' => '/banks',
+                    'permission' => 'bank view',
+                    'permissions' => [],
+                    'submenus' => []
+                ]
+            ]
+        ],
+        [
             'header' => 'Utilities',
             'permissions' => [
                 'user view',
@@ -140,6 +172,6 @@ return [
                     ]
                 ]
             ]
-        ],
-    ],
+        ]
+    ]
 ];
