@@ -6,6 +6,7 @@ use App\Generators\Services\ImageServiceV2;
 use App\Http\Requests\Users\StoreUserRequest;
 use App\Http\Requests\Users\UpdateUserRequest;
 use App\Models\User;
+use App\Models\Merchant;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -23,10 +24,10 @@ class UserController extends Controller implements HasMiddleware
         //
     }
 
-
     public static function middleware(): array
     {
         return [
+            'auth',
             new Middleware(middleware: 'permission:user view', only: ['index', 'show']),
             new Middleware(middleware: 'permission:user create', only: ['create', 'store']),
             new Middleware(middleware: 'permission:user edit', only: ['edit', 'update']),
@@ -40,11 +41,12 @@ class UserController extends Controller implements HasMiddleware
     public function index(): View|JsonResponse
     {
         if (request()->ajax()) {
-            $users = User::with(relations: ['roles:id,name']);
+            $users = User::with(relations: ['roles:id,name', 'assignedMerchants']);
 
             return Datatables::of(source: $users)
                 ->addColumn(name: 'action', content: 'users.include.action')
                 ->addColumn(name: 'role', content: fn($row) => $row->getRoleNames()->toArray() !== [] ? $row->getRoleNames()[0] : '-')
+                ->addColumn(name: 'merchants', content: fn($row) => $row->assignedMerchants->pluck('nama_merchant')->implode(', ') ?: '-')
                 ->toJson();
         }
 
@@ -56,7 +58,10 @@ class UserController extends Controller implements HasMiddleware
      */
     public function create(): View
     {
-        return view(view: 'users.create');
+        $roles = Role::all();
+        $merchants = Merchant::orderBy('nama_merchant')->get();
+
+        return view(view: 'users.create', data: compact('roles', 'merchants'));
     }
 
     /**
@@ -72,8 +77,20 @@ class UserController extends Controller implements HasMiddleware
             $user = User::create(attributes: $validated);
 
             $role = Role::select(columns: ['id', 'name'])->find(id: $request->role);
-
             $user->assignRole(roles: $role->name);
+
+            // Assign merchants to user jika ada
+            if ($request->has('merchants') && is_array($request->merchants)) {
+                foreach ($request->merchants as $merchantId) {
+                    DB::table('assign_merchants')->insert([
+                        'user_id' => $user->id,
+                        'merchant_id' => $merchantId,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]);
+                }
+            }
+
             Alert::success('Berhasil', 'User berhasil dibuat.');
             return redirect()->route('users.index');
         });
@@ -84,7 +101,7 @@ class UserController extends Controller implements HasMiddleware
      */
     public function show(User $user): View
     {
-        $user->load(relations: ['roles:id,name']);
+        $user->load(relations: ['roles:id,name', 'assignedMerchants']);
 
         return view(view: 'users.show', data: compact('user'));
     }
@@ -94,9 +111,14 @@ class UserController extends Controller implements HasMiddleware
      */
     public function edit(User $user): View
     {
-        $user->load(relations: ['roles:id,name']);
+        $user->load(relations: ['roles:id,name', 'assignedMerchants']);
+        $roles = Role::all();
+        $merchants = Merchant::orderBy('nama_merchant')->get();
 
-        return view(view: 'users.edit', data: compact('user'));
+        // Get assigned merchant IDs
+        $assignedMerchantIds = $user->assignedMerchants->pluck('id')->toArray();
+
+        return view(view: 'users.edit', data: compact('user', 'roles', 'merchants', 'assignedMerchantIds'));
     }
 
     /**
@@ -117,10 +139,24 @@ class UserController extends Controller implements HasMiddleware
             $user->update(attributes: $validated);
 
             $role = Role::select(columns: ['id', 'name'])->find(id: $request->role);
-
             $user->syncRoles(roles: $role->name);
 
-            return to_route(route: 'users.index')->with(key: 'success', value: __(key: 'The user was updated successfully.'));
+            // Update merchant assignments
+            DB::table('assign_merchants')->where('user_id', $user->id)->delete();
+
+            if ($request->has('merchants') && is_array($request->merchants)) {
+                foreach ($request->merchants as $merchantId) {
+                    DB::table('assign_merchants')->insert([
+                        'user_id' => $user->id,
+                        'merchant_id' => $merchantId,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]);
+                }
+            }
+
+            Alert::success('Berhasil', 'User berhasil diperbarui.');
+            return redirect()->route('users.index');
         });
     }
 
@@ -133,14 +169,19 @@ class UserController extends Controller implements HasMiddleware
             return DB::transaction(callback: function () use ($user): RedirectResponse {
                 $avatar = $user->avatar;
 
+                // Delete merchant assignments first
+                DB::table('assign_merchants')->where('user_id', $user->id)->delete();
+
                 $user->delete();
 
                 $this->imageServiceV2->delete(path: $this->avatarPath, image: $avatar, disk: $this->disk);
 
-                return to_route(route: 'users.index')->with(key: 'success', value: __(key: 'The user was deleted successfully.'));
+                Alert::success('Berhasil', 'User berhasil dihapus.');
+                return redirect()->route('users.index');
             });
         } catch (\Exception $e) {
-            return to_route(route: 'users.index')->with(key: 'error', value: __(key: "The user can't be deleted because it's related to another table."));
+            Alert::error('Gagal', 'User tidak dapat dihapus karena terkait dengan tabel lain.');
+            return redirect()->route('users.index');
         }
     }
 }

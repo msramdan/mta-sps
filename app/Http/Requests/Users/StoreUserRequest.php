@@ -4,6 +4,7 @@ namespace App\Http\Requests\Users;
 
 use App\Actions\Fortify\PasswordValidationRules;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreUserRequest extends FormRequest
 {
@@ -28,6 +29,19 @@ class StoreUserRequest extends FormRequest
             'avatar' => ['nullable', 'image', 'max:1024'],
             'role' => ['required', 'exists:roles,id'],
             'password' => ['required', ...$this->passwordRules()],
+            'merchants' => ['required', 'array', 'min:1'],
+            'merchants.*' => ['exists:merchants,id'],
+        ];
+    }
+
+    /**
+     * Get custom messages for validator errors.
+     */
+    public function messages(): array
+    {
+        return [
+            'merchants.required' => 'Pilih minimal 1 merchant.',
+            'merchants.min' => 'Pilih minimal 1 merchant.',
         ];
     }
 }

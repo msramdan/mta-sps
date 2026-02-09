@@ -58,7 +58,7 @@
                 @foreach ($roles as $role)
                     @isset($user)
                         <option value="{{ $role->id }}"
-                            {{ $user->getRoleNames()->toArray() !== [] && $user->getRoleNames()[0] == $role->name ? 'selected' : '-' }}>
+                            {{ $user->getRoleNames()->toArray() !== [] && $user->getRoleNames()[0] == $role->name ? 'selected' : '' }}>
                             {{ $role->name }}</option>
                     @else
                         <option value="{{ $role->id }}">{{ $role->name }}</option>
@@ -97,4 +97,80 @@
             </div>
         </div>
     </div>
+
+    <!-- Merchant Assignment Section -->
+    @if(isset($merchants) && count($merchants) > 0)
+    <div class="col-12 mb-4">
+        <h5 class="mb-3 border-bottom pb-2">{{ __(key: 'Assign Merchant') }}</h5>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-check mb-2">
+                    <input class="form-check-input" type="checkbox" id="selectAllMerchants">
+                    <label class="form-check-label fw-bold" for="selectAllMerchants">
+                        {{ __(key: 'Select All Merchants') }}
+                    </label>
+                </div>
+
+                <div class="row" id="merchantList">
+                    @foreach($merchants as $merchant)
+                    <div class="col-md-4 mb-2">
+                        <div class="form-check">
+                            <input class="form-check-input merchant-checkbox"
+                                   type="checkbox"
+                                   name="merchants[]"
+                                   value="{{ $merchant->id }}"
+                                   id="merchant{{ $merchant->id }}"
+                                   {{ (isset($assignedMerchantIds) && in_array($merchant->id, $assignedMerchantIds)) ? 'checked' : '' }}>
+                            <label class="form-check-label" for="merchant{{ $merchant->id }}">
+                                {{ $merchant->nama_merchant }}
+                                <span class="text-muted small">
+                                    ({{ $merchant->is_active == 'Yes' ? __(key: 'Active') : __(key: 'Inactive') }})
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
 </div>
+
+@push('js')
+<script>
+    // Select All Merchants functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const selectAllCheckbox = document.getElementById('selectAllMerchants');
+        const merchantCheckboxes = document.querySelectorAll('.merchant-checkbox');
+
+        if (selectAllCheckbox && merchantCheckboxes.length > 0) {
+            // Initialize Select All checkbox state on page load
+            const allChecked = Array.from(merchantCheckboxes).every(cb => cb.checked);
+            const someChecked = Array.from(merchantCheckboxes).some(cb => cb.checked);
+
+            selectAllCheckbox.checked = allChecked;
+            selectAllCheckbox.indeterminate = someChecked && !allChecked;
+
+            // Select All event
+            selectAllCheckbox.addEventListener('change', function() {
+                merchantCheckboxes.forEach(checkbox => {
+                    checkbox.checked = this.checked;
+                });
+                this.indeterminate = false;
+            });
+
+            // Update Select All checkbox when individual checkboxes change
+            merchantCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    const allChecked = Array.from(merchantCheckboxes).every(cb => cb.checked);
+                    const someChecked = Array.from(merchantCheckboxes).some(cb => cb.checked);
+
+                    selectAllCheckbox.checked = allChecked;
+                    selectAllCheckbox.indeterminate = someChecked && !allChecked;
+                });
+            });
+        }
+    });
+</script>
+@endpush
