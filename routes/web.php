@@ -8,7 +8,8 @@ use App\Http\Controllers\{
     RoleAndPermissionController,
     BankController,
     MerchantController,
-    TarikSaldoController
+    TarikSaldoController,
+    SettingMerchantController
 };
 use App\Http\Controllers\Frontend\WebController;
 
@@ -38,6 +39,11 @@ Route::middleware(['auth', 'web'])->group(function () {
     Route::resource('merchants', MerchantController::class);
     Route::post('/merchants/{merchant}/review', [MerchantController::class, 'review'])
         ->name('merchants.review');
+
+    Route::get('/setting-merchant', [SettingMerchantController::class, 'index'])
+        ->name('setting-merchant.index');
+    Route::put('/setting-merchant', [SettingMerchantController::class, 'update'])
+        ->name('setting-merchant.update');
 
     // Tarik Saldo Management
     Route::resource('tarik-saldos', TarikSaldoController::class);

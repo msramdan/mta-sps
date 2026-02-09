@@ -56,7 +56,7 @@
                 </a>
             </li>
 
-            @can('merchant edit')
+            @can('setting merchant')
                 @if (Auth::user()->hasRole('User Merchant'))
                     @php
                         $merchantId = session('sessionMerchant');
@@ -64,7 +64,7 @@
 
                     @if ($merchantId)
                         <li class="no-sub">
-                            <a href="{{ route('merchants.edit', $merchantId) }}">
+                            <a href="{{ route('setting-merchant.index') }}">
                                 <i class="ti ti-building-store fs-5 me-2"></i>
                                 Setting Merchant
                             </a>
