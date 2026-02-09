@@ -22,7 +22,7 @@
                     </ul>
                 </div>
             </div>
-            @can('role & permission create')
+            @can('user create')
                 <div class="d-flex justify-content-end">
                     <a href="{{ route(name: 'users.create') }}" class="btn btn-primary mb-3">
                         <i class="fas fa-plus"></i>
@@ -42,6 +42,7 @@
                                             <th>{{ __(key: 'Name') }}</th>
                                             <th>{{ __(key: 'Email') }}</th>
                                             <th>{{ __(key: 'Role') }}</th>
+                                            <th>{{ __(key: 'Assigned Merchants') }}</th>
                                             <th>{{ __(key: 'Action') }}</th>
                                         </tr>
                                     </thead>
@@ -93,12 +94,33 @@
                     name: 'role'
                 },
                 {
+                    data: 'merchants',
+                    name: 'merchants',
+                    orderable: false,
+                    searchable: false,
+                    render: function(data, type, full, meta) {
+                        if (data && data.trim() !== '') {
+                            // Jika data terlalu panjang, truncate dan tambahkan tooltip
+                            if (data.length > 50) {
+                                return `<span title="${data}" data-bs-toggle="tooltip" data-bs-placement="top">
+                                    ${data.substring(0, 50)}...
+                                </span>`;
+                            }
+                            return data;
+                        }
+                        return '<span class="text-muted">-</span>';
+                    }
+                },
+                {
                     data: 'action',
                     name: 'action',
                     orderable: false,
                     searchable: false
                 }
             ],
+            createdRow: function(row, data, dataIndex) {
+                $(row).find('[data-bs-toggle="tooltip"]').tooltip();
+            }
         });
     </script>
 @endpush
