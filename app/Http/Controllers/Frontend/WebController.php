@@ -56,6 +56,10 @@ class WebController extends Controller
             $noWa = '62' . ltrim($noWa, '0');
         }
 
+        // Generate API Key dan Secret Key
+        $apikey = $this->generateApiKey(32);
+        $secretkey = $this->generateSecretKey(64);
+
         // Mulai transaction
         DB::beginTransaction();
 
@@ -80,8 +84,8 @@ class WebController extends Controller
                 'nama_merchant' => $request->nama_perusahaan,
                 'logo' => null,
                 'url_callback' => null,
-                'apikey' => null,
-                'secretkey' => null,
+                'apikey' => $apikey,
+                'secretkey' => $secretkey,
                 'bank_id' => null,
                 'pemilik_rekening' => null,
                 'nomor_rekening' => null,
@@ -109,7 +113,7 @@ class WebController extends Controller
                 $user->assignRole('User Merchant');
             }
 
-            // Redirect ke login dengan session success (sama seperti di login page)
+            // Redirect ke login dengan session success
             return redirect()->route('login')->with('success', 'Pendaftaran berhasil! Silakan login untuk melengkapi data merchant Anda.');
         } catch (\Exception $e) {
             // Rollback transaction jika ada error
@@ -120,5 +124,29 @@ class WebController extends Controller
                 ->withInput()
                 ->with('error', 'Terjadi kesalahan saat mendaftar. Silakan coba lagi.');
         }
+    }
+
+    private function generateApiKey($length = 32)
+    {
+        $characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        $result = '';
+
+        for ($i = 0; $i < $length; $i++) {
+            $result .= $characters[random_int(0, strlen($characters) - 1)];
+        }
+
+        return $result;
+    }
+
+    private function generateSecretKey($length = 64)
+    {
+        $characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        $result = '';
+
+        for ($i = 0; $i < $length; $i++) {
+            $result .= $characters[random_int(0, strlen($characters) - 1)];
+        }
+
+        return $result;
     }
 }
