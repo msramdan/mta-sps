@@ -40,7 +40,7 @@
                                 <table class="display w-100 row-border-table table-responsive" id="data-table">
                                     <thead>
                                         <tr>
-                                            <th></th>
+                                            <th style="width: 50px;"></th>
                                             <th>Nama Merchant</th>
                                             <th>Logo</th>
                                             <th>Status Aktif</th>
@@ -56,75 +56,6 @@
         </div>
     </main>
 @endsection
-
-@push('css')
-<style>
-    tr.details td {
-        background-color: #f8f9fa;
-        border-top: 0;
-    }
-
-    tr.details .detail-content {
-        padding: 20px;
-        background: #fff;
-        border: 1px solid #dee2e6;
-        border-radius: 5px;
-    }
-
-    .detail-section {
-        margin-bottom: 20px;
-    }
-
-    .detail-section h6 {
-        border-bottom: 1px solid #dee2e6;
-        padding-bottom: 8px;
-        margin-bottom: 15px;
-        color: #495057;
-    }
-
-    .detail-row {
-        display: flex;
-        margin-bottom: 8px;
-    }
-
-    .detail-label {
-        flex: 0 0 200px;
-        font-weight: 500;
-        color: #6c757d;
-    }
-
-    .detail-value {
-        flex: 1;
-        color: #212529;
-    }
-
-    .td-expand {
-        text-align: center;
-        cursor: pointer;
-    }
-
-    .avatar {
-        width: 50px;
-        height: 50px;
-        border-radius: 5px;
-        overflow: hidden;
-    }
-
-    .avatar img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-
-    .expand-icon {
-        transition: transform 0.3s;
-    }
-
-    .expanded .expand-icon {
-        transform: rotate(90deg);
-    }
-</style>
-@endpush
 
 @push('js')
 <script>
@@ -220,7 +151,11 @@
                     searchable: false
                 }
             ],
-            order: [[1, 'asc']]
+            order: [[1, 'asc']],
+            createdRow: function(row, data, dataIndex) {
+                // Set width untuk kolom pertama
+                $('td:eq(0)', row).addClass('td-expand');
+            }
         });
 
         // Add event listener for opening and closing details
@@ -233,12 +168,19 @@
                 // This row is already open - close it
                 row.child.hide();
                 tr.removeClass('expanded');
+                tr.removeClass('details');
                 icon.removeClass('fa-chevron-down').addClass('fa-chevron-right');
             } else {
-                // Open this row
+                // Open this row - row child akan muncul DI BAWAH row
                 row.child(format(row.data())).show();
                 tr.addClass('expanded');
+                tr.addClass('details');
                 icon.removeClass('fa-chevron-right').addClass('fa-chevron-down');
+
+                // Scroll ke row yang dibuka (opsional)
+                $('html, body').animate({
+                    scrollTop: tr.offset().top - 100
+                }, 300);
             }
         });
     });
