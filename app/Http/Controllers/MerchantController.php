@@ -13,8 +13,12 @@ use Illuminate\Routing\Controllers\{HasMiddleware, Middleware};
 
 class MerchantController extends Controller implements HasMiddleware
 {
-    public function __construct(public ImageServiceV2 $imageServiceV2, public string $logoPath = 'logos', public string $disk = 'public')
-    {
+    public function __construct(
+        public ImageServiceV2 $imageServiceV2,
+        public string $logoPath = 'logos',
+        public string $ktpPath = 'ktps',
+        public string $disk = 'public'
+    ) {
         //
     }
 
@@ -38,11 +42,10 @@ class MerchantController extends Controller implements HasMiddleware
     public function index(): View|JsonResponse
     {
         if (request()->ajax()) {
-            $merchants = Merchant::with(relations: ['bank:id,nama_bank', ]);
+            $merchants = Merchant::with(relations: ['bank:id,nama_bank']);
 
             return Datatables::of(source: $merchants)
                 ->addColumn(name: 'bank', content: fn($row): ?string => $row?->bank?->nama_bank ?? '')
-
                 ->addColumn(name: 'action', content: 'merchants.include.action')
                 ->toJson();
         }
@@ -66,10 +69,11 @@ class MerchantController extends Controller implements HasMiddleware
         $validated = $request->validated();
 
         $validated['logo'] = $this->imageServiceV2->upload(name: 'logo', path: $this->logoPath, disk: $this->disk);
+        $validated['ktp'] = $this->imageServiceV2->upload(name: 'ktp', path: $this->ktpPath, disk: $this->disk);
 
         Merchant::create(attributes: $validated);
 
-        Alert::success('Berhasil', 'merchant berhasil dibuat.');
+        Alert::success('Berhasil', 'Merchant berhasil dibuat.');
         return redirect()->route('merchants.index');
     }
 
@@ -78,9 +82,9 @@ class MerchantController extends Controller implements HasMiddleware
      */
     public function show(Merchant $merchant): View
     {
-        $merchant->load(relations: ['bank:id,nama_bank', ]);
+        $merchant->load(relations: ['bank:id,nama_bank']);
 
-		return view(view: 'merchants.show', data: compact(var_name: 'merchant'));
+        return view(view: 'merchants.show', data: compact(var_name: 'merchant'));
     }
 
     /**
@@ -88,9 +92,9 @@ class MerchantController extends Controller implements HasMiddleware
      */
     public function edit(Merchant $merchant): View
     {
-        $merchant->load(relations: ['bank:id,nama_bank', ]);
+        $merchant->load(relations: ['bank:id,nama_bank']);
 
-		return view(view: 'merchants.edit', data: compact(var_name: 'merchant'));
+        return view(view: 'merchants.edit', data: compact(var_name: 'merchant'));
     }
 
     /**
@@ -101,10 +105,11 @@ class MerchantController extends Controller implements HasMiddleware
         $validated = $request->validated();
 
         $validated['logo'] = $this->imageServiceV2->upload(name: 'logo', path: $this->logoPath, defaultImage: $merchant?->logo, disk: $this->disk);
+        $validated['ktp'] = $this->imageServiceV2->upload(name: 'ktp', path: $this->ktpPath, defaultImage: $merchant?->ktp, disk: $this->disk);
 
         $merchant->update(attributes: $validated);
 
-        Alert::success('Berhasil', 'merchant berhasil diperbarui.');
+        Alert::success('Berhasil', 'Merchant berhasil diperbarui.');
         return redirect()->route('merchants.index');
     }
 
@@ -115,19 +120,18 @@ class MerchantController extends Controller implements HasMiddleware
     {
         try {
             $logo = $merchant->logo;
+            $ktp = $merchant->ktp;
 
             $merchant->delete();
 
             $this->imageServiceV2->delete(path: $this->logoPath, image: $logo, disk: $this->disk);
+            $this->imageServiceV2->delete(path: $this->ktpPath, image: $ktp, disk: $this->disk);
 
-
-            Alert::success('Berhasil', 'merchant berhasil dihapus.');
+            Alert::success('Berhasil', 'Merchant berhasil dihapus.');
             return redirect()->route('merchants.index');
         } catch (\Exception $e) {
-            Alert::error('Gagal', 'merchant tidak dapat dihapus karena terkait dengan tabel lain.');
+            Alert::error('Gagal', 'Merchant tidak dapat dihapus karena terkait dengan tabel lain.');
             return redirect()->route('merchants.index');
         }
     }
-
-
 }

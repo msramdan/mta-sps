@@ -291,11 +291,5 @@ function format(d) {
         transform: translateY(-1px);
         transition: all 0.2s ease;
     }
-
-    /* Style untuk input readonly */
-    .form-control[readonly] {
-        background-color: #f8f9fa;
-        cursor: default;
-    }
 </style>
 @endpush

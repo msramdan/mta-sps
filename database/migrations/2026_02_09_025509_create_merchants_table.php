@@ -16,30 +16,30 @@ return new class extends Migration
             $table->uuid('id')->primary();
 
             $table->string('nama_merchant', 150);
-            $table->string('logo');
-            $table->string('url_callback');
-            $table->string('apikey');
-            $table->string('secretkey');
+            $table->string('logo')->nullable();
+            $table->string('url_callback')->nullable();
+            $table->string('apikey')->nullable();
+            $table->string('secretkey')->nullable();
 
             // FK ke banks (UUID)
-            $table->uuid('bank_id');
+            $table->uuid('bank_id')->nullable();
             $table
                 ->foreign('bank_id')
                 ->references('id')
                 ->on('banks')
-                ->cascadeOnDelete();
+                ->nullOnDelete();
 
-            $table->string('pemilik_rekening', 100);
-            $table->string('nomor_rekening', 50);
+            $table->string('pemilik_rekening', 100)->nullable();
+            $table->string('nomor_rekening', 50)->nullable();
+            $table->string('ktp')->nullable();
+            $table->text('catatan')->nullable();
+
             $table->enum('is_active', ['Yes', 'No'])->default('Yes');
 
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('merchants');

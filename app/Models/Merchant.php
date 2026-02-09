@@ -40,6 +40,8 @@ class Merchant extends Model
         'bank_id',
         'pemilik_rekening',
         'nomor_rekening',
+        'ktp', // Tambahan
+        'catatan', // Tambahan
         'is_active',
     ];
 
@@ -58,6 +60,8 @@ class Merchant extends Model
             'bank_id' => 'string', // UUID FK
             'pemilik_rekening' => 'string',
             'nomor_rekening' => 'string',
+            'ktp' => 'string', // Tambahan
+            'catatan' => 'string', // Tambahan
             'is_active' => 'string',
             'created_at' => 'datetime:Y-m-d H:i:s',
             'updated_at' => 'datetime:Y-m-d H:i:s',
@@ -90,6 +94,22 @@ class Merchant extends Model
     protected function logo(): Attribute
     {
         $path = 'logos';
+        $imageService = new ImageServiceV2();
+        $disk = $imageService->setDiskName(disk: 'public');
+
+        return Attribute::make(
+            get: fn (?string $value): string =>
+                $imageService->getImageCastUrl(
+                    image: $value,
+                    path: $path,
+                    disk: $disk
+                )
+        );
+    }
+
+    protected function ktp(): Attribute
+    {
+        $path = 'ktps';
         $imageService = new ImageServiceV2();
         $disk = $imageService->setDiskName(disk: 'public');
 
