@@ -26,12 +26,12 @@
                 </div>
             </div>
 
-            
+
             <div class="row">
                 <div class="col-12">
                     <div class="card">
                         <div class="card-body">
-                            
+
 
                             <form action="{{ route(name: 'banks.store') }}" method="POST">
                                 @csrf
@@ -39,7 +39,7 @@
 
                                 @include('banks.include.form')
 
-                                <a href="{{ route(name: 'banks.index') }}" class="btn btn-secondary">{{ __(key: 'Back') }}</a>
+                                <a href="{{ route(name: 'banks.index') }}" class="btn btn-secondary">{{ __(key: 'Kembali') }}</a>
 
                                 <button type="submit" class="btn btn-primary">{{ __(key: 'Simpan') }}</button>
                             </form>

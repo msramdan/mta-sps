@@ -71,7 +71,7 @@
                                 </table>
                             </div>
 
-                            <a href="{{ route(name: 'users.index') }}" class="btn btn-secondary">{{ __(key: 'Back') }}</a>
+                            <a href="{{ route(name: 'users.index') }}" class="btn btn-secondary">{{ __(key: 'Kembali') }}</a>
                         </div>
                     </div>
                 </div>

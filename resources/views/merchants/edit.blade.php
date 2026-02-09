@@ -36,7 +36,7 @@
 
                                 @include('merchants.include.form')
 
-                                <a href="{{ route(name: 'merchants.index') }}" class="btn btn-secondary">{{ __(key: 'Back') }}</a>
+                                <a href="{{ route(name: 'merchants.index') }}" class="btn btn-secondary">{{ __(key: 'Kembali') }}</a>
 
                                 <button type="submit" class="btn btn-primary">{{ __(key: 'Update') }}</button>
                             </form>

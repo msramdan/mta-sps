@@ -46,7 +46,7 @@
                                     </tr>
                                 </table>
                             </div>
-                            <a href="{{ route(name: 'banks.index') }}" class="btn btn-secondary">{{ __(key: 'Back') }}</a>
+                            <a href="{{ route(name: 'banks.index') }}" class="btn btn-secondary">{{ __(key: 'Kembali') }}</a>
                         </div>
                     </div>
                 </div>

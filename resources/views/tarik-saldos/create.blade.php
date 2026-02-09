@@ -26,12 +26,12 @@
                 </div>
             </div>
 
-            
+
             <div class="row">
                 <div class="col-12">
                     <div class="card">
                         <div class="card-body">
-                            
+
 
                             <form action="{{ route(name: 'tarik-saldos.store') }}" method="POST" enctype="multipart/form-data">
                                 @csrf
@@ -39,7 +39,7 @@
 
                                 @include('tarik-saldos.include.form')
 
-                                <a href="{{ route(name: 'tarik-saldos.index') }}" class="btn btn-secondary">{{ __(key: 'Back') }}</a>
+                                <a href="{{ route(name: 'tarik-saldos.index') }}" class="btn btn-secondary">{{ __(key: 'Kembali') }}</a>
 
                                 <button type="submit" class="btn btn-primary">{{ __(key: 'Simpan') }}</button>
                             </form>
