@@ -18,8 +18,10 @@
                                     <form class="app-form p-3" method="POST" action="">
                                         @csrf
                                         <div class="mb-3 text-center">
-                                            <img alt="#" src="{{ asset('frontend/logo.png') }}" style="width: 180px; margin-bottom:15px">
-                                            <p class="f-s-12 text-secondary">Buat akun QRIN dan nikmati integrasi mudah untuk terima pembayaran digital dengan biaya kompetitif.</p>
+                                            <img alt="#" src="{{ asset('frontend/logo.png') }}"
+                                                style="width: 180px; margin-bottom:15px">
+                                            <p class="f-s-12 text-secondary">Buat akun QRIN dan nikmati integrasi mudah
+                                                untuk terima pembayaran digital dengan biaya kompetitif.</p>
                                         </div>
 
                                         @if ($errors->any())
@@ -36,20 +38,24 @@
                                             </div>
                                         @endif
 
-                                        <div class="row">
-                                            <!-- Kelompok 1: Nama Perusahaan & Nama Pemilik -->
-                                            <div class="col-md-6 mb-3">
-                                                <label class="form-label">Nama Perusahaan <span
-                                                        class="text-danger">*</span></label>
-                                                <input class="form-control" name="nama_perusahaan" type="text"
-                                                    value="{{ old('nama_perusahaan') }}" required>
-                                            </div>
 
-                                            <div class="col-md-6 mb-3">
-                                                <label class="form-label">Nama Pemilik <span
+                                        <div class="row">
+                                            <div class="col-md-12 mb-3">
+                                                <label class="form-label">Nama Lengkap <span
                                                         class="text-danger">*</span></label>
                                                 <input class="form-control" name="nama_pemilik" type="text"
-                                                    value="{{ old('nama_pemilik') }}" required>
+                                                    value="{{ old('nama_pemilik') }}" required
+                                                    placeholder="Contoh. Muhammad Saeful Ramdan">
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-12 mb-3">
+                                                <label class="form-label">Nama Merchant/Perusahaan <span
+                                                        class="text-danger">*</span></label>
+                                                <input class="form-control" name="nama_perusahaan" type="text"
+                                                    value="{{ old('nama_perusahaan') }}" required
+                                                    placeholder="Contoh. PT Tecanusa">
                                             </div>
                                         </div>
 
@@ -58,15 +64,16 @@
                                             <div class="col-md-6 mb-3">
                                                 <label class="form-label">No WhatsApp <span
                                                         class="text-danger">*</span></label>
-                                                <input class="form-control" name="no_wa" placeholder="ex. 6281234567890"
-                                                    type="number" value="{{ old('no_wa') }}" required
+                                                <input class="form-control" name="no_wa"
+                                                    placeholder="Contoh. 6281234567890" type="number"
+                                                    value="{{ old('no_wa') }}" required
                                                     oninput="validateWhatsAppNumber(this)">
                                             </div>
 
                                             <div class="col-md-6 mb-3">
                                                 <label class="form-label">Email <span class="text-danger">*</span></label>
                                                 <input class="form-control" name="email" type="email"
-                                                    value="{{ old('email') }}" required>
+                                                    value="{{ old('email') }}" required placeholder="Masukkan email aktif">
                                             </div>
                                         </div>
 
@@ -75,16 +82,18 @@
                                             <div class="col-md-6 mb-3">
                                                 <label class="form-label">Password <span
                                                         class="text-danger">*</span></label>
-                                                <input class="form-control" name="password" type="password" required>
+                                                <input class="form-control" name="password" type="password" required
+                                                    placeholder="Minimal 8 karakter">
                                             </div>
 
                                             <div class="col-md-6 mb-3">
                                                 <label class="form-label">Konfirmasi Password <span
                                                         class="text-danger">*</span></label>
                                                 <input class="form-control" name="password_confirmation" type="password"
-                                                    required>
+                                                    required placeholder="Ulangi password">
                                             </div>
                                         </div>
+
                                         @if (config('app.show_captcha') === 'Yes')
                                             <div class="mb-3">
                                                 {!! NoCaptcha::display() !!}
@@ -112,6 +121,7 @@
         </div>
     </div>
 @endsection
+
 @push('js')
     <script>
         function validateWhatsAppNumber(input) {
