@@ -68,14 +68,28 @@
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <td class="fw-bold">Status Aktif</td>
+                                                <td class="fw-bold">Status Merchant</td>
                                                 <td>
-                                                    <span
-                                                        class="badge bg-{{ $merchant->is_active == 'Yes' ? 'success' : 'danger' }}">
-                                                        {{ $merchant->is_active == 'Yes' ? 'Aktif' : 'Tidak Aktif' }}
+                                                    @php
+                                                        $statusMap = [
+                                                            'approved' => ['success', 'Disetujui'],
+                                                            'pending' => ['warning', 'Menunggu'],
+                                                            'rejected' => ['danger', 'Ditolak'],
+                                                            'suspended' => ['secondary', 'Ditangguhkan'],
+                                                        ];
+
+                                                        [$badge, $label] = $statusMap[$merchant->status] ?? [
+                                                            'light',
+                                                            'Unknown',
+                                                        ];
+                                                    @endphp
+
+                                                    <span class="badge bg-{{ $badge }}">
+                                                        {{ $label }}
                                                     </span>
                                                 </td>
                                             </tr>
+
                                             <tr>
                                                 <td class="fw-bold">Dibuat</td>
                                                 <td>{{ $merchant->created_at->format('Y-m-d H:i:s') }}</td>
@@ -173,7 +187,8 @@
                                         <table class="table table-hover table-striped">
                                             <tr>
                                                 <td>
-                                                    <textarea class="form-control bg-light" rows="4" readonly style="resize: none; background-color: #f8f9fa !important;">{{ $merchant->catatan }}</textarea>
+                                                    <textarea class="form-control bg-light" rows="4" readonly
+                                                        style="resize: none; background-color: #f8f9fa !important;">{{ $merchant->catatan }}</textarea>
                                                 </td>
                                             </tr>
                                         </table>
@@ -201,11 +216,15 @@
 
     <!-- Simple Modal without Bootstrap (Custom) -->
     @can('merchant review')
-        <div id="reviewModal" class="modal-custom" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); z-index: 1050; padding-top: 100px;">
-            <div class="modal-content-custom" style="background-color: white; margin: auto; padding: 20px; border-radius: 8px; width: 500px; max-width: 90%;">
-                <div class="modal-header-custom" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #dee2e6; padding-bottom: 10px; margin-bottom: 20px;">
+        <div id="reviewModal" class="modal-custom"
+            style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); z-index: 1050; padding-top: 100px;">
+            <div class="modal-content-custom"
+                style="background-color: white; margin: auto; padding: 20px; border-radius: 8px; width: 500px; max-width: 90%;">
+                <div class="modal-header-custom"
+                    style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #dee2e6; padding-bottom: 10px; margin-bottom: 20px;">
                     <h5 class="modal-title-custom">Review Merchant</h5>
-                    <button type="button" class="btn-close-custom" onclick="closeReviewModal()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer;">
+                    <button type="button" class="btn-close-custom" onclick="closeReviewModal()"
+                        style="background: none; border: none; font-size: 1.5rem; cursor: pointer;">
                         &times;
                     </button>
                 </div>
@@ -215,28 +234,45 @@
 
                     <div class="modal-body-custom">
                         <div class="mb-3">
-                            <label for="review_is_active" class="form-label">Status Aktif <span
-                                    class="text-danger">*</span></label>
-                            <select class="form-control" name="is_active" id="review_is_active" required style="width: 100%; padding: 8px; border: 1px solid #ced4da; border-radius: 4px;">
+                            <label for="review_status" class="form-label">
+                                Status Merchant <span class="text-danger">*</span>
+                            </label>
+
+                            <select class="form-control" name="status" id="review_status" required
+                                style="width: 100%; padding: 8px; border: 1px solid #ced4da; border-radius: 4px;">
                                 <option value="" disabled>-- Pilih Status --</option>
-                                <option value="Yes" {{ $merchant->is_active == 'Yes' ? 'selected' : '' }}>Ya (Aktif)
+
+                                <option value="pending" {{ $merchant->status === 'pending' ? 'selected' : '' }}>
+                                    Pending (Menunggu Verifikasi)
                                 </option>
-                                <option value="No" {{ $merchant->is_active == 'No' ? 'selected' : '' }}>Tidak
-                                    (Nonaktif)</option>
+
+                                <option value="approved" {{ $merchant->status === 'approved' ? 'selected' : '' }}>
+                                    Approved (Disetujui)
+                                </option>
+
+                                <option value="rejected" {{ $merchant->status === 'rejected' ? 'selected' : '' }}>
+                                    Rejected (Ditolak)
+                                </option>
+
+                                <option value="suspended" {{ $merchant->status === 'suspended' ? 'selected' : '' }}>
+                                    Suspended (Ditangguhkan)
+                                </option>
                             </select>
                         </div>
 
                         <div class="mb-3">
                             <label for="review_catatan" class="form-label">Catatan (Opsional)</label>
                             <textarea name="catatan" id="review_catatan" rows="4" class="form-control"
-                                placeholder="Masukkan catatan review..." style="width: 100%; padding: 8px; border: 1px solid #ced4da; border-radius: 4px;">{{ $merchant->catatan }}</textarea>
+                                placeholder="Masukkan catatan review..."
+                                style="width: 100%; padding: 8px; border: 1px solid #ced4da; border-radius: 4px;">{{ $merchant->catatan }}</textarea>
                             <div class="form-text">
                                 Catatan ini akan menggantikan catatan sebelumnya.
                             </div>
                         </div>
                     </div>
 
-                    <div class="modal-footer-custom" style="border-top: 1px solid #dee2e6; padding-top: 15px; margin-top: 20px; display: flex; justify-content: flex-end; gap: 10px;">
+                    <div class="modal-footer-custom"
+                        style="border-top: 1px solid #dee2e6; padding-top: 15px; margin-top: 20px; display: flex; justify-content: flex-end; gap: 10px;">
                         <button type="button" class="btn btn-secondary" onclick="closeReviewModal()">Batal</button>
                         <button type="submit" class="btn btn-primary">Simpan Review</button>
                     </div>

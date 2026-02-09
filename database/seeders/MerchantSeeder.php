@@ -34,7 +34,7 @@ class MerchantSeeder extends Seeder
             'bank_id' => $bankId,
             'pemilik_rekening' => 'Muhammad Saeful Ramdan',
             'nomor_rekening' => '1234567890',
-            'is_active' => 'Yes',
+            'status' => 'approved',
             'created_at' => now(),
             'updated_at' => now(),
         ]);

@@ -140,17 +140,22 @@ class MerchantController extends Controller implements HasMiddleware
     public function review(Request $request, Merchant $merchant): RedirectResponse
     {
         $request->validate([
-            'is_active' => 'required|in:Yes,No',
+            'status' => 'required|in:pending,approved,rejected,suspended',
             'catatan' => 'nullable|string|max:1000',
         ]);
 
-        // Update status merchant
         $merchant->update([
-            'is_active' => $request->is_active,
-            'catatan' => $request->catatan ?? $merchant->catatan
+            'status' => $request->status,
+            'catatan' => $request->catatan,
         ]);
 
-        $statusText = $request->is_active == 'Yes' ? 'diaktifkan' : 'dinonaktifkan';
+        // Text human readable
+        $statusText = match ($request->status) {
+            'pending'   => 'diset ke status pending',
+            'approved'  => 'disetujui',
+            'rejected'  => 'ditolak',
+            'suspended' => 'ditangguhkan',
+        };
 
         Alert::success('Berhasil', "Merchant berhasil {$statusText}.");
         return redirect()->route('merchants.show', $merchant->id);

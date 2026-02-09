@@ -91,7 +91,7 @@ class WebController extends Controller
                 'nomor_rekening' => null,
                 'ktp' => null,
                 'catatan' => null,
-                'is_active' => 'No',
+                'status' => 'pending',
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);

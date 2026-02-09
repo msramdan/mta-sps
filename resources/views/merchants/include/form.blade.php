@@ -77,24 +77,57 @@
 
             <div class="col-md-6 mb-3">
                 <div class="form-group">
-                    <label for="is-active">Status Aktif <span class="text-danger">*</span></label>
-                    <select class="form-select @error('is_active') is-invalid @enderror" name="is_active" id="is-active"
-                        class="form-control" required>
-                        <option value="" selected disabled>-- Pilih Status Aktif --</option>
-                        <option value="Yes"
-                            {{ isset($merchant) && $merchant->is_active == 'Yes' ? 'selected' : (old('is_active') == 'Yes' ? 'selected' : '') }}>
-                            Ya</option>
-                        <option value="No"
-                            {{ isset($merchant) && $merchant->is_active == 'No' ? 'selected' : (old('is_active') == 'No' ? 'selected' : '') }}>
-                            Tidak</option>
+                    <label for="status">
+                        Status Merchant <span class="text-danger">*</span>
+                    </label>
+
+                    <select class="form-select @error('status') is-invalid @enderror" name="status" id="status"
+                        required>
+                        <option value="" disabled>-- Pilih Status --</option>
+
+                        <option value="pending"
+                            {{ isset($merchant) && $merchant->status === 'pending'
+                                ? 'selected'
+                                : (old('status') === 'pending'
+                                    ? 'selected'
+                                    : '') }}>
+                            Pending (Menunggu Verifikasi)
+                        </option>
+
+                        <option value="approved"
+                            {{ isset($merchant) && $merchant->status === 'approved'
+                                ? 'selected'
+                                : (old('status') === 'approved'
+                                    ? 'selected'
+                                    : '') }}>
+                            Approved (Disetujui)
+                        </option>
+
+                        <option value="rejected"
+                            {{ isset($merchant) && $merchant->status === 'rejected'
+                                ? 'selected'
+                                : (old('status') === 'rejected'
+                                    ? 'selected'
+                                    : '') }}>
+                            Rejected (Ditolak)
+                        </option>
+
+                        <option value="suspended"
+                            {{ isset($merchant) && $merchant->status === 'suspended'
+                                ? 'selected'
+                                : (old('status') === 'suspended'
+                                    ? 'selected'
+                                    : '') }}>
+                            Suspended (Ditangguhkan)
+                        </option>
                     </select>
-                    @error('is_active')
-                        <span class="text-danger">
-                            {{ $message }}
-                        </span>
+
+                    @error('status')
+                        <span class="text-danger">{{ $message }}</span>
                     @enderror
                 </div>
             </div>
+
         </div>
     </div>
 
@@ -222,8 +255,7 @@
         <div class="row">
             <div class="col-md-12 mb-3">
                 <div class="form-group">
-                    <textarea name="catatan" id="catatan" rows="4"
-                        class="form-control @error('catatan') is-invalid @enderror"
+                    <textarea name="catatan" id="catatan" rows="4" class="form-control @error('catatan') is-invalid @enderror"
                         placeholder="Masukkan catatan tambahan (opsional)">{{ isset($merchant) ? $merchant->catatan : old('catatan') }}</textarea>
                     @error('catatan')
                         <span class="text-danger">
@@ -231,7 +263,8 @@
                         </span>
                     @enderror
                     <div class="form-text">
-                        Catatan ini bersifat opsional, dapat digunakan untuk mencatat informasi tambahan tentang merchant.
+                        Catatan ini bersifat opsional, dapat digunakan untuk mencatat informasi tambahan tentang
+                        merchant.
                     </div>
                 </div>
             </div>

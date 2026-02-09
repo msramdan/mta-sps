@@ -28,7 +28,7 @@ class UpdateMerchantRequest extends FormRequest
 			'bank_id' => 'required|exists:App\Models\Bank,id',
 			'pemilik_rekening' => 'required|string|max:100',
 			'nomor_rekening' => 'required|string|max:50',
-			'is_active' => 'required|in:Yes,No',
+			'status' => 'required|in:pending,approved,rejected,suspended',
         ];
     }
 }

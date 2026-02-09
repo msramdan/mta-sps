@@ -34,7 +34,7 @@ return new class extends Migration
             $table->string('ktp')->nullable();
             $table->text('catatan')->nullable();
 
-            $table->enum('is_active', ['Yes', 'No'])->default('Yes');
+            $table->enum('status', ['pending', 'approved','rejected','suspended'])->default('pending');
 
             $table->timestamps();
         });

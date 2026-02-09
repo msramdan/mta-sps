@@ -43,7 +43,7 @@
                                             <th style="width: 50px;"></th>
                                             <th>Nama Merchant</th>
                                             <th>Logo</th>
-                                            <th>Status Aktif</th>
+                                            <th>Status</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
@@ -58,9 +58,9 @@
 @endsection
 
 @push('js')
-<script>
-function format(d) {
-    return `
+    <script>
+        function format(d) {
+            return `
         <div class="detail-content p-2">
             <div class="row g-2">
                 <!-- Kredensial API Section -->
@@ -150,146 +150,159 @@ function format(d) {
             </div>
         </div>
     `;
-}
+        }
 
-    $(document).ready(function() {
-        var table = $('#data-table').DataTable({
-            processing: true,
-            serverSide: true,
-            ajax: "{{ route('merchants.index') }}",
-            columns: [
-                {
-                    className: 'td-expand',
-                    orderable: false,
-                    data: null,
-                    defaultContent: '<i class="fas fa-chevron-right expand-icon"></i>',
-                    width: '50px'
-                },
-                {
-                    data: 'nama_merchant',
-                    name: 'nama_merchant'
-                },
-                {
-                    data: 'logo',
-                    name: 'logo',
-                    orderable: false,
-                    searchable: false,
-                    render: function(data) {
-                        return `<img src="${data}" alt="Logo" style="width:100px" />`;
-                    }
-                },
-                {
-                    data: 'is_active',
-                    name: 'is_active',
-                    render: function(data) {
-                        if (data === 'Yes') {
-                            return '<span class="badge bg-success">Aktif</span>';
-                        } else {
-                            return '<span class="badge bg-danger">Tidak Aktif</span>';
+        $(document).ready(function() {
+            var table = $('#data-table').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: "{{ route('merchants.index') }}",
+                columns: [{
+                        className: 'td-expand',
+                        orderable: false,
+                        data: null,
+                        defaultContent: '<i class="fas fa-chevron-right expand-icon"></i>',
+                        width: '50px'
+                    },
+                    {
+                        data: 'nama_merchant',
+                        name: 'nama_merchant'
+                    },
+                    {
+                        data: 'logo',
+                        name: 'logo',
+                        orderable: false,
+                        searchable: false,
+                        render: function(data) {
+                            return `<img src="${data}" alt="Logo" style="width:100px" />`;
                         }
+                    },
+                    {
+                        data: 'status',
+                        name: 'status',
+                        render: function(data) {
+                            switch (data) {
+                                case 'approved':
+                                    return '<span class="badge bg-success">Approved</span>';
+
+                                case 'pending':
+                                    return '<span class="badge bg-warning text-dark">Pending</span>';
+
+                                case 'rejected':
+                                    return '<span class="badge bg-danger">Rejected</span>';
+
+                                case 'suspended':
+                                    return '<span class="badge bg-secondary">Suspended</span>';
+
+                                default:
+                                    return '<span class="badge bg-light text-dark">Unknown</span>';
+                            }
+                        }
+                    },
+
+                    {
+                        data: 'action',
+                        name: 'action',
+                        orderable: false,
+                        searchable: false
                     }
-                },
-                {
-                    data: 'action',
-                    name: 'action',
-                    orderable: false,
-                    searchable: false
+                ],
+                order: [
+                    [1, 'asc']
+                ],
+                createdRow: function(row, data, dataIndex) {
+                    // Set width untuk kolom pertama
+                    $('td:eq(0)', row).addClass('td-expand');
                 }
-            ],
-            order: [[1, 'asc']],
-            createdRow: function(row, data, dataIndex) {
-                // Set width untuk kolom pertama
-                $('td:eq(0)', row).addClass('td-expand');
-            }
+            });
+
+            // Add event listener for opening and closing details
+            $('#data-table tbody').on('click', 'td.td-expand', function() {
+                var tr = $(this).closest('tr');
+                var row = table.row(tr);
+                var icon = $(this).find('.expand-icon');
+
+                if (row.child.isShown()) {
+                    // This row is already open - close it
+                    row.child.hide();
+                    tr.removeClass('expanded');
+                    tr.removeClass('details');
+                    icon.removeClass('fa-chevron-down').addClass('fa-chevron-right');
+                } else {
+                    // Open this row - row child akan muncul DI BAWAH row
+                    row.child(format(row.data())).show();
+                    tr.addClass('expanded');
+                    tr.addClass('details');
+                    icon.removeClass('fa-chevron-right').addClass('fa-chevron-down');
+
+                    // Scroll ke row yang dibuka (opsional)
+                    $('html, body').animate({
+                        scrollTop: tr.offset().top - 100
+                    }, 300);
+                }
+            });
         });
 
-        // Add event listener for opening and closing details
-        $('#data-table tbody').on('click', 'td.td-expand', function () {
-            var tr = $(this).closest('tr');
-            var row = table.row(tr);
-            var icon = $(this).find('.expand-icon');
+        // Fungsi untuk toggle show/hide API Key
+        function toggleApiKey(id, apiKey) {
+            const element = document.getElementById(`apiKey-${id}`);
+            const button = event.currentTarget;
+            const icon = button.querySelector('i');
 
-            if (row.child.isShown()) {
-                // This row is already open - close it
-                row.child.hide();
-                tr.removeClass('expanded');
-                tr.removeClass('details');
-                icon.removeClass('fa-chevron-down').addClass('fa-chevron-right');
+            if (element.type === 'password') {
+                // Show API Key
+                element.type = 'text';
+                element.value = apiKey || '-';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+                button.classList.remove('btn-outline-secondary');
+                button.classList.add('btn-outline-danger');
+                button.title = 'Hide';
             } else {
-                // Open this row - row child akan muncul DI BAWAH row
-                row.child(format(row.data())).show();
-                tr.addClass('expanded');
-                tr.addClass('details');
-                icon.removeClass('fa-chevron-right').addClass('fa-chevron-down');
-
-                // Scroll ke row yang dibuka (opsional)
-                $('html, body').animate({
-                    scrollTop: tr.offset().top - 100
-                }, 300);
+                // Hide API Key
+                element.type = 'password';
+                element.value = apiKey ? '•'.repeat(32) : '-';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+                button.classList.remove('btn-outline-danger');
+                button.classList.add('btn-outline-secondary');
+                button.title = 'Show';
             }
-        });
-    });
-
-    // Fungsi untuk toggle show/hide API Key
-    function toggleApiKey(id, apiKey) {
-        const element = document.getElementById(`apiKey-${id}`);
-        const button = event.currentTarget;
-        const icon = button.querySelector('i');
-
-        if (element.type === 'password') {
-            // Show API Key
-            element.type = 'text';
-            element.value = apiKey || '-';
-            icon.classList.remove('fa-eye');
-            icon.classList.add('fa-eye-slash');
-            button.classList.remove('btn-outline-secondary');
-            button.classList.add('btn-outline-danger');
-            button.title = 'Hide';
-        } else {
-            // Hide API Key
-            element.type = 'password';
-            element.value = apiKey ? '•'.repeat(32) : '-';
-            icon.classList.remove('fa-eye-slash');
-            icon.classList.add('fa-eye');
-            button.classList.remove('btn-outline-danger');
-            button.classList.add('btn-outline-secondary');
-            button.title = 'Show';
         }
-    }
 
-    // Fungsi untuk toggle show/hide Secret Key
-    function toggleSecretKey(id, secretKey) {
-        const element = document.getElementById(`secretKey-${id}`);
-        const button = event.currentTarget;
-        const icon = button.querySelector('i');
+        // Fungsi untuk toggle show/hide Secret Key
+        function toggleSecretKey(id, secretKey) {
+            const element = document.getElementById(`secretKey-${id}`);
+            const button = event.currentTarget;
+            const icon = button.querySelector('i');
 
-        if (element.type === 'password') {
-            // Show Secret Key
-            element.type = 'text';
-            element.value = secretKey || '-';
-            icon.classList.remove('fa-eye');
-            icon.classList.add('fa-eye-slash');
-            button.classList.remove('btn-outline-secondary');
-            button.classList.add('btn-outline-danger');
-            button.title = 'Hide';
-        } else {
-            // Hide Secret Key
-            element.type = 'password';
-            element.value = secretKey ? '•'.repeat(32) : '-';
-            icon.classList.remove('fa-eye-slash');
-            icon.classList.add('fa-eye');
-            button.classList.remove('btn-outline-danger');
-            button.classList.add('btn-outline-secondary');
-            button.title = 'Show';
+            if (element.type === 'password') {
+                // Show Secret Key
+                element.type = 'text';
+                element.value = secretKey || '-';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+                button.classList.remove('btn-outline-secondary');
+                button.classList.add('btn-outline-danger');
+                button.title = 'Hide';
+            } else {
+                // Hide Secret Key
+                element.type = 'password';
+                element.value = secretKey ? '•'.repeat(32) : '-';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+                button.classList.remove('btn-outline-danger');
+                button.classList.add('btn-outline-secondary');
+                button.title = 'Show';
+            }
         }
-    }
-</script>
+    </script>
 
-<style>
-    /* Hover effect untuk tombol */
-    .toggle-btn:hover {
-        transform: translateY(-1px);
-        transition: all 0.2s ease;
-    }
-</style>
+    <style>
+        /* Hover effect untuk tombol */
+        .toggle-btn:hover {
+            transform: translateY(-1px);
+            transition: all 0.2s ease;
+        }
+    </style>
 @endpush

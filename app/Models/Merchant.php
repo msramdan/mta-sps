@@ -42,7 +42,7 @@ class Merchant extends Model
         'nomor_rekening',
         'ktp', // Tambahan
         'catatan', // Tambahan
-        'is_active',
+        'status',
     ];
 
     /**
@@ -62,7 +62,7 @@ class Merchant extends Model
             'nomor_rekening' => 'string',
             'ktp' => 'string', // Tambahan
             'catatan' => 'string', // Tambahan
-            'is_active' => 'string',
+            'status' => 'string',
             'created_at' => 'datetime:Y-m-d H:i:s',
             'updated_at' => 'datetime:Y-m-d H:i:s',
         ];
