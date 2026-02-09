@@ -1,13 +1,13 @@
 @extends('layouts.app')
 
-@section('title', __(key: 'Detail Tarik Saldos'))
+@section('title', __(key: 'Detail Tarik Saldo'))
 
 @section('content')
     <main>
         <div class="container-fluid">
             <div class="row m-1">
                 <div class="col-12 ">
-                    <h4 class="main-title">{{ __(key: 'Tarik Saldos') }}</h4>
+                    <h4 class="main-title">{{ __(key: 'Tarik Saldo') }}</h4>
                     <ul class="app-line-breadcrumbs mb-3">
                         <li class="">
                             <a class="f-s-14 f-w-500" href="/">
@@ -17,7 +17,7 @@
                             </a>
                         </li>
                         <li class="">
-                            <a class="f-s-14 f-w-500" href="{{ route(name: 'tarik-saldos.index') }}">{{ __(key: 'Tarik Saldos') }}</a>
+                            <a class="f-s-14 f-w-500" href="{{ route(name: 'tarik-saldos.index') }}">{{ __(key: 'Tarik Saldo') }}</a>
                         </li>
                         <li class="active">
                             <a class="f-s-14 f-w-500" href="#">{{ __(key: 'Detail') }}</a>

@@ -16,12 +16,8 @@
                                 </span>
                             </a>
                         </li>
-                        <li class="">
-                            <a class="f-s-14 f-w-500"
-                                href="{{ route(name: 'merchants.index') }}">{{ __(key: 'Merchant') }}</a>
-                        </li>
                         <li class="active">
-                            <a class="f-s-14 f-w-500" href="#">{{ __(key: 'Edit') }}</a>
+                            <a class="f-s-14 f-w-500" href="#">{{ __(key: 'Setting Merchant') }}</a>
                         </li>
                     </ul>
                 </div>
