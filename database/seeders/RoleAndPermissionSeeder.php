@@ -18,13 +18,31 @@ class RoleAndPermissionSeeder extends Seeder
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
         $superAdmin = Role::firstOrCreate(['name' => 'admin']);
+        $userMerchant = Role::firstOrCreate(['name' => 'User Merchant']);
+
         foreach (config('permission.permissions') as $permission) {
             foreach ($permission['access'] as $access) {
                 Permission::firstOrCreate(['name' => $access]);
             }
         }
+
         $userAdmin = User::first();
         $userAdmin->assignRole('admin');
         $superAdmin->givePermissionTo(Permission::all());
+
+        // TAMBAHKAN PERMISSION KHUSUS UNTUK USER MERCHANT
+        $merchantPermissions = [
+            'merchant edit',
+            'tarik saldo view',
+            'tarik saldo create'
+        ];
+
+        // Berikan permission hanya yang diperlukan untuk User Merchant
+        foreach ($merchantPermissions as $permissionName) {
+            $permission = Permission::where('name', $permissionName)->first();
+            if ($permission) {
+                $userMerchant->givePermissionTo($permission);
+            }
+        }
     }
 }

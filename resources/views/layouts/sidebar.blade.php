@@ -56,6 +56,17 @@
                 </a>
             </li>
 
+            @can('merchant edit')
+                @if (Auth::user()->hasRole('User Merchant'))
+                    <li class="no-sub">
+                        <a href="{{ route('merchants.edit', Auth::user()->merchant_id) }}">
+                            <i class="ti ti-building-store fs-5 me-2"></i>
+                            Setting Merchant
+                        </a>
+                    </li>
+                @endif
+            @endcan
+
             @foreach (config('generator.sidebars') as $sidebar)
                 @if (isset($sidebar['permissions']))
                     @canany($sidebar['permissions'])
