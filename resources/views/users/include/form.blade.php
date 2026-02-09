@@ -3,8 +3,9 @@
         <div class="form-group">
             <label for="name" class="form-label">{{ __(key: 'Name') }}</label>
             <input type="text" name="name" id="name" class="form-control @error('name') is-invalid @enderror"
-                placeholder="{{ __(key: 'Name') }}" value="{{ isset($user) ? $user->name : old(key: 'name') }}" required
-                autofocus>
+                placeholder="{{ __(key: 'Name') }}"
+                value="{{ isset($user) ? $user->name : old('name') }}"
+                required autofocus>
             @error('name')
                 <div class="invalid-feedback">
                     {{ $message }}
@@ -16,8 +17,10 @@
         <div class="form-group">
             <label for="email" class="form-label">{{ __(key: 'Email') }}</label>
             <input type="email" name="email" id="email"
-                class="form-control @error('email') is-invalid @enderror" placeholder="{{ __(key: 'Email') }}"
-                value="{{ isset($user) ? $user->email : old(key: 'email') }}" required>
+                class="form-control @error('email') is-invalid @enderror"
+                placeholder="{{ __(key: 'Email') }}"
+                value="{{ isset($user) ? $user->email : old('email') }}"
+                required>
             @error('email')
                 <div class="invalid-feedback">
                     {{ $message }}
@@ -29,7 +32,8 @@
         <div class="form-group">
             <label for="password" class="form-label">{{ __(key: 'Password') }}</label>
             <input type="password" name="password" id="password"
-                class="form-control @error('password') is-invalid @enderror" placeholder="{{ __(key: 'Password') }}"
+                class="form-control @error('password') is-invalid @enderror"
+                placeholder="{{ __(key: 'Password') }}"
                 {{ empty($user) ? 'required' : '' }}>
             @error('password')
                 <div class="invalid-feedback">
@@ -47,7 +51,8 @@
         <div class="form-group">
             <label for="password-confirmation" class="form-label">{{ __(key: 'Password Confirmation') }}</label>
             <input type="password" name="password_confirmation" id="password-confirmation" class="form-control"
-                placeholder="{{ __(key: 'Password Confirmation') }}" {{ empty($user) ? 'required' : '' }}>
+                placeholder="{{ __(key: 'Password Confirmation') }}"
+                {{ empty($user) ? 'required' : '' }}>
         </div>
     </div>
     <div class="col-md-6 mb-3">
@@ -59,9 +64,12 @@
                     @isset($user)
                         <option value="{{ $role->id }}"
                             {{ $user->getRoleNames()->toArray() !== [] && $user->getRoleNames()[0] == $role->name ? 'selected' : '' }}>
-                            {{ $role->name }}</option>
+                            {{ $role->name }}
+                        </option>
                     @else
-                        <option value="{{ $role->id }}">{{ $role->name }}</option>
+                        <option value="{{ $role->id }}" {{ old('role') == $role->id ? 'selected' : '' }}>
+                            {{ $role->name }}
+                        </option>
                     @endisset
                 @endforeach
             </select>
@@ -126,7 +134,7 @@
                                    name="merchants[]"
                                    value="{{ $merchant->id }}"
                                    id="merchant{{ $merchant->id }}"
-                                   {{ (isset($assignedMerchantIds) && in_array($merchant->id, $assignedMerchantIds)) ? 'checked' : '' }}>
+                                   {{ (isset($assignedMerchantIds) && in_array($merchant->id, $assignedMerchantIds)) ? 'checked' : (is_array(old('merchants')) && in_array($merchant->id, old('merchants')) ? 'checked' : '') }}>
                             <label class="form-check-label" for="merchant{{ $merchant->id }}">
                                 {{ $merchant->nama_merchant }}
                                 <span class="text-muted small">
