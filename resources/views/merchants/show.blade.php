@@ -172,9 +172,8 @@
                                     <div class="table-responsive">
                                         <table class="table table-hover table-striped">
                                             <tr>
-                                                <td class="fw-bold" style="width: 30%">Catatan</td>
                                                 <td>
-                                                    <textarea class="form-control bg-light" rows="4" readonly>{{ $merchant->catatan }}</textarea>
+                                                    <textarea class="form-control bg-light" rows="4" readonly style="resize: none; background-color: #f8f9fa !important;">{{ $merchant->catatan }}</textarea>
                                                 </td>
                                             </tr>
                                         </table>
@@ -182,19 +181,16 @@
                                 </div>
                             </div>
 
-                            <div class="d-flex justify-content-between mt-4">
+                            <div class="d-flex mt-4">
                                 <a href="{{ route('merchants.index') }}" class="btn btn-secondary">
                                     <i class="fas fa-arrow-left me-1"></i> Kembali
-                                </a>
+                                </a> &nbsp;
 
-                                <div>
-                                    @can('merchant review')
-                                        <button type="button" class="btn btn-warning" data-bs-toggle="modal"
-                                            data-bs-target="#reviewModal">
-                                            <i class="fas fa-check-circle me-1"></i> Review
-                                        </button>
-                                    @endcan
-                                </div>
+                                @can('merchant review')
+                                    <button type="button" class="btn btn-warning" onclick="showReviewModal()">
+                                        <i class="fas fa-check-circle me-1"></i> Review
+                                    </button>
+                                @endcan
                             </div>
                         </div>
                     </div>
@@ -203,48 +199,48 @@
         </div>
     </main>
 
-    <!-- Modal Review -->
+    <!-- Simple Modal without Bootstrap (Custom) -->
     @can('merchant review')
-        <div class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="reviewModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <form action="{{ route('merchants.review', $merchant->id) }}" method="POST">
-                        @csrf
-
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="reviewModalLabel">Review Merchant</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-
-                        <div class="modal-body">
-                            <div class="mb-3">
-                                <label for="review_is_active" class="form-label">Status Aktif <span
-                                        class="text-danger">*</span></label>
-                                <select class="form-select" name="is_active" id="review_is_active" required>
-                                    <option value="" disabled>-- Pilih Status --</option>
-                                    <option value="Yes" {{ $merchant->is_active == 'Yes' ? 'selected' : '' }}>Ya (Aktif)
-                                    </option>
-                                    <option value="No" {{ $merchant->is_active == 'No' ? 'selected' : '' }}>Tidak
-                                        (Nonaktif)</option>
-                                </select>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="review_catatan" class="form-label">Catatan (Opsional)</label>
-                                <textarea name="catatan" id="review_catatan" rows="4" class="form-control"
-                                    placeholder="Masukkan catatan review...">{{ $merchant->catatan }}</textarea>
-                                <div class="form-text">
-                                    Catatan ini akan menggantikan catatan sebelumnya.
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                            <button type="submit" class="btn btn-primary">Simpan Review</button>
-                        </div>
-                    </form>
+        <div id="reviewModal" class="modal-custom" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); z-index: 1050; padding-top: 100px;">
+            <div class="modal-content-custom" style="background-color: white; margin: auto; padding: 20px; border-radius: 8px; width: 500px; max-width: 90%;">
+                <div class="modal-header-custom" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #dee2e6; padding-bottom: 10px; margin-bottom: 20px;">
+                    <h5 class="modal-title-custom">Review Merchant</h5>
+                    <button type="button" class="btn-close-custom" onclick="closeReviewModal()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer;">
+                        &times;
+                    </button>
                 </div>
+
+                <form id="reviewForm" action="{{ route('merchants.review', $merchant->id) }}" method="POST">
+                    @csrf
+
+                    <div class="modal-body-custom">
+                        <div class="mb-3">
+                            <label for="review_is_active" class="form-label">Status Aktif <span
+                                    class="text-danger">*</span></label>
+                            <select class="form-control" name="is_active" id="review_is_active" required style="width: 100%; padding: 8px; border: 1px solid #ced4da; border-radius: 4px;">
+                                <option value="" disabled>-- Pilih Status --</option>
+                                <option value="Yes" {{ $merchant->is_active == 'Yes' ? 'selected' : '' }}>Ya (Aktif)
+                                </option>
+                                <option value="No" {{ $merchant->is_active == 'No' ? 'selected' : '' }}>Tidak
+                                    (Nonaktif)</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="review_catatan" class="form-label">Catatan (Opsional)</label>
+                            <textarea name="catatan" id="review_catatan" rows="4" class="form-control"
+                                placeholder="Masukkan catatan review..." style="width: 100%; padding: 8px; border: 1px solid #ced4da; border-radius: 4px;">{{ $merchant->catatan }}</textarea>
+                            <div class="form-text">
+                                Catatan ini akan menggantikan catatan sebelumnya.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer-custom" style="border-top: 1px solid #dee2e6; padding-top: 15px; margin-top: 20px; display: flex; justify-content: flex-end; gap: 10px;">
+                        <button type="button" class="btn btn-secondary" onclick="closeReviewModal()">Batal</button>
+                        <button type="submit" class="btn btn-primary">Simpan Review</button>
+                    </div>
+                </form>
             </div>
         </div>
     @endcan
@@ -320,5 +316,108 @@
                 });
             });
         }
+
+        // Custom Modal Functions
+        function showReviewModal() {
+            document.getElementById('reviewModal').style.display = 'block';
+        }
+
+        function closeReviewModal() {
+            document.getElementById('reviewModal').style.display = 'none';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('reviewModal');
+            if (event.target == modal) {
+                closeReviewModal();
+            }
+        }
     </script>
+@endpush
+
+@push('css')
+    <style>
+        .form-control {
+            display: block;
+            width: 100%;
+            padding: 0.375rem 0.75rem;
+            font-size: 1rem;
+            font-weight: 400;
+            line-height: 1.5;
+            color: #212529;
+            background-color: #fff;
+            background-clip: padding-box;
+            border: 1px solid #ced4da;
+            border-radius: 0.375rem;
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        }
+
+        .btn {
+            display: inline-block;
+            font-weight: 400;
+            line-height: 1.5;
+            color: #212529;
+            text-align: center;
+            text-decoration: none;
+            vertical-align: middle;
+            cursor: pointer;
+            user-select: none;
+            background-color: transparent;
+            border: 1px solid transparent;
+            padding: 0.375rem 0.75rem;
+            font-size: 1rem;
+            border-radius: 0.375rem;
+            transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        }
+
+        .btn-secondary {
+            color: #fff;
+            background-color: #6c757d;
+            border-color: #6c757d;
+        }
+
+        .btn-primary {
+            color: #fff;
+            background-color: #0d6efd;
+            border-color: #0d6efd;
+        }
+
+        .btn-warning {
+            color: #000;
+            background-color: #ffc107;
+            border-color: #ffc107;
+        }
+
+        .btn-outline-primary {
+            color: #0d6efd;
+            border-color: #0d6efd;
+        }
+
+        .btn-outline-secondary {
+            color: #6c757d;
+            border-color: #6c757d;
+        }
+
+        .btn-outline-danger {
+            color: #dc3545;
+            border-color: #dc3545;
+        }
+
+        .btn-sm {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.875rem;
+            border-radius: 0.25rem;
+        }
+
+        .form-text {
+            margin-top: 0.25rem;
+            font-size: 0.875em;
+            color: #6c757d;
+        }
+
+        .text-danger {
+            color: #dc3545 !important;
+        }
+    </style>
 @endpush
