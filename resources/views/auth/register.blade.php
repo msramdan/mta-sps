@@ -46,6 +46,7 @@
                                                 <input class="form-control" name="nama_pemilik" type="text"
                                                     value="{{ old('nama_pemilik') }}" required
                                                     placeholder="Contoh. Muhammad Saeful Ramdan">
+                                                <small class="text-muted">Harus sesuai dengan nama di KTP</small>
                                             </div>
                                         </div>
 
