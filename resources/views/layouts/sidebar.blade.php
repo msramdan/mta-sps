@@ -58,12 +58,18 @@
 
             @can('merchant edit')
                 @if (Auth::user()->hasRole('User Merchant'))
-                    <li class="no-sub">
-                        <a href="{{ route('merchants.edit', Auth::user()->merchant_id) }}">
-                            <i class="ti ti-building-store fs-5 me-2"></i>
-                            Setting Merchant
-                        </a>
-                    </li>
+                    @php
+                        $merchantId = session('sessionMerchant');
+                    @endphp
+
+                    @if ($merchantId)
+                        <li class="no-sub">
+                            <a href="{{ route('merchants.edit', $merchantId) }}">
+                                <i class="ti ti-building-store fs-5 me-2"></i>
+                                Setting Merchant
+                            </a>
+                        </li>
+                    @endif
                 @endif
             @endcan
 
