@@ -24,13 +24,11 @@ class MerchantController extends Controller implements HasMiddleware
     public static function middleware(): array
     {
         return [
-            // 'auth',
-
-            // TODO: uncomment this code below if you are using spatie permission
-            // new Middleware(middleware: 'permission:merchant view', only: ['index', 'show']),
-            // new Middleware(middleware: 'permission:merchant create', only: ['create', 'store']),
-            // new Middleware(middleware: 'permission:merchant edit', only: ['edit', 'update']),
-            // new Middleware(middleware: 'permission:merchant delete', only: ['destroy']),
+            'auth',
+            new Middleware(middleware: 'permission:merchant view', only: ['index', 'show']),
+            new Middleware(middleware: 'permission:merchant create', only: ['create', 'store']),
+            new Middleware(middleware: 'permission:merchant edit', only: ['edit', 'update']),
+            new Middleware(middleware: 'permission:merchant delete', only: ['destroy']),
         ];
     }
 
@@ -44,7 +42,7 @@ class MerchantController extends Controller implements HasMiddleware
 
             return Datatables::of(source: $merchants)
                 ->addColumn(name: 'bank', content: fn($row): ?string => $row?->bank?->nama_bank ?? '')
-				
+
                 ->addColumn(name: 'action', content: 'merchants.include.action')
                 ->toJson();
         }
@@ -66,7 +64,7 @@ class MerchantController extends Controller implements HasMiddleware
     public function store(StoreMerchantRequest $request): RedirectResponse
     {
         $validated = $request->validated();
-        
+
         $validated['logo'] = $this->imageServiceV2->upload(name: 'logo', path: $this->logoPath, disk: $this->disk);
 
         Merchant::create(attributes: $validated);
@@ -101,7 +99,7 @@ class MerchantController extends Controller implements HasMiddleware
     public function update(UpdateMerchantRequest $request, Merchant $merchant): RedirectResponse
     {
         $validated = $request->validated();
-        
+
         $validated['logo'] = $this->imageServiceV2->upload(name: 'logo', path: $this->logoPath, defaultImage: $merchant?->logo, disk: $this->disk);
 
         $merchant->update(attributes: $validated);
@@ -117,12 +115,12 @@ class MerchantController extends Controller implements HasMiddleware
     {
         try {
             $logo = $merchant->logo;
-			
+
             $merchant->delete();
 
             $this->imageServiceV2->delete(path: $this->logoPath, image: $logo, disk: $this->disk);
 
-			
+
             Alert::success('Berhasil', 'merchant berhasil dihapus.');
             return redirect()->route('merchants.index');
         } catch (\Exception $e) {
@@ -131,5 +129,5 @@ class MerchantController extends Controller implements HasMiddleware
         }
     }
 
-    
+
 }

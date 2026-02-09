@@ -45,7 +45,7 @@
                                                 <td>
                                                     <img src="{{ $merchant->logo }}" alt="Logo"
                                                         class="rounded img-fluid"
-                                                        style="object-fit: cover; width: 350px; height: 200px;" />
+                                                        style="object-fit: cover; width: 150px;" />
                                                 </td>
                                             </tr>
                                             <tr>
