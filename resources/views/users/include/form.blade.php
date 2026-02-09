@@ -101,7 +101,13 @@
     <!-- Merchant Assignment Section -->
     @if(isset($merchants) && count($merchants) > 0)
     <div class="col-12 mb-4">
-        <h5 class="mb-3 border-bottom pb-2">{{ __(key: 'Assign Merchant') }}</h5>
+        <h5 class="mb-3 border-bottom pb-2">{{ __(key: 'Assign Merchant') }} <span class="text-danger">*</span></h5>
+        @error('merchants')
+            <div class="alert alert-danger">
+                {{ $message }}
+            </div>
+        @enderror
+
         <div class="row">
             <div class="col-md-12">
                 <div class="form-check mb-2">
