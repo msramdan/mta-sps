@@ -49,6 +49,25 @@
                                                 </td>
                                             </tr>
                                             <tr>
+                                                <td class="fw-bold">KTP</td>
+                                                <td>
+                                                    @if ($merchant->ktp && $merchant->ktp != '')
+                                                        <img src="{{ $merchant->ktp }}" alt="KTP"
+                                                            class="rounded img-fluid"
+                                                            style="object-fit: cover; width: 150px; max-height: 200px;" />
+                                                        <div class="mt-2">
+                                                            <a href="{{ $merchant->ktp }}" target="_blank"
+                                                                class="btn btn-sm btn-outline-primary">
+                                                                <i class="fas fa-external-link-alt me-1"></i> Lihat Full
+                                                                Size
+                                                            </a>
+                                                        </div>
+                                                    @else
+                                                        <span class="text-muted fst-italic">Belum ada KTP</span>
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                            <tr>
                                                 <td class="fw-bold">Status Aktif</td>
                                                 <td>
                                                     <span
@@ -79,6 +98,10 @@
                                                 <td>
                                                     <div class="d-flex align-items-center">
                                                         <span class="me-2">{{ $merchant->url_callback }}</span>
+                                                        <button type="button" class="btn btn-sm btn-outline-primary"
+                                                            onclick="copyToClipboard('{{ $merchant->url_callback }}')">
+                                                            <i class="fas fa-copy"></i>
+                                                        </button>
                                                     </div>
                                                 </td>
                                             </tr>
@@ -89,12 +112,14 @@
                                                         <span id="apiKeyText" class="me-2">
                                                             {{ str_repeat('•', 32) }}
                                                         </span>
-                                                        <button type="button" class="btn btn-sm btn-outline-secondary"
+                                                        <button type="button" class="btn btn-sm btn-outline-secondary me-2"
                                                             onclick="toggleApiKey()">
                                                             <i class="fas fa-eye"></i>
                                                         </button>
-                                                        <input type="hidden" id="apiKeyValue"
-                                                            value="{{ $merchant->apikey }}">
+                                                        <button type="button" class="btn btn-sm btn-outline-primary"
+                                                            onclick="copyToClipboard('{{ $merchant->apikey }}')">
+                                                            <i class="fas fa-copy"></i>
+                                                        </button>
                                                     </div>
                                                 </td>
                                             </tr>
@@ -105,12 +130,14 @@
                                                         <span id="secretKeyText" class="me-2">
                                                             {{ str_repeat('•', 32) }}
                                                         </span>
-                                                        <button type="button" class="btn btn-sm btn-outline-secondary"
+                                                        <button type="button" class="btn btn-sm btn-outline-secondary me-2"
                                                             onclick="toggleSecretKey()">
                                                             <i class="fas fa-eye"></i>
                                                         </button>
-                                                        <input type="hidden" id="secretKeyValue"
-                                                            value="{{ $merchant->secretkey }}">
+                                                        <button type="button" class="btn btn-sm btn-outline-primary"
+                                                            onclick="copyToClipboard('{{ $merchant->secretkey }}')">
+                                                            <i class="fas fa-copy"></i>
+                                                        </button>
                                                     </div>
                                                 </td>
                                             </tr>
@@ -138,27 +165,100 @@
                                         </table>
                                     </div>
                                 </div>
+
+                                <!-- 4. Catatan Tambahan -->
+                                <div class="col-12 mb-4">
+                                    <h5 class="mb-3 border-bottom pb-2">Catatan</h5>
+                                    <div class="table-responsive">
+                                        <table class="table table-hover table-striped">
+                                            <tr>
+                                                <td class="fw-bold" style="width: 30%">Catatan</td>
+                                                <td>
+                                                    <textarea class="form-control bg-light" rows="4" readonly>{{ $merchant->catatan }}</textarea>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
                             </div>
 
-                            <a href="{{ route('merchants.index') }}" class="btn btn-secondary">
-                                <i class="fas fa-arrow-left me-1"></i> Kembali
-                            </a>
+                            <div class="d-flex justify-content-between mt-4">
+                                <a href="{{ route('merchants.index') }}" class="btn btn-secondary">
+                                    <i class="fas fa-arrow-left me-1"></i> Kembali
+                                </a>
+
+                                <div>
+                                    @can('merchant review')
+                                        <button type="button" class="btn btn-warning" data-bs-toggle="modal"
+                                            data-bs-target="#reviewModal">
+                                            <i class="fas fa-check-circle me-1"></i> Review
+                                        </button>
+                                    @endcan
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </main>
+
+    <!-- Modal Review -->
+    @can('merchant review')
+        <div class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="reviewModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form action="{{ route('merchants.review', $merchant->id) }}" method="POST">
+                        @csrf
+
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="reviewModalLabel">Review Merchant</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label for="review_is_active" class="form-label">Status Aktif <span
+                                        class="text-danger">*</span></label>
+                                <select class="form-select" name="is_active" id="review_is_active" required>
+                                    <option value="" disabled>-- Pilih Status --</option>
+                                    <option value="Yes" {{ $merchant->is_active == 'Yes' ? 'selected' : '' }}>Ya (Aktif)
+                                    </option>
+                                    <option value="No" {{ $merchant->is_active == 'No' ? 'selected' : '' }}>Tidak
+                                        (Nonaktif)</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="review_catatan" class="form-label">Catatan (Opsional)</label>
+                                <textarea name="catatan" id="review_catatan" rows="4" class="form-control"
+                                    placeholder="Masukkan catatan review...">{{ $merchant->catatan }}</textarea>
+                                <div class="form-text">
+                                    Catatan ini akan menggantikan catatan sebelumnya.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                            <button type="submit" class="btn btn-primary">Simpan Review</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    @endcan
 @endsection
 
 @push('js')
     <script>
         let apiKeyVisible = false;
         let secretKeyVisible = false;
+        const apiKeyValue = "{{ $merchant->apikey }}";
+        const secretKeyValue = "{{ $merchant->secretkey }}";
 
         function toggleApiKey() {
             const apiKeyText = document.getElementById('apiKeyText');
-            const apiKeyValue = document.getElementById('apiKeyValue').value;
             const button = event.currentTarget;
 
             if (apiKeyVisible) {
@@ -180,7 +280,6 @@
 
         function toggleSecretKey() {
             const secretKeyText = document.getElementById('secretKeyText');
-            const secretKeyValue = document.getElementById('secretKeyValue').value;
             const button = event.currentTarget;
 
             if (secretKeyVisible) {
@@ -200,12 +299,25 @@
             secretKeyVisible = !secretKeyVisible;
         }
 
-        // Fungsi untuk menyalin ke clipboard
+        // Fungsi untuk menyalin ke clipboard dengan SweetAlert
         function copyToClipboard(text) {
             navigator.clipboard.writeText(text).then(() => {
-                alert('Berhasil disalin ke clipboard!');
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    text: 'Teks berhasil disalin ke clipboard',
+                    timer: 2000,
+                    showConfirmButton: false
+                });
             }).catch(err => {
                 console.error('Gagal menyalin: ', err);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal!',
+                    text: 'Gagal menyalin teks ke clipboard',
+                    timer: 2000,
+                    showConfirmButton: false
+                });
             });
         }
     </script>

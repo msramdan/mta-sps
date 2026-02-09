@@ -22,4 +22,7 @@ Route::controller(App\Http\Controllers\Frontend\WebController::class)->group(fun
 
 Route::resource('banks', App\Http\Controllers\BankController::class)->middleware('auth');
 Route::resource('merchants', App\Http\Controllers\MerchantController::class)->middleware('auth');
+Route::post('/merchants/{merchant}/review', [App\Http\Controllers\MerchantController::class, 'review'])
+    ->name('merchants.review');
+
 Route::resource('tarik-saldos', App\Http\Controllers\TarikSaldoController::class)->middleware('auth');

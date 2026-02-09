@@ -33,6 +33,7 @@ class MerchantController extends Controller implements HasMiddleware
             new Middleware(middleware: 'permission:merchant create', only: ['create', 'store']),
             new Middleware(middleware: 'permission:merchant edit', only: ['edit', 'update']),
             new Middleware(middleware: 'permission:merchant delete', only: ['destroy']),
+            new Middleware(middleware: 'permission:merchant review', only: ['review']),
         ];
     }
 
@@ -133,5 +134,24 @@ class MerchantController extends Controller implements HasMiddleware
             Alert::error('Gagal', 'Merchant tidak dapat dihapus karena terkait dengan tabel lain.');
             return redirect()->route('merchants.index');
         }
+    }
+
+    public function review(Request $request, Merchant $merchant): RedirectResponse
+    {
+        $request->validate([
+            'is_active' => 'required|in:Yes,No',
+            'catatan' => 'nullable|string|max:1000',
+        ]);
+
+        // Update status merchant
+        $merchant->update([
+            'is_active' => $request->is_active,
+            'catatan' => $request->catatan ?? $merchant->catatan
+        ]);
+
+        $statusText = $request->is_active == 'Yes' ? 'diaktifkan' : 'dinonaktifkan';
+
+        Alert::success('Berhasil', "Merchant berhasil {$statusText}.");
+        return redirect()->route('merchants.show', $merchant->id);
     }
 }
