@@ -59,53 +59,98 @@
 
 @push('js')
 <script>
-    function format(d) {
-        return `
-            <div class="detail-content">
-                <div class="detail-section">
-                    <h6>Kredensial API</h6>
-                    <div class="detail-row">
-                        <div class="detail-label">URL Callback:</div>
-                        <div class="detail-value">${d.url_callback}</div>
-                    </div>
-                    <div class="detail-row">
-                        <div class="detail-label">API Key:</div>
-                        <div class="detail-value">
-                            <span id="apiKey-${d.id}">${'•'.repeat(32)}</span>
-                            <button type="button" class="btn btn-sm btn-outline-secondary ms-2" onclick="toggleApiKey('${d.id}', '${d.apikey}')">
-                                <i class="fas fa-eye"></i>
-                            </button>
+function format(d) {
+    return `
+        <div class="detail-content p-2">
+            <div class="row g-2">
+                <!-- Kredensial API Section -->
+                <div class="col-md-6">
+                    <div class="detail-section p-2 rounded border">
+                        <h6 class="fw-bold mb-2 pb-1 border-bottom text-primary small">
+                            <i class="fas fa-key me-1"></i>Kredensial API
+                        </h6>
+
+                        <div class="detail-row mb-2">
+                            <label class="detail-label text-muted small mb-1">URL Callback</label>
+                            <div class="detail-value">
+                                <input type="text" class="form-control form-control-sm"
+                                       value="${d.url_callback || '-'}" readonly>
+                            </div>
                         </div>
-                    </div>
-                    <div class="detail-row">
-                        <div class="detail-label">Secret Key:</div>
-                        <div class="detail-value">
-                            <span id="secretKey-${d.id}">${'•'.repeat(32)}</span>
-                            <button type="button" class="btn btn-sm btn-outline-secondary ms-2" onclick="toggleSecretKey('${d.id}', '${d.secretkey}')">
-                                <i class="fas fa-eye"></i>
-                            </button>
+
+                        <div class="detail-row mb-2">
+                            <label class="detail-label text-muted small mb-1">API Key</label>
+                            <div class="detail-value d-flex align-items-center">
+                                <input type="password" id="apiKey-${d.id}"
+                                       class="form-control form-control-sm flex-grow-1"
+                                       value="${d.apikey ? '•'.repeat(32) : '-'}"
+                                       readonly
+                                       style="font-family: monospace;">
+                                <button type="button" class="btn btn-sm btn-outline-secondary ms-1 toggle-btn"
+                                        onclick="toggleApiKey('${d.id}', '${d.apikey || ''}')"
+                                        style="min-width: 32px; padding: 2px 6px;"
+                                        title="Show/Hide">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="detail-row">
+                            <label class="detail-label text-muted small mb-1">Secret Key</label>
+                            <div class="detail-value d-flex align-items-center">
+                                <input type="password" id="secretKey-${d.id}"
+                                       class="form-control form-control-sm flex-grow-1"
+                                       value="${d.secretkey ? '•'.repeat(32) : '-'}"
+                                       readonly
+                                       style="font-family: monospace;">
+                                <button type="button" class="btn btn-sm btn-outline-secondary ms-1 toggle-btn"
+                                        onclick="toggleSecretKey('${d.id}', '${d.secretkey || ''}')"
+                                        style="min-width: 32px; padding: 2px 6px;"
+                                        title="Show/Hide">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="detail-section">
-                    <h6>Informasi Bank Penarikan</h6>
-                    <div class="detail-row">
-                        <div class="detail-label">Bank:</div>
-                        <div class="detail-value">${d.bank ? d.bank.nama_bank : '-'}</div>
-                    </div>
-                    <div class="detail-row">
-                        <div class="detail-label">Pemilik Rekening:</div>
-                        <div class="detail-value">${d.pemilik_rekening}</div>
-                    </div>
-                    <div class="detail-row">
-                        <div class="detail-label">Nomor Rekening:</div>
-                        <div class="detail-value">${d.nomor_rekening}</div>
+                <!-- Informasi Bank Section -->
+                <div class="col-md-6">
+                    <div class="detail-section p-2 rounded border">
+                        <h6 class="fw-bold mb-2 pb-1 border-bottom text-primary small">
+                            <i class="fas fa-university me-1"></i>Informasi Bank Penarikan
+                        </h6>
+
+                        <div class="detail-row mb-2">
+                            <label class="detail-label text-muted small mb-1">Bank</label>
+                            <div class="detail-value">
+                                <input type="text" class="form-control form-control-sm"
+                                       value="${d.bank ? d.bank.nama_bank : '-'}" readonly>
+                            </div>
+                        </div>
+
+                        <div class="detail-row mb-2">
+                            <label class="detail-label text-muted small mb-1">Pemilik Rekening</label>
+                            <div class="detail-value">
+                                <input type="text" class="form-control form-control-sm"
+                                       value="${d.pemilik_rekening || '-'}" readonly>
+                            </div>
+                        </div>
+
+                        <div class="detail-row">
+                            <label class="detail-label text-muted small mb-1">Nomor Rekening</label>
+                            <div class="detail-value">
+                                <input type="text" class="form-control form-control-sm"
+                                       value="${d.nomor_rekening || '-'}" readonly
+                                       style="font-family: monospace;">
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        `;
-    }
+        </div>
+    `;
+}
 
     $(document).ready(function() {
         var table = $('#data-table').DataTable({
@@ -191,20 +236,24 @@
         const button = event.currentTarget;
         const icon = button.querySelector('i');
 
-        if (element.textContent.includes('•')) {
+        if (element.type === 'password') {
             // Show API Key
-            element.textContent = apiKey;
+            element.type = 'text';
+            element.value = apiKey || '-';
             icon.classList.remove('fa-eye');
             icon.classList.add('fa-eye-slash');
             button.classList.remove('btn-outline-secondary');
             button.classList.add('btn-outline-danger');
+            button.title = 'Hide';
         } else {
             // Hide API Key
-            element.textContent = '•'.repeat(32);
+            element.type = 'password';
+            element.value = apiKey ? '•'.repeat(32) : '-';
             icon.classList.remove('fa-eye-slash');
             icon.classList.add('fa-eye');
             button.classList.remove('btn-outline-danger');
             button.classList.add('btn-outline-secondary');
+            button.title = 'Show';
         }
     }
 
@@ -214,21 +263,39 @@
         const button = event.currentTarget;
         const icon = button.querySelector('i');
 
-        if (element.textContent.includes('•')) {
+        if (element.type === 'password') {
             // Show Secret Key
-            element.textContent = secretKey;
+            element.type = 'text';
+            element.value = secretKey || '-';
             icon.classList.remove('fa-eye');
             icon.classList.add('fa-eye-slash');
             button.classList.remove('btn-outline-secondary');
             button.classList.add('btn-outline-danger');
+            button.title = 'Hide';
         } else {
             // Hide Secret Key
-            element.textContent = '•'.repeat(32);
+            element.type = 'password';
+            element.value = secretKey ? '•'.repeat(32) : '-';
             icon.classList.remove('fa-eye-slash');
             icon.classList.add('fa-eye');
             button.classList.remove('btn-outline-danger');
             button.classList.add('btn-outline-secondary');
+            button.title = 'Show';
         }
     }
 </script>
+
+<style>
+    /* Hover effect untuk tombol */
+    .toggle-btn:hover {
+        transform: translateY(-1px);
+        transition: all 0.2s ease;
+    }
+
+    /* Style untuk input readonly */
+    .form-control[readonly] {
+        background-color: #f8f9fa;
+        cursor: default;
+    }
+</style>
 @endpush
