@@ -41,6 +41,7 @@
                                         <tr>
                                             <th>{{ __(key: 'Name') }}</th>
                                             <th>{{ __(key: 'Email') }}</th>
+                                            <th>{{ __(key: 'No Wa') }}</th>
                                             <th>{{ __(key: 'Role') }}</th>
                                             <th>{{ __(key: 'Assigned Merchants') }}</th>
                                             <th>{{ __(key: 'Action') }}</th>
@@ -88,6 +89,10 @@
                 {
                     data: 'email',
                     name: 'email'
+                },
+                {
+                    data: 'no_wa',
+                    name: 'no_wa'
                 },
                 {
                     data: 'role',

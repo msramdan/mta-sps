@@ -1,6 +1,6 @@
 @extends('layouts.auth')
 
-@section('title', __('Daftar'))
+@section('title', __('Daftar Merchant'))
 
 @push('css')
     <link rel="stylesheet" href="{{ asset('mazer') }}/css/pages/auth.css">
@@ -15,13 +15,12 @@
                         <div class="col-12 p-0">
                             <div class="login-form-container">
                                 <div class="form_container">
-                                    <form class="app-form p-3" method="POST" action="">
+                                    <form class="app-form p-3" method="POST" action="{{ route('web.register.merchant') }}">
                                         @csrf
                                         <div class="mb-3 text-center">
                                             <img alt="#" src="{{ asset('frontend/logo.png') }}"
                                                 style="width: 180px; margin-bottom:15px">
-                                            <p class="f-s-12 text-secondary">Buat akun QRIN dan nikmati integrasi mudah
-                                                untuk terima pembayaran digital dengan biaya kompetitif.</p>
+                                            <p class="f-s-12 text-secondary">Daftarkan merchant Anda dan nikmati integrasi mudah untuk terima pembayaran digital dengan biaya kompetitif.</p>
                                         </div>
 
                                         @if ($errors->any())
@@ -38,14 +37,13 @@
                                             </div>
                                         @endif
 
-
                                         <div class="row">
                                             <div class="col-md-12 mb-3">
                                                 <label class="form-label">Nama Lengkap <span
                                                         class="text-danger">*</span></label>
                                                 <input class="form-control" name="nama_pemilik" type="text"
                                                     value="{{ old('nama_pemilik') }}" required
-                                                    placeholder="Contoh. Muhammad Saeful Ramdan">
+                                                    placeholder="Contoh: Muhammad Saeful Ramdan">
                                                 <small class="text-muted">Harus sesuai dengan nama di KTP</small>
                                             </div>
                                         </div>
@@ -56,35 +54,61 @@
                                                         class="text-danger">*</span></label>
                                                 <input class="form-control" name="nama_perusahaan" type="text"
                                                     value="{{ old('nama_perusahaan') }}" required
-                                                    placeholder="Contoh. PT Tecanusa">
+                                                    placeholder="Contoh: PT Tecanusa">
                                             </div>
                                         </div>
 
                                         <div class="row">
-                                            <!-- Kelompok 2: No WhatsApp & Email -->
                                             <div class="col-md-6 mb-3">
                                                 <label class="form-label">No WhatsApp <span
                                                         class="text-danger">*</span></label>
-                                                <input class="form-control" name="no_wa"
-                                                    placeholder="Contoh. 6281234567890" type="number"
-                                                    value="{{ old('no_wa') }}" required
-                                                    oninput="validateWhatsAppNumber(this)">
+                                                <input class="form-control @error('no_wa') is-invalid @enderror"
+                                                       name="no_wa"
+                                                       placeholder="Contoh: 6281234567890"
+                                                       type="text"
+                                                       value="{{ old('no_wa') }}"
+                                                       required>
+                                                @error('no_wa')
+                                                    <div class="invalid-feedback">
+                                                        {{ $message }}
+                                                    </div>
+                                                @enderror
+                                                <small class="text-muted">
+                                                    <i class="fas fa-info-circle"></i>
+                                                    Format harus diawali dengan 62
+                                                </small>
                                             </div>
 
                                             <div class="col-md-6 mb-3">
                                                 <label class="form-label">Email <span class="text-danger">*</span></label>
-                                                <input class="form-control" name="email" type="email"
-                                                    value="{{ old('email') }}" required placeholder="Masukkan email aktif">
+                                                <input class="form-control @error('email') is-invalid @enderror"
+                                                       name="email"
+                                                       type="email"
+                                                       value="{{ old('email') }}"
+                                                       required
+                                                       placeholder="Masukkan email aktif">
+                                                @error('email')
+                                                    <div class="invalid-feedback">
+                                                        {{ $message }}
+                                                    </div>
+                                                @enderror
                                             </div>
                                         </div>
 
                                         <div class="row">
-                                            <!-- Kelompok 3: Password & Konfirmasi Password -->
                                             <div class="col-md-6 mb-3">
                                                 <label class="form-label">Password <span
                                                         class="text-danger">*</span></label>
-                                                <input class="form-control" name="password" type="password" required
-                                                    placeholder="Minimal 8 karakter">
+                                                <input class="form-control @error('password') is-invalid @enderror"
+                                                       name="password"
+                                                       type="password"
+                                                       required
+                                                       placeholder="Minimal 8 karakter">
+                                                @error('password')
+                                                    <div class="invalid-feedback">
+                                                        {{ $message }}
+                                                    </div>
+                                                @enderror
                                             </div>
 
                                             <div class="col-md-6 mb-3">
@@ -108,8 +132,7 @@
                                         </div>
                                         <div class="text-center">
                                             <p class="mb-0">Sudah punya akun?
-                                                <a href="{{ route('login') }}" class="text-primary fw-bold">Login di
-                                                    sini</a>
+                                                <a href="{{ route('login') }}" class="text-primary fw-bold">Login di sini</a>
                                             </p>
                                         </div>
                                     </form>
@@ -122,17 +145,3 @@
         </div>
     </div>
 @endsection
-
-@push('js')
-    <script>
-        function validateWhatsAppNumber(input) {
-            input.value = input.value.replace(/\D/g, '');
-            if (input.value.length > 0 && !input.value.startsWith('62')) {
-                input.value = '62' + input.value.replace(/^62/, '');
-            }
-            if (input.value.length > 14) {
-                input.value = input.value.substring(0, 14);
-            }
-        }
-    </script>
-@endpush

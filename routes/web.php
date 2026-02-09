@@ -1,28 +1,44 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\{
+    DashboardController,
+    ProfileController,
+    UserController,
+    RoleAndPermissionController,
+    BankController,
+    MerchantController,
+    TarikSaldoController
+};
+use App\Http\Controllers\Frontend\WebController;
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
-Route::middleware(['auth', 'web'])->group(function () {
-    Route::controller(App\Http\Controllers\DashboardController::class)->group(function () {
-        Route::get('/dashboard', 'index')->name('dashboard');
-    });
-    Route::get('/profile', App\Http\Controllers\ProfileController::class)->name('profile');
-    Route::resource('users', App\Http\Controllers\UserController::class);
-    Route::resource('roles', App\Http\Controllers\RoleAndPermissionController::class);
-});
-
-
-Route::controller(App\Http\Controllers\Frontend\WebController::class)->group(function () {
+Route::controller(WebController::class)->group(function () {
     Route::get('/', 'index')->name('web.landing.page');
+    Route::post('/register-merchant', 'registerMerchant')->name('web.register.merchant');
 });
 
-Route::resource('banks', App\Http\Controllers\BankController::class)->middleware('auth');
-Route::resource('merchants', App\Http\Controllers\MerchantController::class)->middleware('auth');
-Route::post('/merchants/{merchant}/review', [App\Http\Controllers\MerchantController::class, 'review'])
-    ->name('merchants.review');
+// Authentication Routes (Protected)
+Route::middleware(['auth', 'web'])->group(function () {
+    // Dashboard
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-Route::resource('tarik-saldos', App\Http\Controllers\TarikSaldoController::class)->middleware('auth');
+    // Profile
+    Route::get('/profile', ProfileController::class)->name('profile');
+
+    // User Management
+    Route::resource('users', UserController::class);
+
+    // Role & Permission Management
+    Route::resource('roles', RoleAndPermissionController::class);
+
+    // Bank Management
+    Route::resource('banks', BankController::class);
+
+    // Merchant Management
+    Route::resource('merchants', MerchantController::class);
+    Route::post('/merchants/{merchant}/review', [MerchantController::class, 'review'])
+        ->name('merchants.review');
+
+    // Tarik Saldo Management
+    Route::resource('tarik-saldos', TarikSaldoController::class);
+});
