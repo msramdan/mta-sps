@@ -74,10 +74,11 @@
                                         @php
                                             $isActive = false;
                                             if ($routePrefix) {
-                                                $isActive = request()->routeIs($routePrefix . '.*') ||
-                                                           request()->routeIs($routePrefix . '.index') ||
-                                                           request()->is($routePrefix) ||
-                                                           request()->is($routePrefix . '/*');
+                                                $isActive =
+                                                    request()->routeIs($routePrefix . '.*') ||
+                                                    request()->routeIs($routePrefix . '.index') ||
+                                                    request()->is($routePrefix) ||
+                                                    request()->is($routePrefix . '/*');
                                             }
                                         @endphp
                                         <li class="no-sub{{ $isActive ? ' active' : '' }}">
@@ -93,10 +94,12 @@
                                         $isParentActive = false;
                                         foreach ($menu['submenus'] as $submenu) {
                                             $submenuRoute = str($submenu['route'])->remove('/');
-                                            if (request()->routeIs($submenuRoute . '.*') ||
+                                            if (
+                                                request()->routeIs($submenuRoute . '.*') ||
                                                 request()->routeIs($submenuRoute . '.index') ||
                                                 request()->is($submenuRoute) ||
-                                                request()->is($submenuRoute . '/*')) {
+                                                request()->is($submenuRoute . '/*')
+                                            ) {
                                                 $isParentActive = true;
                                                 break;
                                             }
@@ -104,10 +107,8 @@
                                     @endphp
 
                                     <li class="{{ $isParentActive ? 'active' : '' }}">
-                                        <a aria-expanded="{{ $isParentActive ? 'true' : 'false' }}"
-                                           data-bs-toggle="collapse"
-                                           href="#{{ $collapseId }}"
-                                           class="{{ $isParentActive ? 'active' : '' }}">
+                                        <a aria-expanded="{{ $isParentActive ? 'true' : 'false' }}" data-bs-toggle="collapse"
+                                            href="#{{ $collapseId }}" class="{{ $isParentActive ? 'active' : '' }}">
                                             {!! $menu['icon'] !!}
                                             {{ __($menu['title']) }}
                                         </a>
@@ -116,14 +117,15 @@
                                                 @can($submenu['permission'])
                                                     @php
                                                         $submenuRoute = str($submenu['route'])->remove('/');
-                                                        $isSubmenuActive = request()->routeIs($submenuRoute . '.*') ||
-                                                                           request()->routeIs($submenuRoute . '.index') ||
-                                                                           request()->is($submenuRoute) ||
-                                                                           request()->is($submenuRoute . '/*');
+                                                        $isSubmenuActive =
+                                                            request()->routeIs($submenuRoute . '.*') ||
+                                                            request()->routeIs($submenuRoute . '.index') ||
+                                                            request()->is($submenuRoute) ||
+                                                            request()->is($submenuRoute . '/*');
                                                     @endphp
                                                     <li class="{{ $isSubmenuActive ? 'active' : '' }}">
                                                         <a href="{{ route($submenuRoute . '.index') }}"
-                                                           class="{{ $isSubmenuActive ? 'active' : '' }}">
+                                                            class="{{ $isSubmenuActive ? 'active' : '' }}">
                                                             {{ __($submenu['title']) }}
                                                         </a>
                                                     </li>
@@ -137,6 +139,13 @@
                     @endcanany
                 @endif
             @endforeach
+
+            <li class="no-sub">
+                <a href="{{ route('dashboard') }}">
+                    <i class="ti ti-code fs-5 me-2"></i>
+                    Dokumentasi API
+                </a>
+            </li>
         </ul>
     </div>
 

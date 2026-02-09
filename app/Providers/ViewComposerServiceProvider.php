@@ -30,5 +30,15 @@ class ViewComposerServiceProvider extends ServiceProvider
             value: \App\Models\Bank::select(columns: ['id', 'nama_bank'])->get()
         ));
 
+		View::composer(views: ['tarik-saldos.create', 'tarik-saldos.edit'], callback: fn(ViewContract $view) => $view->with(
+            key: 'merchants',
+            value: \App\Models\Merchant::select(columns: ['id', 'nama_merchant'])->get()
+        ));
+
+		View::composer(views: ['tarik-saldos.create', 'tarik-saldos.edit'], callback: fn(ViewContract $view) => $view->with(
+            key: 'banks',
+            value: \App\Models\Bank::select(columns: ['id', 'nama_bank'])->get()
+        ));
+
 	}
 }

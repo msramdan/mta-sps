@@ -128,6 +128,22 @@ return [
             ]
         ],
         [
+            'header' => 'Tarik Saldo',
+            'permissions' => [
+                'tarik saldo view'
+            ],
+            'menus' => [
+                [
+                    'title' => 'Tarik Saldo',
+                    'icon' => '<i class="ti ti-transfer-out fs-5 me-2"></i>',
+                    'route' => '/tarik-saldos',
+                    'permission' => 'tarik saldo view',
+                    'permissions' => [],
+                    'submenus' => []
+                ]
+            ]
+        ],
+        [
             'header' => 'Bank',
             'permissions' => [
                 'bank view'
@@ -172,6 +188,6 @@ return [
                     ]
                 ]
             ]
-        ]
+        ],
     ]
 ];

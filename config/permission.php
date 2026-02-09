@@ -221,5 +221,5 @@ return [
         ],
         ['group' => 'bank', 'access' => ['bank view', 'bank create', 'bank edit', 'bank delete']],
         ['group' => 'merchant', 'access' => ['merchant view', 'merchant create', 'merchant edit', 'merchant delete']],
-    ],
-];
+  ['group' => 'tarik saldos', 'access' => ['tarik saldo view', 'tarik saldo create', 'tarik saldo edit', 'tarik saldo delete']], 
+		],];
