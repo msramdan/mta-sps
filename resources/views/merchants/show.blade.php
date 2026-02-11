@@ -102,14 +102,37 @@
                                     </div>
                                 </div>
 
-                                <!-- 2. Kredensial API -->
+                                <!-- 2. QRIN & Callback -->
                                 <div class="col-12 mb-4">
-                                    <h5 class="mb-3 border-bottom pb-2">Kredensial API</h5>
+                                    <h5 class="mb-3 border-bottom pb-2">QRIN & Callback</h5>
                                     <div class="table-responsive">
                                         <table class="table table-hover table-striped">
                                             <tr>
-                                                <td class="fw-bold" style="width: 30%">URL Callback</td>
+                                                <td class="fw-bold" style="width: 30%">Token QRIN</td>
                                                 <td>
+                                                    @if($merchant->token_qrin)
+                                                    <div class="d-flex align-items-center">
+                                                        <span id="tokenQrinText" class="me-2">
+                                                            {{ str_repeat('•', 20) }}
+                                                        </span>
+                                                        <button type="button" class="btn btn-sm btn-outline-secondary me-2"
+                                                            onclick="toggleTokenQrin()">
+                                                            <i class="fas fa-eye"></i>
+                                                        </button>
+                                                        <button type="button" class="btn btn-sm btn-outline-primary"
+                                                            onclick="copyToClipboard('{{ $merchant->token_qrin }}')">
+                                                            <i class="fas fa-copy"></i>
+                                                        </button>
+                                                    </div>
+                                                    @else
+                                                    <span class="text-muted">-</span>
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="fw-bold">URL Callback</td>
+                                                <td>
+                                                    @if($merchant->url_callback)
                                                     <div class="d-flex align-items-center">
                                                         <span class="me-2">{{ $merchant->url_callback }}</span>
                                                         <button type="button" class="btn btn-sm btn-outline-primary"
@@ -117,49 +140,178 @@
                                                             <i class="fas fa-copy"></i>
                                                         </button>
                                                     </div>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td class="fw-bold">API Key</td>
-                                                <td>
-                                                    <div class="d-flex align-items-center">
-                                                        <span id="apiKeyText" class="me-2">
-                                                            {{ str_repeat('•', 32) }}
-                                                        </span>
-                                                        <button type="button" class="btn btn-sm btn-outline-secondary me-2"
-                                                            onclick="toggleApiKey()">
-                                                            <i class="fas fa-eye"></i>
-                                                        </button>
-                                                        <button type="button" class="btn btn-sm btn-outline-primary"
-                                                            onclick="copyToClipboard('{{ $merchant->apikey }}')">
-                                                            <i class="fas fa-copy"></i>
-                                                        </button>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td class="fw-bold">Secret Key</td>
-                                                <td>
-                                                    <div class="d-flex align-items-center">
-                                                        <span id="secretKeyText" class="me-2">
-                                                            {{ str_repeat('•', 32) }}
-                                                        </span>
-                                                        <button type="button" class="btn btn-sm btn-outline-secondary me-2"
-                                                            onclick="toggleSecretKey()">
-                                                            <i class="fas fa-eye"></i>
-                                                        </button>
-                                                        <button type="button" class="btn btn-sm btn-outline-primary"
-                                                            onclick="copyToClipboard('{{ $merchant->secretkey }}')">
-                                                            <i class="fas fa-copy"></i>
-                                                        </button>
-                                                    </div>
+                                                    @else
+                                                    <span class="text-muted">-</span>
+                                                    @endif
                                                 </td>
                                             </tr>
                                         </table>
                                     </div>
                                 </div>
 
-                                <!-- 3. Informasi Bank Penarikan -->
+                                <!-- 3. Konfigurasi Nobu -->
+                                <div class="col-12 mb-4">
+                                    <h5 class="mb-3 border-bottom pb-2">
+                                        <i class="fas fa-credit-card me-1"></i> Konfigurasi Nobu
+                                    </h5>
+                                    <div class="table-responsive">
+                                        <table class="table table-hover table-striped">
+                                            <!-- Client ID -->
+                                            <tr>
+                                                <td class="fw-bold" style="width: 30%">Client ID</td>
+                                                <td>
+                                                    @if($merchant->nobu_client_id)
+                                                    <div class="d-flex align-items-center">
+                                                        <span class="me-2 font-monospace" style="font-size: 13px;">
+                                                            {{ $merchant->nobu_client_id }}
+                                                        </span>
+                                                        <button type="button" class="btn btn-sm btn-outline-primary"
+                                                            onclick="copyToClipboard('{{ $merchant->nobu_client_id }}')">
+                                                            <i class="fas fa-copy"></i>
+                                                        </button>
+                                                    </div>
+                                                    @else
+                                                    <span class="text-muted">-</span>
+                                                    @endif
+                                                </td>
+                                            </tr>
+
+                                            <!-- Partner ID -->
+                                            <tr>
+                                                <td class="fw-bold">Partner ID</td>
+                                                <td>
+                                                    @if($merchant->nobu_partner_id)
+                                                    <div class="d-flex align-items-center">
+                                                        <span class="me-2 font-monospace" style="font-size: 13px;">
+                                                            {{ $merchant->nobu_partner_id }}
+                                                        </span>
+                                                        <button type="button" class="btn btn-sm btn-outline-primary"
+                                                            onclick="copyToClipboard('{{ $merchant->nobu_partner_id }}')">
+                                                            <i class="fas fa-copy"></i>
+                                                        </button>
+                                                    </div>
+                                                    @else
+                                                    <span class="text-muted">-</span>
+                                                    @endif
+                                                </td>
+                                            </tr>
+
+                                            <!-- Client Secret -->
+                                            <tr>
+                                                <td class="fw-bold">Client Secret</td>
+                                                <td>
+                                                    @if($merchant->nobu_client_secret)
+                                                    <div class="d-flex align-items-center">
+                                                        <span id="clientSecretText" class="me-2">
+                                                            {{ str_repeat('•', 36) }}
+                                                        </span>
+                                                        <button type="button" class="btn btn-sm btn-outline-secondary me-2"
+                                                            onclick="toggleClientSecret()">
+                                                            <i class="fas fa-eye"></i>
+                                                        </button>
+                                                        <button type="button" class="btn btn-sm btn-outline-primary"
+                                                            onclick="copyToClipboard('{{ $merchant->nobu_client_secret }}')">
+                                                            <i class="fas fa-copy"></i>
+                                                        </button>
+                                                    </div>
+                                                    @else
+                                                    <span class="text-muted">-</span>
+                                                    @endif
+                                                </td>
+                                            </tr>
+
+                                            <!-- Merchant ID -->
+                                            <tr>
+                                                <td class="fw-bold">Merchant ID</td>
+                                                <td>
+                                                    @if($merchant->nobu_merchant_id)
+                                                    <div class="d-flex align-items-center">
+                                                        <span class="me-2">{{ $merchant->nobu_merchant_id }}</span>
+                                                        <button type="button" class="btn btn-sm btn-outline-primary"
+                                                            onclick="copyToClipboard('{{ $merchant->nobu_merchant_id }}')">
+                                                            <i class="fas fa-copy"></i>
+                                                        </button>
+                                                    </div>
+                                                    @else
+                                                    <span class="text-muted">-</span>
+                                                    @endif
+                                                </td>
+                                            </tr>
+
+                                            <!-- Sub Merchant ID -->
+                                            <tr>
+                                                <td class="fw-bold">Sub Merchant ID</td>
+                                                <td>
+                                                    @if($merchant->nobu_sub_merchant_id)
+                                                    <div class="d-flex align-items-center">
+                                                        <span class="me-2">{{ $merchant->nobu_sub_merchant_id }}</span>
+                                                        <button type="button" class="btn btn-sm btn-outline-primary"
+                                                            onclick="copyToClipboard('{{ $merchant->nobu_sub_merchant_id }}')">
+                                                            <i class="fas fa-copy"></i>
+                                                        </button>
+                                                    </div>
+                                                    @else
+                                                    <span class="text-muted">-</span>
+                                                    @endif
+                                                </td>
+                                            </tr>
+
+                                            <!-- Store ID -->
+                                            <tr>
+                                                <td class="fw-bold">Store ID</td>
+                                                <td>
+                                                    @if($merchant->nobu_store_id)
+                                                    <div class="d-flex align-items-center">
+                                                        <span class="me-2">{{ $merchant->nobu_store_id }}</span>
+                                                        <button type="button" class="btn btn-sm btn-outline-primary"
+                                                            onclick="copyToClipboard('{{ $merchant->nobu_store_id }}')">
+                                                            <i class="fas fa-copy"></i>
+                                                        </button>
+                                                    </div>
+                                                    @else
+                                                    <span class="text-muted">-</span>
+                                                    @endif
+                                                </td>
+                                            </tr>
+
+
+                                            <!-- Private Key -->
+                                            <tr>
+                                                <td class="fw-bold">Private Key</td>
+                                                <td>
+                                                    @if($merchant->nobu_private_key)
+                                                    <div class="d-flex align-items-start">
+                                                        <div class="flex-grow-1 me-2">
+                                                            <textarea class="form-control bg-light font-monospace"
+                                                                rows="4" readonly
+                                                                style="font-size: 11px; resize: none;"
+                                                                id="privateKeyText">{{ $merchant->nobu_private_key }}</textarea>
+                                                            <small class="text-muted mt-1">
+                                                                Key length: {{ strlen($merchant->nobu_private_key) }} characters
+                                                            </small>
+                                                        </div>
+                                                        <div>
+                                                            <button type="button" class="btn btn-sm btn-outline-primary mb-2"
+                                                                onclick="copyPrivateKey()">
+                                                                <i class="fas fa-copy"></i> Copy
+                                                            </button>
+                                                            <br>
+                                                            <button type="button" class="btn btn-sm btn-outline-secondary"
+                                                                onclick="togglePrivateKey()">
+                                                                <i class="fas fa-eye"></i> View
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                    @else
+                                                    <span class="text-muted">-</span>
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <!-- 4. Informasi Bank Penarikan -->
                                 <div class="col-12 mb-4">
                                     <h5 class="mb-3 border-bottom pb-2">Informasi Bank Penarikan</h5>
                                     <div class="table-responsive">
@@ -170,17 +322,17 @@
                                             </tr>
                                             <tr>
                                                 <td class="fw-bold">Pemilik Rekening</td>
-                                                <td>{{ $merchant->pemilik_rekening }}</td>
+                                                <td>{{ $merchant->pemilik_rekening ?? '-' }}</td>
                                             </tr>
                                             <tr>
                                                 <td class="fw-bold">Nomor Rekening</td>
-                                                <td>{{ $merchant->nomor_rekening }}</td>
+                                                <td>{{ $merchant->nomor_rekening ?? '-' }}</td>
                                             </tr>
                                         </table>
                                     </div>
                                 </div>
 
-                                <!-- 4. Catatan Tambahan -->
+                                <!-- 5. Catatan Tambahan -->
                                 <div class="col-12 mb-4">
                                     <h5 class="mb-3 border-bottom pb-2">Catatan</h5>
                                     <div class="table-responsive">
@@ -188,7 +340,7 @@
                                             <tr>
                                                 <td>
                                                     <textarea class="form-control bg-light" rows="4" readonly
-                                                        style="resize: none; background-color: #f8f9fa !important;">{{ $merchant->catatan }}</textarea>
+                                                        style="resize: none; background-color: #f8f9fa !important;">{{ $merchant->catatan ?? '' }}</textarea>
                                                 </td>
                                             </tr>
                                         </table>
@@ -201,8 +353,14 @@
                                     <i class="fas fa-arrow-left me-1"></i> Kembali
                                 </a> &nbsp;
 
+                                @can('merchant edit')
+                                <a href="{{ route('merchants.edit', $merchant->id) }}" class="btn btn-warning me-2">
+                                    <i class="fas fa-edit me-1"></i> Edit
+                                </a>
+                                @endcan
+
                                 @can('merchant review')
-                                    <button type="button" class="btn btn-warning" onclick="showReviewModal()">
+                                    <button type="button" class="btn btn-info" onclick="showReviewModal()">
                                         <i class="fas fa-check-circle me-1"></i> Review
                                     </button>
                                 @endcan
@@ -284,55 +442,79 @@
 
 @push('js')
     <script>
-        let apiKeyVisible = false;
-        let secretKeyVisible = false;
-        const apiKeyValue = "{{ $merchant->apikey }}";
-        const secretKeyValue = "{{ $merchant->secretkey }}";
+        let tokenQrinVisible = false;
+        let clientSecretVisible = false;
+        let privateKeyVisible = false;
 
-        function toggleApiKey() {
-            const apiKeyText = document.getElementById('apiKeyText');
+        const tokenQrinValue = "{{ $merchant->token_qrin }}";
+        const clientSecretValue = "{{ $merchant->nobu_client_secret }}";
+        const privateKeyValue = "{{ $merchant->nobu_private_key }}";
+
+        function toggleTokenQrin() {
+            const tokenQrinText = document.getElementById('tokenQrinText');
             const button = event.currentTarget;
 
-            if (apiKeyVisible) {
-                // Hide API Key
-                apiKeyText.textContent = '••••••••••••••••••••••••••••••••';
+            if (tokenQrinVisible) {
+                tokenQrinText.textContent = '•••••••••••••••••••••';
                 button.innerHTML = '<i class="fas fa-eye"></i>';
                 button.classList.remove('btn-outline-danger');
                 button.classList.add('btn-outline-secondary');
             } else {
-                // Show API Key
-                apiKeyText.textContent = apiKeyValue;
+                tokenQrinText.textContent = tokenQrinValue;
                 button.innerHTML = '<i class="fas fa-eye-slash"></i>';
                 button.classList.remove('btn-outline-secondary');
                 button.classList.add('btn-outline-danger');
             }
 
-            apiKeyVisible = !apiKeyVisible;
+            tokenQrinVisible = !tokenQrinVisible;
         }
 
-        function toggleSecretKey() {
-            const secretKeyText = document.getElementById('secretKeyText');
+        function toggleClientSecret() {
+            const clientSecretText = document.getElementById('clientSecretText');
             const button = event.currentTarget;
 
-            if (secretKeyVisible) {
-                // Hide Secret Key
-                secretKeyText.textContent = '••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••';
+            if (clientSecretVisible) {
+                clientSecretText.textContent = '••••••••••••••••••••••••••••••••••••••';
                 button.innerHTML = '<i class="fas fa-eye"></i>';
                 button.classList.remove('btn-outline-danger');
                 button.classList.add('btn-outline-secondary');
             } else {
-                // Show Secret Key
-                secretKeyText.textContent = secretKeyValue;
+                clientSecretText.textContent = clientSecretValue;
                 button.innerHTML = '<i class="fas fa-eye-slash"></i>';
                 button.classList.remove('btn-outline-secondary');
                 button.classList.add('btn-outline-danger');
             }
 
-            secretKeyVisible = !secretKeyVisible;
+            clientSecretVisible = !clientSecretVisible;
+        }
+
+        function togglePrivateKey() {
+            const privateKeyText = document.getElementById('privateKeyText');
+            const button = event.currentTarget;
+
+            if (privateKeyVisible) {
+                privateKeyText.type = 'password';
+                button.innerHTML = '<i class="fas fa-eye"></i> View';
+                button.classList.remove('btn-outline-danger');
+                button.classList.add('btn-outline-secondary');
+            } else {
+                privateKeyText.type = 'text';
+                button.innerHTML = '<i class="fas fa-eye-slash"></i> Hide';
+                button.classList.remove('btn-outline-secondary');
+                button.classList.add('btn-outline-danger');
+            }
+
+            privateKeyVisible = !privateKeyVisible;
+        }
+
+        function copyPrivateKey() {
+            copyToClipboard(privateKeyValue);
         }
 
         // Fungsi untuk menyalin ke clipboard dengan SweetAlert
         function copyToClipboard(text) {
+            if (!text || text === '-') return;
+
             navigator.clipboard.writeText(text).then(() => {
                 Swal.fire({
                     icon: 'success',
@@ -369,6 +551,14 @@
                 closeReviewModal();
             }
         }
+
+        // Initialize private key as password
+        document.addEventListener('DOMContentLoaded', function() {
+            const privateKeyText = document.getElementById('privateKeyText');
+            if (privateKeyText) {
+                privateKeyText.type = 'password';
+            }
+        });
     </script>
 @endpush
 
@@ -425,6 +615,12 @@
             border-color: #ffc107;
         }
 
+        .btn-info {
+            color: #fff;
+            background-color: #0dcaf0;
+            border-color: #0dcaf0;
+        }
+
         .btn-outline-primary {
             color: #0d6efd;
             border-color: #0d6efd;
@@ -454,6 +650,26 @@
 
         .text-danger {
             color: #dc3545 !important;
+        }
+
+        .font-monospace {
+            font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.35em 0.65em;
+            font-size: 0.75em;
+            font-weight: 700;
+            line-height: 1;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: baseline;
+            border-radius: 0.25rem;
+        }
+
+        .fst-italic {
+            font-style: italic;
         }
     </style>
 @endpush

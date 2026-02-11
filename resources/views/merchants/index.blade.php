@@ -79,32 +79,15 @@
                         </div>
 
                         <div class="detail-row mb-2">
-                            <label class="detail-label text-muted small mb-1">API Key</label>
+                            <label class="detail-label text-muted small mb-1">Token QRIN</label>
                             <div class="detail-value d-flex align-items-center">
-                                <input type="password" id="apiKey-${d.id}"
+                                <input type="password" id="token_qrin-${d.id}"
                                        class="form-control form-control-sm flex-grow-1"
-                                       value="${d.apikey ? '•'.repeat(32) : '-'}"
+                                       value="${d.token_qrin ? '•'.repeat(32) : '-'}"
                                        readonly
                                        style="font-family: monospace;">
                                 <button type="button" class="btn btn-sm btn-outline-secondary ms-1 toggle-btn"
-                                        onclick="toggleApiKey('${d.id}', '${d.apikey || ''}')"
-                                        style="min-width: 32px; padding: 2px 6px;"
-                                        title="Show/Hide">
-                                    <i class="fas fa-eye"></i>
-                                </button>
-                            </div>
-                        </div>
-
-                        <div class="detail-row">
-                            <label class="detail-label text-muted small mb-1">Secret Key</label>
-                            <div class="detail-value d-flex align-items-center">
-                                <input type="password" id="secretKey-${d.id}"
-                                       class="form-control form-control-sm flex-grow-1"
-                                       value="${d.secretkey ? '•'.repeat(32) : '-'}"
-                                       readonly
-                                       style="font-family: monospace;">
-                                <button type="button" class="btn btn-sm btn-outline-secondary ms-1 toggle-btn"
-                                        onclick="toggleSecretKey('${d.id}', '${d.secretkey || ''}')"
+                                        onclick="toggletoken_qrin('${d.id}', '${d.token_qrin || ''}')"
                                         style="min-width: 32px; padding: 2px 6px;"
                                         title="Show/Hide">
                                     <i class="fas fa-eye"></i>
@@ -115,38 +98,52 @@
                 </div>
 
                 <!-- Informasi Bank Section -->
-                <div class="col-md-6">
-                    <div class="detail-section p-2 rounded border">
-                        <h6 class="fw-bold mb-2 pb-1 border-bottom text-primary small">
-                            <i class="fas fa-university me-1"></i>Informasi Bank Penarikan
-                        </h6>
+<div class="col-md-6">
+    <div class="detail-section p-2 rounded border">
+        <h6 class="fw-bold mb-2 pb-1 border-bottom text-primary small">
+            <i class="fas fa-university me-1"></i>Informasi Bank Penarikan
+        </h6>
 
-                        <div class="detail-row mb-2">
-                            <label class="detail-label text-muted small mb-1">Bank</label>
-                            <div class="detail-value">
-                                <input type="text" class="form-control form-control-sm"
-                                       value="${d.bank ? d.bank.nama_bank : '-'}" readonly>
-                            </div>
-                        </div>
-
-                        <div class="detail-row mb-2">
-                            <label class="detail-label text-muted small mb-1">Pemilik Rekening</label>
-                            <div class="detail-value">
-                                <input type="text" class="form-control form-control-sm"
-                                       value="${d.pemilik_rekening || '-'}" readonly>
-                            </div>
-                        </div>
-
-                        <div class="detail-row">
-                            <label class="detail-label text-muted small mb-1">Nomor Rekening</label>
-                            <div class="detail-value">
-                                <input type="text" class="form-control form-control-sm"
-                                       value="${d.nomor_rekening || '-'}" readonly
-                                       style="font-family: monospace;">
-                            </div>
-                        </div>
+        <div class="row g-2">
+            <div class="col-md-6">
+                <div class="detail-row mb-2">
+                    <label class="detail-label text-muted small mb-1">Bank</label>
+                    <div class="detail-value">
+                        <input type="text" class="form-control form-control-sm"
+                               value="${d.bank ? d.bank.nama_bank : '-'}" readonly>
                     </div>
                 </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="detail-row mb-2">
+                    <label class="detail-label text-muted small mb-1">No. Rekening</label>
+                    <div class="detail-value d-flex align-items-center">
+                        <input type="text" class="form-control form-control-sm"
+                               value="${d.nomor_rekening || '-'}" readonly
+                               style="font-family: monospace;">
+                        ${d.nomor_rekening ? `
+                        <button type="button" class="btn btn-sm btn-outline-primary ms-1"
+                                onclick="copyToClipboard('${d.nomor_rekening}')">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                        ` : ''}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12">
+                <div class="detail-row">
+                    <label class="detail-label text-muted small mb-1">Pemilik</label>
+                    <div class="detail-value">
+                        <input type="text" class="form-control form-control-sm"
+                               value="${d.pemilik_rekening || '-'}" readonly>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
             </div>
         </div>
     `;
@@ -244,15 +241,15 @@
         });
 
         // Fungsi untuk toggle show/hide API Key
-        function toggleApiKey(id, apiKey) {
-            const element = document.getElementById(`apiKey-${id}`);
+        function toggletoken_qrin(id, token_qrin) {
+            const element = document.getElementById(`token_qrin-${id}`);
             const button = event.currentTarget;
             const icon = button.querySelector('i');
 
             if (element.type === 'password') {
                 // Show API Key
                 element.type = 'text';
-                element.value = apiKey || '-';
+                element.value = token_qrin || '-';
                 icon.classList.remove('fa-eye');
                 icon.classList.add('fa-eye-slash');
                 button.classList.remove('btn-outline-secondary');
@@ -261,34 +258,7 @@
             } else {
                 // Hide API Key
                 element.type = 'password';
-                element.value = apiKey ? '•'.repeat(32) : '-';
-                icon.classList.remove('fa-eye-slash');
-                icon.classList.add('fa-eye');
-                button.classList.remove('btn-outline-danger');
-                button.classList.add('btn-outline-secondary');
-                button.title = 'Show';
-            }
-        }
-
-        // Fungsi untuk toggle show/hide Secret Key
-        function toggleSecretKey(id, secretKey) {
-            const element = document.getElementById(`secretKey-${id}`);
-            const button = event.currentTarget;
-            const icon = button.querySelector('i');
-
-            if (element.type === 'password') {
-                // Show Secret Key
-                element.type = 'text';
-                element.value = secretKey || '-';
-                icon.classList.remove('fa-eye');
-                icon.classList.add('fa-eye-slash');
-                button.classList.remove('btn-outline-secondary');
-                button.classList.add('btn-outline-danger');
-                button.title = 'Hide';
-            } else {
-                // Hide Secret Key
-                element.type = 'password';
-                element.value = secretKey ? '•'.repeat(32) : '-';
+                element.value = token_qrin ? '•'.repeat(32) : '-';
                 icon.classList.remove('fa-eye-slash');
                 icon.classList.add('fa-eye');
                 button.classList.remove('btn-outline-danger');

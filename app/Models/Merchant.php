@@ -35,13 +35,21 @@ class Merchant extends Model
         'nama_merchant',
         'logo',
         'url_callback',
-        'apikey',
-        'secretkey',
+        'token_qrin',
+        // NOBU FIELDS
+        'nobu_client_id',
+        'nobu_partner_id',
+        'nobu_client_secret',
+        'nobu_private_key',
+        'nobu_merchant_id',
+        'nobu_sub_merchant_id',
+        'nobu_store_id',
+        // END NOBU FIELDS
         'bank_id',
         'pemilik_rekening',
         'nomor_rekening',
-        'ktp', // Tambahan
-        'catatan', // Tambahan
+        'ktp',
+        'catatan',
         'status',
     ];
 
@@ -55,13 +63,21 @@ class Merchant extends Model
             'nama_merchant' => 'string',
             'logo' => 'string',
             'url_callback' => 'string',
-            'apikey' => 'string',
-            'secretkey' => 'string',
-            'bank_id' => 'string', // UUID FK
+            'token_qrin' => 'string',
+            // NOBU CASTS
+            'nobu_client_id' => 'string',
+            'nobu_partner_id' => 'string',
+            'nobu_client_secret' => 'string',
+            'nobu_private_key' => 'string',
+            'nobu_merchant_id' => 'string',
+            'nobu_sub_merchant_id' => 'string',
+            'nobu_store_id' => 'string',
+            // END NOBU CASTS
+            'bank_id' => 'string',
             'pemilik_rekening' => 'string',
             'nomor_rekening' => 'string',
-            'ktp' => 'string', // Tambahan
-            'catatan' => 'string', // Tambahan
+            'ktp' => 'string',
+            'catatan' => 'string',
             'status' => 'string',
             'created_at' => 'datetime:Y-m-d H:i:s',
             'updated_at' => 'datetime:Y-m-d H:i:s',
@@ -107,6 +123,9 @@ class Merchant extends Model
         );
     }
 
+    /**
+     * Accessor for the 'ktp' attribute.
+     */
     protected function ktp(): Attribute
     {
         $path = 'ktps';

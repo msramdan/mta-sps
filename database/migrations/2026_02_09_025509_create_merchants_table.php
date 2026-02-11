@@ -6,36 +6,32 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('merchants', function (Blueprint $table) {
-            // Primary key UUID
             $table->uuid('id')->primary();
-
             $table->string('nama_merchant', 150);
             $table->string('logo')->nullable();
             $table->string('url_callback')->nullable();
-            $table->string('apikey')->nullable();
-            $table->string('secretkey')->nullable();
+            $table->string('token_qrin')->nullable();
 
-            // FK ke banks (UUID)
+            // === 7 FIELD UNTUK NOBU ===
+            $table->string('nobu_client_id')->nullable();
+            $table->string('nobu_partner_id')->nullable();
+            $table->string('nobu_client_secret')->nullable();
+            $table->text('nobu_private_key')->nullable();
+            $table->string('nobu_merchant_id')->nullable();
+            $table->string('nobu_sub_merchant_id')->nullable();
+            $table->string('nobu_store_id')->nullable();
+            // ==========================
+
             $table->uuid('bank_id')->nullable();
-            $table
-                ->foreign('bank_id')
-                ->references('id')
-                ->on('banks')
-                ->nullOnDelete();
-
+            $table->foreign('bank_id')->references('id')->on('banks')->nullOnDelete();
             $table->string('pemilik_rekening', 100)->nullable();
             $table->string('nomor_rekening', 50)->nullable();
             $table->string('ktp')->nullable();
             $table->text('catatan')->nullable();
-
-            $table->enum('status', ['pending', 'approved','rejected','suspended'])->default('pending');
-
+            $table->enum('status', ['pending', 'approved', 'rejected', 'suspended'])->default('pending');
             $table->timestamps();
         });
     }
