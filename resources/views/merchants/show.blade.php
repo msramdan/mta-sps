@@ -55,13 +55,6 @@
                                                         <img src="{{ $merchant->ktp }}" alt="KTP"
                                                             class="rounded img-fluid"
                                                             style="object-fit: cover; width: 150px; max-height: 200px;" />
-                                                        <div class="mt-2">
-                                                            <a href="{{ $merchant->ktp }}" target="_blank"
-                                                                class="btn btn-sm btn-outline-primary">
-                                                                <i class="fas fa-external-link-alt me-1"></i> Lihat Full
-                                                                Size
-                                                            </a>
-                                                        </div>
                                                     @else
                                                         <span class="text-muted fst-italic">Belum ada KTP</span>
                                                     @endif
@@ -113,15 +106,11 @@
                                                     @if($merchant->token_qrin)
                                                     <div class="d-flex align-items-center">
                                                         <span id="tokenQrinText" class="me-2">
-                                                            {{ str_repeat('•', 20) }}
+                                                            {{ str_repeat('•', 32) }}
                                                         </span>
-                                                        <button type="button" class="btn btn-sm btn-outline-secondary me-2"
+                                                        <button type="button" class="btn btn-sm btn-outline-secondary"
                                                             onclick="toggleTokenQrin()">
                                                             <i class="fas fa-eye"></i>
-                                                        </button>
-                                                        <button type="button" class="btn btn-sm btn-outline-primary"
-                                                            onclick="copyToClipboard('{{ $merchant->token_qrin }}')">
-                                                            <i class="fas fa-copy"></i>
                                                         </button>
                                                     </div>
                                                     @else
@@ -132,17 +121,7 @@
                                             <tr>
                                                 <td class="fw-bold">URL Callback</td>
                                                 <td>
-                                                    @if($merchant->url_callback)
-                                                    <div class="d-flex align-items-center">
-                                                        <span class="me-2">{{ $merchant->url_callback }}</span>
-                                                        <button type="button" class="btn btn-sm btn-outline-primary"
-                                                            onclick="copyToClipboard('{{ $merchant->url_callback }}')">
-                                                            <i class="fas fa-copy"></i>
-                                                        </button>
-                                                    </div>
-                                                    @else
-                                                    <span class="text-muted">-</span>
-                                                    @endif
+                                                    <span>{{ $merchant->url_callback ?? '-' }}</span>
                                                 </td>
                                             </tr>
                                         </table>
@@ -160,19 +139,9 @@
                                             <tr>
                                                 <td class="fw-bold" style="width: 30%">Client ID</td>
                                                 <td>
-                                                    @if($merchant->nobu_client_id)
-                                                    <div class="d-flex align-items-center">
-                                                        <span class="me-2 font-monospace" style="font-size: 13px;">
-                                                            {{ $merchant->nobu_client_id }}
-                                                        </span>
-                                                        <button type="button" class="btn btn-sm btn-outline-primary"
-                                                            onclick="copyToClipboard('{{ $merchant->nobu_client_id }}')">
-                                                            <i class="fas fa-copy"></i>
-                                                        </button>
-                                                    </div>
-                                                    @else
-                                                    <span class="text-muted">-</span>
-                                                    @endif
+                                                    <span>
+                                                        {{ $merchant->nobu_client_id ?? '-' }}
+                                                    </span>
                                                 </td>
                                             </tr>
 
@@ -180,19 +149,9 @@
                                             <tr>
                                                 <td class="fw-bold">Partner ID</td>
                                                 <td>
-                                                    @if($merchant->nobu_partner_id)
-                                                    <div class="d-flex align-items-center">
-                                                        <span class="me-2 font-monospace" style="font-size: 13px;">
-                                                            {{ $merchant->nobu_partner_id }}
-                                                        </span>
-                                                        <button type="button" class="btn btn-sm btn-outline-primary"
-                                                            onclick="copyToClipboard('{{ $merchant->nobu_partner_id }}')">
-                                                            <i class="fas fa-copy"></i>
-                                                        </button>
-                                                    </div>
-                                                    @else
-                                                    <span class="text-muted">-</span>
-                                                    @endif
+                                                    <span>
+                                                        {{ $merchant->nobu_partner_id ?? '-' }}
+                                                    </span>
                                                 </td>
                                             </tr>
 
@@ -203,15 +162,11 @@
                                                     @if($merchant->nobu_client_secret)
                                                     <div class="d-flex align-items-center">
                                                         <span id="clientSecretText" class="me-2">
-                                                            {{ str_repeat('•', 36) }}
+                                                            {{ str_repeat('•', 32) }}
                                                         </span>
-                                                        <button type="button" class="btn btn-sm btn-outline-secondary me-2"
+                                                        <button type="button" class="btn btn-sm btn-outline-secondary"
                                                             onclick="toggleClientSecret()">
                                                             <i class="fas fa-eye"></i>
-                                                        </button>
-                                                        <button type="button" class="btn btn-sm btn-outline-primary"
-                                                            onclick="copyToClipboard('{{ $merchant->nobu_client_secret }}')">
-                                                            <i class="fas fa-copy"></i>
                                                         </button>
                                                     </div>
                                                     @else
@@ -224,17 +179,7 @@
                                             <tr>
                                                 <td class="fw-bold">Merchant ID</td>
                                                 <td>
-                                                    @if($merchant->nobu_merchant_id)
-                                                    <div class="d-flex align-items-center">
-                                                        <span class="me-2">{{ $merchant->nobu_merchant_id }}</span>
-                                                        <button type="button" class="btn btn-sm btn-outline-primary"
-                                                            onclick="copyToClipboard('{{ $merchant->nobu_merchant_id }}')">
-                                                            <i class="fas fa-copy"></i>
-                                                        </button>
-                                                    </div>
-                                                    @else
-                                                    <span class="text-muted">-</span>
-                                                    @endif
+                                                    <span>{{ $merchant->nobu_merchant_id ?? '-' }}</span>
                                                 </td>
                                             </tr>
 
@@ -242,17 +187,7 @@
                                             <tr>
                                                 <td class="fw-bold">Sub Merchant ID</td>
                                                 <td>
-                                                    @if($merchant->nobu_sub_merchant_id)
-                                                    <div class="d-flex align-items-center">
-                                                        <span class="me-2">{{ $merchant->nobu_sub_merchant_id }}</span>
-                                                        <button type="button" class="btn btn-sm btn-outline-primary"
-                                                            onclick="copyToClipboard('{{ $merchant->nobu_sub_merchant_id }}')">
-                                                            <i class="fas fa-copy"></i>
-                                                        </button>
-                                                    </div>
-                                                    @else
-                                                    <span class="text-muted">-</span>
-                                                    @endif
+                                                    <span>{{ $merchant->nobu_sub_merchant_id ?? '-' }}</span>
                                                 </td>
                                             </tr>
 
@@ -260,20 +195,18 @@
                                             <tr>
                                                 <td class="fw-bold">Store ID</td>
                                                 <td>
-                                                    @if($merchant->nobu_store_id)
-                                                    <div class="d-flex align-items-center">
-                                                        <span class="me-2">{{ $merchant->nobu_store_id }}</span>
-                                                        <button type="button" class="btn btn-sm btn-outline-primary"
-                                                            onclick="copyToClipboard('{{ $merchant->nobu_store_id }}')">
-                                                            <i class="fas fa-copy"></i>
-                                                        </button>
-                                                    </div>
-                                                    @else
-                                                    <span class="text-muted">-</span>
-                                                    @endif
+                                                    <span>{{ $merchant->nobu_store_id ?? '-' }}</span>
                                                 </td>
                                             </tr>
 
+                                            <!-- Terminal ID (Hardcode) -->
+                                            <tr>
+                                                <td class="fw-bold">Terminal ID</td>
+                                                <td>
+                                                    <span>A01</span>
+                                                    <span class="ms-2 badge bg-info">Hardcoded</span>
+                                                </td>
+                                            </tr>
 
                                             <!-- Private Key -->
                                             <tr>
@@ -282,24 +215,13 @@
                                                     @if($merchant->nobu_private_key)
                                                     <div class="d-flex align-items-start">
                                                         <div class="flex-grow-1 me-2">
-                                                            <textarea class="form-control bg-light font-monospace"
+                                                            <textarea class="form-control bg-light"
                                                                 rows="4" readonly
-                                                                style="font-size: 11px; resize: none;"
+                                                                style="font-size: 13px; resize: none; background-color: #f8f9fa !important;"
                                                                 id="privateKeyText">{{ $merchant->nobu_private_key }}</textarea>
                                                             <small class="text-muted mt-1">
                                                                 Key length: {{ strlen($merchant->nobu_private_key) }} characters
                                                             </small>
-                                                        </div>
-                                                        <div>
-                                                            <button type="button" class="btn btn-sm btn-outline-primary mb-2"
-                                                                onclick="copyPrivateKey()">
-                                                                <i class="fas fa-copy"></i> Copy
-                                                            </button>
-                                                            <br>
-                                                            <button type="button" class="btn btn-sm btn-outline-secondary"
-                                                                onclick="togglePrivateKey()">
-                                                                <i class="fas fa-eye"></i> View
-                                                            </button>
                                                         </div>
                                                     </div>
                                                     @else
@@ -444,18 +366,16 @@
     <script>
         let tokenQrinVisible = false;
         let clientSecretVisible = false;
-        let privateKeyVisible = false;
 
         const tokenQrinValue = "{{ $merchant->token_qrin }}";
         const clientSecretValue = "{{ $merchant->nobu_client_secret }}";
-        const privateKeyValue = "{{ $merchant->nobu_private_key }}";
 
         function toggleTokenQrin() {
             const tokenQrinText = document.getElementById('tokenQrinText');
             const button = event.currentTarget;
 
             if (tokenQrinVisible) {
-                tokenQrinText.textContent = '•••••••••••••••••••••';
+                tokenQrinText.textContent = '••••••••••••••••••••••••••••••••';
                 button.innerHTML = '<i class="fas fa-eye"></i>';
                 button.classList.remove('btn-outline-danger');
                 button.classList.add('btn-outline-secondary');
@@ -474,7 +394,7 @@
             const button = event.currentTarget;
 
             if (clientSecretVisible) {
-                clientSecretText.textContent = '••••••••••••••••••••••••••••••••••••••';
+                clientSecretText.textContent = '••••••••••••••••••••••••••••••••';
                 button.innerHTML = '<i class="fas fa-eye"></i>';
                 button.classList.remove('btn-outline-danger');
                 button.classList.add('btn-outline-secondary');
@@ -486,53 +406,6 @@
             }
 
             clientSecretVisible = !clientSecretVisible;
-        }
-
-        function togglePrivateKey() {
-            const privateKeyText = document.getElementById('privateKeyText');
-            const button = event.currentTarget;
-
-            if (privateKeyVisible) {
-                privateKeyText.type = 'password';
-                button.innerHTML = '<i class="fas fa-eye"></i> View';
-                button.classList.remove('btn-outline-danger');
-                button.classList.add('btn-outline-secondary');
-            } else {
-                privateKeyText.type = 'text';
-                button.innerHTML = '<i class="fas fa-eye-slash"></i> Hide';
-                button.classList.remove('btn-outline-secondary');
-                button.classList.add('btn-outline-danger');
-            }
-
-            privateKeyVisible = !privateKeyVisible;
-        }
-
-        function copyPrivateKey() {
-            copyToClipboard(privateKeyValue);
-        }
-
-        // Fungsi untuk menyalin ke clipboard dengan SweetAlert
-        function copyToClipboard(text) {
-            if (!text || text === '-') return;
-
-            navigator.clipboard.writeText(text).then(() => {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Berhasil!',
-                    text: 'Teks berhasil disalin ke clipboard',
-                    timer: 2000,
-                    showConfirmButton: false
-                });
-            }).catch(err => {
-                console.error('Gagal menyalin: ', err);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Gagal!',
-                    text: 'Gagal menyalin teks ke clipboard',
-                    timer: 2000,
-                    showConfirmButton: false
-                });
-            });
         }
 
         // Custom Modal Functions
@@ -551,125 +424,5 @@
                 closeReviewModal();
             }
         }
-
-        // Initialize private key as password
-        document.addEventListener('DOMContentLoaded', function() {
-            const privateKeyText = document.getElementById('privateKeyText');
-            if (privateKeyText) {
-                privateKeyText.type = 'password';
-            }
-        });
     </script>
-@endpush
-
-@push('css')
-    <style>
-        .form-control {
-            display: block;
-            width: 100%;
-            padding: 0.375rem 0.75rem;
-            font-size: 1rem;
-            font-weight: 400;
-            line-height: 1.5;
-            color: #212529;
-            background-color: #fff;
-            background-clip: padding-box;
-            border: 1px solid #ced4da;
-            border-radius: 0.375rem;
-            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-        }
-
-        .btn {
-            display: inline-block;
-            font-weight: 400;
-            line-height: 1.5;
-            color: #212529;
-            text-align: center;
-            text-decoration: none;
-            vertical-align: middle;
-            cursor: pointer;
-            user-select: none;
-            background-color: transparent;
-            border: 1px solid transparent;
-            padding: 0.375rem 0.75rem;
-            font-size: 1rem;
-            border-radius: 0.375rem;
-            transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-        }
-
-        .btn-secondary {
-            color: #fff;
-            background-color: #6c757d;
-            border-color: #6c757d;
-        }
-
-        .btn-primary {
-            color: #fff;
-            background-color: #0d6efd;
-            border-color: #0d6efd;
-        }
-
-        .btn-warning {
-            color: #000;
-            background-color: #ffc107;
-            border-color: #ffc107;
-        }
-
-        .btn-info {
-            color: #fff;
-            background-color: #0dcaf0;
-            border-color: #0dcaf0;
-        }
-
-        .btn-outline-primary {
-            color: #0d6efd;
-            border-color: #0d6efd;
-        }
-
-        .btn-outline-secondary {
-            color: #6c757d;
-            border-color: #6c757d;
-        }
-
-        .btn-outline-danger {
-            color: #dc3545;
-            border-color: #dc3545;
-        }
-
-        .btn-sm {
-            padding: 0.25rem 0.5rem;
-            font-size: 0.875rem;
-            border-radius: 0.25rem;
-        }
-
-        .form-text {
-            margin-top: 0.25rem;
-            font-size: 0.875em;
-            color: #6c757d;
-        }
-
-        .text-danger {
-            color: #dc3545 !important;
-        }
-
-        .font-monospace {
-            font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-        }
-
-        .badge {
-            display: inline-block;
-            padding: 0.35em 0.65em;
-            font-size: 0.75em;
-            font-weight: 700;
-            line-height: 1;
-            text-align: center;
-            white-space: nowrap;
-            vertical-align: baseline;
-            border-radius: 0.25rem;
-        }
-
-        .fst-italic {
-            font-style: italic;
-        }
-    </style>
 @endpush
