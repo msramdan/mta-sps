@@ -49,44 +49,44 @@
                                                 <tr>
                                                     <td class="fw-bold">Logo</td>
                                                     <td>
-                                                        @if($merchant->logo)
-                                                        <div class="d-flex align-items-center">
-                                                            <div class="position-relative">
-                                                                <img src="{{ $merchant->logo }}" alt="Logo"
-                                                                    class="rounded" style="width: 150px" />
-                                                                <a href="{{ $merchant->logo }}" target="_blank"
-                                                                   class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
-                                                                   style="background: rgba(0,0,0,0.3); opacity: 0; transition: opacity 0.3s; text-decoration: none;"
-                                                                   onmouseover="this.style.opacity='1'"
-                                                                   onmouseout="this.style.opacity='0'">
-                                                                    <i class="fas fa-external-link-alt text-white"></i>
-                                                                </a>
+                                                        @if ($merchant->logo)
+                                                            <div class="d-flex align-items-center">
+                                                                <div class="position-relative">
+                                                                    <img src="{{ $merchant->logo }}" alt="Logo"
+                                                                        class="rounded" style="width: 150px" />
+                                                                    <a href="{{ $merchant->logo }}" target="_blank"
+                                                                        class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
+                                                                        style="background: rgba(0,0,0,0.3); opacity: 0; transition: opacity 0.3s; text-decoration: none;"
+                                                                        onmouseover="this.style.opacity='1'"
+                                                                        onmouseout="this.style.opacity='0'">
+                                                                        <i class="fas fa-external-link-alt text-white"></i>
+                                                                    </a>
+                                                                </div>
                                                             </div>
-                                                        </div>
                                                         @else
-                                                        <span class="text-muted">-</span>
+                                                            <span class="text-muted">-</span>
                                                         @endif
                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <td class="fw-bold">KTP</td>
                                                     <td>
-                                                        @if($merchant->ktp && $merchant->ktp != '')
-                                                        <div class="d-flex align-items-center">
-                                                            <div class="position-relative">
-                                                                <img src="{{ $merchant->ktp }}" alt="KTP"
-                                                                    class="rounded" style="width: 150px"  />
-                                                                <a href="{{ $merchant->ktp }}" target="_blank"
-                                                                   class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
-                                                                   style="background: rgba(0,0,0,0.3); opacity: 0; transition: opacity 0.3s; text-decoration: none;"
-                                                                   onmouseover="this.style.opacity='1'"
-                                                                   onmouseout="this.style.opacity='0'">
-                                                                    <i class="fas fa-external-link-alt text-white"></i>
-                                                                </a>
+                                                        @if ($merchant->ktp && $merchant->ktp != '')
+                                                            <div class="d-flex align-items-center">
+                                                                <div class="position-relative">
+                                                                    <img src="{{ $merchant->ktp }}" alt="KTP"
+                                                                        class="rounded" style="width: 150px" />
+                                                                    <a href="{{ $merchant->ktp }}" target="_blank"
+                                                                        class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
+                                                                        style="background: rgba(0,0,0,0.3); opacity: 0; transition: opacity 0.3s; text-decoration: none;"
+                                                                        onmouseover="this.style.opacity='1'"
+                                                                        onmouseout="this.style.opacity='0'">
+                                                                        <i class="fas fa-external-link-alt text-white"></i>
+                                                                    </a>
+                                                                </div>
                                                             </div>
-                                                        </div>
                                                         @else
-                                                        <span class="text-muted fst-italic">-</span>
+                                                            <span class="text-muted fst-italic">-</span>
                                                         @endif
                                                     </td>
                                                 </tr>
@@ -106,16 +106,21 @@
                                                                 'Unknown',
                                                             ];
                                                         @endphp
-                                                        <span class="badge bg-{{ $badge }}">{{ $label }}</span>
+                                                        <span
+                                                            class="badge bg-{{ $badge }}">{{ $label }}</span>
                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <td class="fw-bold">Dibuat</td>
-                                                    <td><small class="text-muted">{{ $merchant->created_at->format('d M Y H:i') }}</small></td>
+                                                    <td><small
+                                                            class="text-muted">{{ $merchant->created_at->format('d M Y H:i') }}</small>
+                                                    </td>
                                                 </tr>
                                                 <tr>
                                                     <td class="fw-bold">Diperbarui</td>
-                                                    <td><small class="text-muted">{{ $merchant->updated_at->format('d M Y H:i') }}</small></td>
+                                                    <td><small
+                                                            class="text-muted">{{ $merchant->updated_at->format('d M Y H:i') }}</small>
+                                                    </td>
                                                 </tr>
                                             </table>
                                         </div>
@@ -133,18 +138,20 @@
                                                 <tr>
                                                     <td class="fw-bold" style="width: 40%">Token QRIN</td>
                                                     <td>
-                                                        @if($merchant->token_qrin)
-                                                        <div class="d-flex align-items-center">
-                                                            <span id="tokenQrinText" class="me-2 text-truncate" style="max-width: 200px;">
-                                                                {{ str_repeat('•', 32) }}
-                                                            </span>
-                                                            <button type="button" class="btn btn-sm btn-outline-secondary flex-shrink-0"
-                                                                onclick="toggleTokenQrin()">
-                                                                <i class="fas fa-eye"></i>
-                                                            </button>
-                                                        </div>
+                                                        @if ($merchant->token_qrin)
+                                                            <div class="d-flex align-items-center">
+                                                                <span id="tokenQrinText" class="me-2 text-truncate"
+                                                                    style="max-width: 200px;">
+                                                                    {{ str_repeat('•', 32) }}
+                                                                </span>
+                                                                <button type="button"
+                                                                    class="btn btn-sm btn-outline-secondary flex-shrink-0"
+                                                                    onclick="toggleTokenQrin()">
+                                                                    <i class="fas fa-eye"></i>
+                                                                </button>
+                                                            </div>
                                                         @else
-                                                        <span class="text-muted">-</span>
+                                                            <span class="text-muted">-</span>
                                                         @endif
                                                     </td>
                                                 </tr>
@@ -201,7 +208,8 @@
                                                 <div class="col-md-6">
                                                     <label class="small fw-bold text-muted mb-1">Client ID</label>
                                                     <div class="p-2">
-                                                        <small class="text-break d-block">{{ $merchant->nobu_client_id ?? '-' }}</small>
+                                                        <small
+                                                            class="text-break d-block">{{ $merchant->nobu_client_id ?? '-' }}</small>
                                                     </div>
                                                 </div>
 
@@ -209,7 +217,8 @@
                                                 <div class="col-md-6">
                                                     <label class="small fw-bold text-muted mb-1">Partner ID</label>
                                                     <div class="p-2">
-                                                        <small class="text-break d-block">{{ $merchant->nobu_partner_id ?? '-' }}</small>
+                                                        <small
+                                                            class="text-break d-block">{{ $merchant->nobu_partner_id ?? '-' }}</small>
                                                     </div>
                                                 </div>
 
@@ -217,16 +226,18 @@
                                                 <div class="col-md-12">
                                                     <label class="small fw-bold text-muted mb-1">Client Secret</label>
                                                     <div class="d-flex align-items-center p-2">
-                                                        @if($merchant->nobu_client_secret)
-                                                        <span id="clientSecretText" class="flex-grow-1 text-truncate" style="max-width: 300px;">
-                                                            {{ str_repeat('•', 32) }}
-                                                        </span>
-                                                        <button type="button" class="btn btn-sm btn-outline-secondary flex-shrink-0"
-                                                            onclick="toggleClientSecret()">
-                                                            <i class="fas fa-eye"></i>
-                                                        </button>
+                                                        @if ($merchant->nobu_client_secret)
+                                                            <span id="clientSecretText" class="flex-grow-1 text-truncate"
+                                                                style="max-width: 300px;">
+                                                                {{ str_repeat('•', 32) }}
+                                                            </span>
+                                                            <button type="button"
+                                                                class="btn btn-sm btn-outline-secondary flex-shrink-0"
+                                                                onclick="toggleClientSecret()">
+                                                                <i class="fas fa-eye"></i>
+                                                            </button>
                                                         @else
-                                                        <span class="text-muted">-</span>
+                                                            <span class="text-muted">-</span>
                                                         @endif
                                                     </div>
                                                 </div>
@@ -235,7 +246,8 @@
                                                 <div class="col-md-6">
                                                     <label class="small fw-bold text-muted mb-1">Merchant ID</label>
                                                     <div class="p-2">
-                                                        <small class="d-block">{{ $merchant->nobu_merchant_id ?? '-' }}</small>
+                                                        <small
+                                                            class="d-block">{{ $merchant->nobu_merchant_id ?? '-' }}</small>
                                                     </div>
                                                 </div>
 
@@ -243,7 +255,8 @@
                                                 <div class="col-md-6">
                                                     <label class="small fw-bold text-muted mb-1">Sub Merchant ID</label>
                                                     <div class="p-2">
-                                                        <small class="d-block">{{ $merchant->nobu_sub_merchant_id ?? '-' }}</small>
+                                                        <small
+                                                            class="d-block">{{ $merchant->nobu_sub_merchant_id ?? '-' }}</small>
                                                     </div>
                                                 </div>
 
@@ -251,7 +264,8 @@
                                                 <div class="col-md-6">
                                                     <label class="small fw-bold text-muted mb-1">Store ID</label>
                                                     <div class="p-2">
-                                                        <small class="d-block">{{ $merchant->nobu_store_id ?? '-' }}</small>
+                                                        <small
+                                                            class="d-block">{{ $merchant->nobu_store_id ?? '-' }}</small>
                                                     </div>
                                                 </div>
 
@@ -261,18 +275,16 @@
                                                 <div class="col-12">
                                                     <label class="small fw-bold text-muted mb-1">Private Key</label>
                                                     <div class="p-2">
-                                                        @if($merchant->nobu_private_key)
-                                                        <textarea class="form-control border"
-                                                            rows="4" readonly
-                                                            style="font-size: 12px; resize: none;"
-                                                            id="privateKeyText">{{ $merchant->nobu_private_key }}</textarea>
-                                                        <div class="text-end mt-1">
-                                                            <small class="text-muted">
-                                                                {{ strlen($merchant->nobu_private_key) }} chars
-                                                            </small>
-                                                        </div>
+                                                        @if ($merchant->nobu_private_key)
+                                                            <textarea class="form-control border" rows="4" readonly style="font-size: 12px; resize: none;"
+                                                                id="privateKeyText">{{ $merchant->nobu_private_key }}</textarea>
+                                                            <div class="text-end mt-1">
+                                                                <small class="text-muted">
+                                                                    {{ strlen($merchant->nobu_private_key) }} chars
+                                                                </small>
+                                                            </div>
                                                         @else
-                                                        <span class="text-muted">-</span>
+                                                            <span class="text-muted">-</span>
                                                         @endif
                                                     </div>
                                                 </div>
@@ -303,11 +315,9 @@
                                 <div class="col-12">
                                     <div class="d-flex justify-content-between">
                                         <div>
-                                            <a href="{{ route('merchants.index') }}" class="btn btn-secondary">
+                                            <a href="{{ route('merchants.index') }}" class="btn btn-secondary g-2">
                                                 <i class="fas fa-arrow-left me-1"></i> Kembali
                                             </a>
-                                        </div>
-                                        <div>
                                             @can('merchant review')
                                                 <button type="button" class="btn btn-info" onclick="showReviewModal()">
                                                     <i class="fas fa-check-circle me-1"></i> Review
@@ -469,6 +479,7 @@
     <style>
         .card {
             height: 100%;
+            box-shadow: none !important;
         }
 
         .card-header {
@@ -494,12 +505,12 @@
         }
 
         /* Make both columns equal height */
-        .row > .col-lg-6 {
+        .row>.col-lg-6 {
             display: flex;
             flex-direction: column;
         }
 
-        .row > .col-lg-6 > .card {
+        .row>.col-lg-6>.card {
             flex: 1;
         }
 
@@ -514,7 +525,7 @@
                 gap: 1rem;
             }
 
-            .d-flex.justify-content-between > div {
+            .d-flex.justify-content-between>div {
                 width: 100%;
                 text-align: center;
             }
