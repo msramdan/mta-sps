@@ -56,9 +56,7 @@ class WebController extends Controller
             $noWa = '62' . ltrim($noWa, '0');
         }
 
-        // Generate API Key dan Secret Key
-        $apikey = $this->generateApiKey(32);
-        $secretkey = $this->generateSecretKey(64);
+        $token_qrin = $this->generateTokenQrin(64);
 
         // Mulai transaction
         DB::beginTransaction();
@@ -84,8 +82,7 @@ class WebController extends Controller
                 'nama_merchant' => $request->nama_perusahaan,
                 'logo' => null,
                 'url_callback' => null,
-                'apikey' => $apikey,
-                'secretkey' => $secretkey,
+                'token_qrin' => $token_qrin,
                 'bank_id' => null,
                 'pemilik_rekening' => null,
                 'nomor_rekening' => null,
@@ -126,19 +123,7 @@ class WebController extends Controller
         }
     }
 
-    private function generateApiKey($length = 32)
-    {
-        $characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        $result = '';
-
-        for ($i = 0; $i < $length; $i++) {
-            $result .= $characters[random_int(0, strlen($characters) - 1)];
-        }
-
-        return $result;
-    }
-
-    private function generateSecretKey($length = 64)
+    private function generateTokenQrin($length = 64)
     {
         $characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
         $result = '';
