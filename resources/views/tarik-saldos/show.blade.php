@@ -71,6 +71,8 @@
                             <span class="badge bg-success">Berhasil</span>
                         @elseif($tarikSaldo->status === 'reject')
                             <span class="badge bg-danger">Ditolak</span>
+                        @elseif($tarikSaldo->status === 'cancel')
+                            <span class="badge bg-secondary">Dibatalkan</span>
                         @else
                             <span class="badge bg-secondary">{{ $tarikSaldo->status }}</span>
                         @endif

@@ -254,8 +254,11 @@ class TarikSaldoController extends Controller implements HasMiddleware
             return response()->json(['message' => 'Hanya pengajuan dengan status pending yang dapat dibatalkan.'], 400);
         }
 
-        // Delete the withdrawal (or you could update status to 'cancelled' if you want to keep records)
-        DB::table('tarik_saldos')->where('id', $id)->delete();
+        // Update status to cancel instead of deleting
+        DB::table('tarik_saldos')->where('id', $id)->update([
+            'status' => 'cancel',
+            'updated_at' => now()
+        ]);
 
         return response()->json(['message' => 'Pengajuan penarikan berhasil dibatalkan.'], 200);
     }

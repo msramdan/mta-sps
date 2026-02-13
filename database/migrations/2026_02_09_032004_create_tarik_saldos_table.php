@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('pemilik_rekening');
             $table->string('nomor_rekening');
 
-            $table->enum('status', ['pending','process','success','reject'])
+            $table->enum('status', ['pending','process','success','reject','cancel'])
                   ->default('pending');
 
             $table->string('bukti_trf')->nullable();
