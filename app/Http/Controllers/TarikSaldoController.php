@@ -27,10 +27,10 @@ class TarikSaldoController extends Controller implements HasMiddleware
             // 'auth',
 
             // TODO: uncomment this code below if you are using spatie permission
-            // new Middleware(middleware: 'permission:tarik saldo view', only: ['index', 'show']),
-            // new Middleware(middleware: 'permission:tarik saldo create', only: ['create', 'store']),
-            // new Middleware(middleware: 'permission:tarik saldo edit', only: ['edit', 'update']),
-            // new Middleware(middleware: 'permission:tarik saldo delete', only: ['destroy']),
+            // new Middleware(middleware: 'permission:tarik saldo view', only: ['index', 'show', 'getMerchantData']),
+            // new Middleware(middleware: 'permission:pengajuan tarik saldo', only: ['create', 'store']),
+            // new Middleware(middleware: 'permission:konfirmasi tarik saldo', only: ['edit', 'update']),
+            // new Middleware(middleware: 'permission:batalkan tarik saldo', only: ['cancel']),
         ];
     }
 
@@ -62,6 +62,27 @@ class TarikSaldoController extends Controller implements HasMiddleware
     }
 
     /**
+     * Get merchant data for withdrawal modal
+     */
+    public function getMerchantData(): JsonResponse
+    {
+        $merchantId = session('sessionMerchant');
+        if (!$merchantId) {
+            return response()->json(['error' => 'Merchant tidak ditemukan di session'], 404);
+        }
+
+        $merchant = \App\Models\Merchant::with('bank:id,nama_bank')
+            ->select('id', 'nama_merchant', 'balance', 'bank_id', 'pemilik_rekening', 'nomor_rekening')
+            ->find($merchantId);
+
+        if (!$merchant) {
+            return response()->json(['error' => 'Data merchant tidak ditemukan'], 404);
+        }
+
+        return response()->json($merchant);
+    }
+
+    /**
      * Show the form for creating a new resource.
      */
     public function create(): View|RedirectResponse
@@ -88,13 +109,16 @@ class TarikSaldoController extends Controller implements HasMiddleware
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreTarikSaldoRequest $request): RedirectResponse
+    public function store(StoreTarikSaldoRequest $request): RedirectResponse|JsonResponse
     {
         $validated = $request->validated();
 
         // Get merchant from session
         $merchantId = session('sessionMerchant');
         if (!$merchantId) {
+            if ($request->ajax()) {
+                return response()->json(['message' => 'Merchant tidak ditemukan di session.'], 400);
+            }
             Alert::error('Gagal', 'Merchant tidak ditemukan di session.');
             return redirect()->back();
         }
@@ -102,12 +126,31 @@ class TarikSaldoController extends Controller implements HasMiddleware
         // Get merchant data
         $merchant = \App\Models\Merchant::find($merchantId);
         if (!$merchant || !$merchant->bank_id) {
+            if ($request->ajax()) {
+                return response()->json(['message' => 'Data bank merchant tidak ditemukan. Silakan lengkapi data merchant terlebih dahulu.'], 400);
+            }
             Alert::error('Gagal', 'Data bank merchant tidak ditemukan. Silakan lengkapi data merchant terlebih dahulu.');
             return redirect()->back();
         }
 
+        // Check if there's already a pending or processing withdrawal
+        $existingWithdrawal = TarikSaldo::where('merchant_id', $merchantId)
+            ->whereIn('status', ['pending', 'process'])
+            ->exists();
+
+        if ($existingWithdrawal) {
+            if ($request->ajax()) {
+                return response()->json(['message' => 'Anda masih memiliki pengajuan penarikan yang sedang diproses. Tunggu hingga selesai sebelum mengajukan penarikan baru.'], 400);
+            }
+            Alert::error('Gagal', 'Anda masih memiliki pengajuan penarikan yang sedang diproses. Tunggu hingga selesai sebelum mengajukan penarikan baru.');
+            return redirect()->back()->withInput();
+        }
+
         // Check if merchant has enough balance
         if ($merchant->balance < $validated['jumlah']) {
+            if ($request->ajax()) {
+                return response()->json(['message' => 'Saldo tidak mencukupi untuk melakukan penarikan.'], 400);
+            }
             Alert::error('Gagal', 'Saldo tidak mencukupi untuk melakukan penarikan.');
             return redirect()->back()->withInput();
         }
@@ -127,6 +170,10 @@ class TarikSaldoController extends Controller implements HasMiddleware
         $validated['bukti_trf'] = null; // Will be uploaded by admin later
 
         TarikSaldo::create(attributes: $validated);
+
+        if ($request->ajax()) {
+            return response()->json(['message' => 'Pengajuan penarikan saldo berhasil dibuat. Penarikan akan diproses maksimal 1x24 jam.'], 200);
+        }
 
         Alert::success('Berhasil', 'Pengajuan penarikan saldo berhasil dibuat. Penarikan akan diproses maksimal 1x24 jam.');
         return redirect()->route('tarik-saldos.index');
@@ -186,6 +233,28 @@ class TarikSaldoController extends Controller implements HasMiddleware
             Alert::error('Gagal', 'tarik saldo tidak dapat dihapus karena terkait dengan tabel lain.');
             return redirect()->route('tarik-saldos.index');
         }
+    }
+
+    /**
+     * Cancel pending withdrawal
+     */
+    public function cancel(TarikSaldo $tarikSaldo): JsonResponse
+    {
+        // Check if withdrawal belongs to session merchant
+        $merchantId = session('sessionMerchant');
+        if ($tarikSaldo->merchant_id !== $merchantId) {
+            return response()->json(['message' => 'Anda tidak memiliki akses untuk membatalkan pengajuan ini.'], 403);
+        }
+
+        // Check if withdrawal is still pending
+        if ($tarikSaldo->status !== 'pending') {
+            return response()->json(['message' => 'Hanya pengajuan dengan status pending yang dapat dibatalkan.'], 400);
+        }
+
+        // Delete the withdrawal (or you could update status to 'cancelled' if you want to keep records)
+        $tarikSaldo->delete();
+
+        return response()->json(['message' => 'Pengajuan penarikan berhasil dibatalkan.'], 200);
     }
 
 

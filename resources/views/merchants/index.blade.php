@@ -45,6 +45,7 @@
                                             <th>Nama Merchant</th>
                                             <th>Logo</th>
                                             <th>Status</th>
+                                            <th>Balance</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
@@ -202,6 +203,13 @@
                                 default:
                                     return '<span class="badge bg-light text-dark">Unknown</span>';
                             }
+                        }
+                    },
+                    {
+                        data: 'balance',
+                        name: 'balance',
+                        render: function(data) {
+                            return 'Rp ' + new Intl.NumberFormat('id-ID').format(data);
                         }
                     },
 

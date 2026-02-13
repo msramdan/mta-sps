@@ -49,30 +49,32 @@
 
     <div class="app-nav" id="app-simple-bar">
         <ul class="main-nav p-0 mt-2">
-                @php
-                    $userId = Auth::id();
-                    $assignMerchants = DB::table('assign_merchants')
-                        ->join('merchants', 'assign_merchants.merchant_id', '=', 'merchants.id')
-                        ->where('assign_merchants.user_id', $userId)
-                        ->select('merchants.id', 'merchants.nama_merchant', 'merchants.kode_merchant')
-                        ->get();
-                    $currentMerchantId = session('sessionMerchant');
-                @endphp
+            @php
+                $userId = Auth::id();
+                $assignMerchants = DB::table('assign_merchants')
+                    ->join('merchants', 'assign_merchants.merchant_id', '=', 'merchants.id')
+                    ->where('assign_merchants.user_id', $userId)
+                    ->select('merchants.id', 'merchants.nama_merchant', 'merchants.kode_merchant')
+                    ->get();
+                $currentMerchantId = session('sessionMerchant');
+            @endphp
 
-                @if ($assignMerchants->count() > 1)
-                    <li class="no-sub mb-2">
-                        <div class="px-3 py-2">
-                            <label class="text-muted small mb-1"><i class="ti ti-building-store me-1"></i> Pilih Merchant</label>
-                            <select class="form-select form-select-sm" id="merchant-selector">
-                                @foreach ($assignMerchants as $merchant)
-                                    <option value="{{ $merchant->id }}" {{ $currentMerchantId == $merchant->id ? 'selected' : '' }}>
-                                        {{ $merchant->nama_merchant }} ({{ $merchant->kode_merchant }})
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </li>
-                @endif
+            @if ($assignMerchants->count() > 1)
+                <li class="no-sub mb-2">
+                    <div class="px-3 py-2">
+                        <label class="text-muted small mb-1"><i class="ti ti-building-store me-1"></i> Pilih
+                            Merchant</label>
+                        <select class="form-select form-select-sm" id="merchant-selector">
+                            @foreach ($assignMerchants as $merchant)
+                                <option value="{{ $merchant->id }}"
+                                    {{ $currentMerchantId == $merchant->id ? 'selected' : '' }}>
+                                    {{ $merchant->nama_merchant }} ({{ $merchant->kode_merchant }})
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                </li>
+            @endif
 
             <li class="no-sub{{ request()->routeIs('dashboard.*') || request()->is('dashboard') ? ' active' : '' }}">
                 <a href="{{ route('dashboard') }}">
@@ -197,15 +199,14 @@
     </div>
 </nav>
 
-<script>
-    // Initialize Select2 for merchant selector in sidebar
+@push('js')
+    <script>
     $(document).ready(function() {
         if ($('#merchant-selector').length) {
             $('#merchant-selector').select2({
-                theme: 'bootstrap-5',
                 placeholder: 'Pilih Merchant',
                 allowClear: false,
-                minimumResultsForSearch: 5, // Show search only if more than 5 items
+                minimumResultsForSearch: 5,
                 width: '100%',
                 dropdownParent: $('.app-nav')
             });
@@ -221,19 +222,22 @@
         if (!merchantId) return;
 
         fetch('{{ route('switch-merchant') }}', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            },
-            body: JSON.stringify({ merchant_id: merchantId })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                window.location.reload();
-            }
-        })
-        .catch(error => console.error('Error:', error));
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({
+                    merchant_id: merchantId
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.reload();
+                }
+            })
+            .catch(error => console.error('Error:', error));
     }
 </script>
+@endpush

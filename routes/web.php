@@ -54,6 +54,10 @@ Route::middleware(['auth', 'web'])->group(function () {
     Route::resource('transaksis', TransaksiController::class);
 
     // Tarik Saldo Management
+    Route::get('/tarik-saldos-merchant-data', [TarikSaldoController::class, 'getMerchantData'])
+        ->name('tarik-saldos.merchant-data');
+    Route::post('/tarik-saldos/{tarikSaldo}/cancel', [TarikSaldoController::class, 'cancel'])
+        ->name('tarik-saldos.cancel');
     Route::resource('tarik-saldos', TarikSaldoController::class);
 
     // Simulator Management
