@@ -64,7 +64,7 @@
                     <div class="px-3 py-2">
                         <label class="text-muted small mb-1"><i class="ti ti-building-store me-1"></i> Pilih
                             Merchant</label>
-                        <select class="form-select form-select-sm" id="merchant-selector">
+                        <select class="form-select" id="merchant-selector">
                             @foreach ($assignMerchants as $merchant)
                                 <option value="{{ $merchant->id }}"
                                     {{ $currentMerchantId == $merchant->id ? 'selected' : '' }}>
@@ -202,20 +202,9 @@
 @push('js')
     <script>
     $(document).ready(function() {
-        if ($('#merchant-selector').length) {
-            $('#merchant-selector').select2({
-                placeholder: 'Pilih Merchant',
-                allowClear: false,
-                minimumResultsForSearch: 5,
-                width: '100%',
-                dropdownParent: $('.app-nav')
-            });
-
-            // Handle change event
-            $('#merchant-selector').on('change', function() {
-                switchMerchant($(this).val());
-            });
-        }
+        $('#merchant-selector').on('change', function() {
+            switchMerchant($(this).val());
+        });
     });
 
     function switchMerchant(merchantId) {
