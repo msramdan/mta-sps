@@ -137,39 +137,21 @@
                             <div class="tab-content p-4" id="apiTabsContent">
                                 <!-- Generate QRIS Tab -->
                                 <div class="tab-pane fade show active" id="generate-qris" role="tabpanel">
-                                    <div class="d-flex align-items-center mb-3">
-                                        <i class="ti ti-qrcode text-success me-2" style="font-size: 32px;"></i>
-                                        <div>
-                                            <h5 class="mb-1 fw-bold">1. Generate QRIS - Membuat Kode QR Pembayaran</h5>
-                                            <p class="text-muted mb-0 small">Gunakan endpoint ini untuk membuat kode QR yang bisa di-scan customer untuk membayar</p>
-                                        </div>
-                                    </div>
-
-                                    <!-- Use Case -->
-                                    <div class="alert alert-light border mb-4">
-                                        <h6 class="fw-bold mb-2"><i class="ti ti-bulb-filled text-warning me-1"></i> Kapan Menggunakan Ini?</h6>
-                                        <p class="mb-2 small">Contoh penggunaan:</p>
-                                        <ul class="small mb-0">
-                                            <li>Customer checkout di website/aplikasi Anda dengan total Rp 50.000</li>
-                                            <li>Sistem Anda panggil API ini untuk buat kode QRIS dengan nominal Rp 50.000</li>
-                                            <li>Tampilkan kode QRIS ke customer untuk di-scan pakai aplikasi banking mereka</li>
-                                        </ul>
-                                    </div>
+                                    <h5 class="mb-3 fw-bold">1. Generate QRIS</h5>
+                                    <p class="text-muted">Endpoint untuk menghasilkan kode QRIS dinamis untuk transaksi pembayaran.</p>
 
                                     <!-- Endpoint Info -->
                                     <div class="mb-4">
-                                        <h6 class="fw-bold mb-2"><i class="ti ti-link me-1"></i> URL API</h6>
+                                        <h6 class="fw-bold mb-2">Endpoint</h6>
                                         <div class="d-flex align-items-center gap-2 mb-2">
                                             <span class="endpoint-badge post">POST</span>
                                             <div class="endpoint-url bg-body-secondary flex-grow-1">http://localhost:8080/v1.0/generate-qris</div>
                                         </div>
-                                        <small class="text-muted"><i class="ti ti-info-circle me-1"></i>Kirim request ke URL ini menggunakan method POST</small>
                                     </div>
 
                                     <!-- Request Parameters -->
                                     <div class="mb-4">
-                                        <h6 class="fw-bold mb-2"><i class="ti ti-file-text me-1"></i> Data yang Perlu Dikirim</h6>
-                                        <p class="small text-muted mb-3">Berikut adalah data yang harus Anda sertakan saat memanggil API ini:</p>
+                                        <h6 class="fw-bold mb-2">Request Body Parameters</h6>
                                         <div class="table-responsive">
                                             <table class="table table-bordered param-table">
                                                 <thead>
@@ -184,44 +166,44 @@
                                                     <tr>
                                                         <td><code>token_qrin</code></td>
                                                         <td>String</td>
-                                                        <td><span class="required-badge">Wajib</span></td>
-                                                        <td><strong>Token keamanan Anda.</strong> Dapatkan dari menu Setting Merchant</td>
+                                                        <td><span class="required-badge">Required</span></td>
+                                                        <td>Token autentikasi merchant dari dashboard</td>
                                                     </tr>
                                                     <tr>
                                                         <td><code>partnerReferenceNo</code></td>
                                                         <td>String</td>
-                                                        <td><span class="required-badge">Wajib</span></td>
-                                                        <td><strong>Nomor invoice/order Anda.</strong> Contoh: "INV-001", "ORDER-12345" (harus unik untuk setiap transaksi)</td>
+                                                        <td><span class="required-badge">Required</span></td>
+                                                        <td>Nomor referensi unik dari sistem merchant</td>
                                                     </tr>
                                                     <tr>
                                                         <td><code>amount.value</code></td>
                                                         <td>String</td>
-                                                        <td><span class="required-badge">Wajib</span></td>
-                                                        <td><strong>Jumlah yang harus dibayar.</strong> Format: "10000.00" (gunakan 2 angka desimal)</td>
+                                                        <td><span class="required-badge">Required</span></td>
+                                                        <td>Nominal transaksi (format: "10000.00")</td>
                                                     </tr>
                                                     <tr>
                                                         <td><code>amount.currency</code></td>
                                                         <td>String</td>
-                                                        <td><span class="required-badge">Wajib</span></td>
-                                                        <td><strong>Mata uang.</strong> Untuk Indonesia gunakan "IDR"</td>
+                                                        <td><span class="required-badge">Required</span></td>
+                                                        <td>Mata uang (default: "IDR")</td>
                                                     </tr>
                                                     <tr>
                                                         <td><code>additionalInfo.validTime</code></td>
                                                         <td>String</td>
-                                                        <td><span class="optional-badge">Opsional</span></td>
-                                                        <td><strong>Berapa lama QRIS aktif.</strong> Dalam detik. Default 9000 detik (2.5 jam)</td>
+                                                        <td><span class="optional-badge">Optional</span></td>
+                                                        <td>Waktu valid QRIS dalam detik (default: 9000)</td>
                                                     </tr>
                                                     <tr>
                                                         <td><code>additionalInfo.tip</code></td>
                                                         <td>String</td>
-                                                        <td><span class="optional-badge">Opsional</span></td>
-                                                        <td><strong>Boleh kasih tips atau tidak.</strong> Gunakan "true" atau "false"</td>
+                                                        <td><span class="optional-badge">Optional</span></td>
+                                                        <td>Izinkan tip ("true" / "false")</td>
                                                     </tr>
                                                     <tr>
                                                         <td><code>additionalInfo.qrType</code></td>
                                                         <td>String</td>
-                                                        <td><span class="optional-badge">Opsional</span></td>
-                                                        <td><strong>Tipe QRIS.</strong> Gunakan "03" untuk QRIS dinamis (recommended)</td>
+                                                        <td><span class="optional-badge">Optional</span></td>
+                                                        <td>Tipe QRIS (03 = Dynamic)</td>
                                                     </tr>
                                                 </tbody>
                                             </table>
@@ -230,22 +212,19 @@
 
                                     <!-- Request Example -->
                                     <div class="mb-4">
-                                        <h6 class="fw-bold mb-2"><i class="ti ti-code me-1"></i> Contoh Request - Cara Memanggil API</h6>
-                                        <div class="alert alert-light border mb-2">
-                                            <small><i class="ti ti-info-circle me-1"></i><strong>Penjelasan:</strong> Ini contoh data yang Anda kirim untuk membuat QRIS Rp 10.000 dengan nomor order "TRX-2026021312345"</small>
-                                        </div>
+                                        <h6 class="fw-bold mb-2">Request Example</h6>
                                         <pre class="code-block"><code>{
-  "token_qrin": "your-merchant-token-here",    <span style="color: #94a3b8;">← Ganti dengan token Anda</span>
+  "token_qrin": "your-merchant-token-here",
   "request_payload_qris": {
-    "partnerReferenceNo": "TRX-2026021312345", <span style="color: #94a3b8;">← Nomor invoice/order Anda</span>
+    "partnerReferenceNo": "TRX-2026021312345",
     "amount": {
-      "value": "10000.00",                     <span style="color: #94a3b8;">← Nominal Rp 10.000</span>
+      "value": "10000.00",
       "currency": "IDR"
     },
     "additionalInfo": {
-      "validTime": "9000",                     <span style="color: #94a3b8;">← QRIS aktif 2.5 jam</span>
+      "validTime": "9000",
       "tip": "false",
-      "qrType": "03"                           <span style="color: #94a3b8;">← QRIS dinamis</span>
+      "qrType": "03"
     }
   }
 }</code></pre>
@@ -253,86 +232,54 @@
 
                                     <!-- Response Examples -->
                                     <div class="mb-4">
-                                        <h6 class="fw-bold mb-3"><i class="ti ti-arrow-back-up me-1"></i> Jawaban dari Sistem</h6>
+                                        <h6 class="fw-bold mb-3">Response Examples</h6>
 
                                         <!-- Error Response -->
-                                        <div class="mb-4">
-                                            <div class="d-flex align-items-center mb-2">
-                                                <i class="ti ti-circle-x text-danger me-2"></i>
-                                                <strong class="text-danger">Jika Ada Kesalahan</strong>
-                                            </div>
-                                            <p class="small text-muted mb-2">Contoh response ketika token tidak diisi:</p>
+                                        <div class="mb-3">
+                                            <p class="mb-2"><strong class="text-danger">Error Response (400 Bad Request)</strong></p>
                                             <pre class="code-block response-error"><code>{
-  "success": false,                    <span style="color: #94a3b8;">← Gagal</span>
-  "message": "token_qrin is required", <span style="color: #94a3b8;">← Pesan error</span>
+  "success": false,
+  "message": "token_qrin is required",
   "data": null
 }</code></pre>
-                                            <div class="alert alert-danger border-0 mt-2">
-                                                <small><i class="ti ti-alert-triangle me-1"></i><strong>Troubleshooting:</strong> Pastikan Anda sudah memasukkan token_qrin yang benar</small>
-                                            </div>
                                         </div>
 
                                         <!-- Success Response -->
                                         <div>
-                                            <div class="d-flex align-items-center mb-2">
-                                                <i class="ti ti-circle-check text-success me-2"></i>
-                                                <strong class="text-success">Jika Berhasil</strong>
-                                            </div>
-                                            <p class="small text-muted mb-2">Response yang Anda terima berisi kode QRIS yang siap ditampilkan:</p>
+                                            <p class="mb-2"><strong class="text-success">Success Response (200 OK)</strong></p>
                                             <pre class="code-block response-success"><code>{
-  "success": true,                                        <span style="color: #94a3b8;">← Berhasil!</span>
+  "success": true,
   "message": "QRIS berhasil di-generate",
   "data": {
-    "qrisContent": "00020101021126670016ID.CO.QRIS...",  <span style="color: #94a3b8;">← String QRIS</span>
-    "qrisImage": "data:image/png;base64,iVBORw0K...",   <span style="color: #94a3b8;">← Gambar QRIS (base64)</span>
-    "partnerReferenceNo": "TRX-2026021312345",          <span style="color: #94a3b8;">← Nomor referensi Anda</span>
-    "amount": "10000.00",                               <span style="color: #94a3b8;">← Nominal pembayaran</span>
-    "validUntil": "2026-02-13 15:30:00",                <span style="color: #94a3b8;">← Batas waktu bayar</span>
-    "status": "pending"                                 <span style="color: #94a3b8;">← Status: menunggu bayar</span>
+    "qrisContent": "00020101021126670016ID.CO.QRIS.WWW011893600009150010990303UMI51440014ID.CO.TELKOM.WWW02180123456789012345670303UMI5204581253033605802ID5915MERCHANT NAME 6015JAKARTA SELATAN61051234062070703A01630445B4",
+    "qrisImage": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA...",
+    "partnerReferenceNo": "TRX-2026021312345",
+    "amount": "10000.00",
+    "validUntil": "2026-02-13 15:30:00",
+    "status": "pending"
   }
 }</code></pre>
-                                            <div class="alert alert-success border-0 mt-2">
-                                                <small><i class="ti ti-check me-1"></i><strong>Langkah Selanjutnya:</strong> Tampilkan <code>qrisImage</code> ke customer untuk di-scan. Gunakan <code>partnerReferenceNo</code> untuk cek status pembayaran nanti.</small>
-                                            </div>
                                         </div>
                                     </div>
                                 </div>
 
                                 <!-- Payment Status Tab -->
                                 <div class="tab-pane fade" id="payment-status" role="tabpanel">
-                                    <div class="d-flex align-items-center mb-3">
-                                        <i class="ti ti-file-search text-primary me-2" style="font-size: 32px;"></i>
-                                        <div>
-                                            <h5 class="mb-1 fw-bold">2. Cek Status Pembayaran - Sudah Dibayar atau Belum?</h5>
-                                            <p class="text-muted mb-0 small">Gunakan endpoint ini untuk mengecek apakah transaksi sudah dibayar oleh customer</p>
-                                        </div>
-                                    </div>
-
-                                    <!-- Use Case -->
-                                    <div class="alert alert-light border mb-4">
-                                        <h6 class="fw-bold mb-2"><i class="ti ti-bulb-filled text-warning me-1"></i> Kapan Menggunakan Ini?</h6>
-                                        <p class="mb-2 small">Contoh penggunaan:</p>
-                                        <ul class="small mb-0">
-                                            <li>Setelah customer scan QRIS, Anda ingin tahu apakah mereka sudah bayar</li>
-                                            <li>Customer refresh halaman, Anda perlu cek status terbaru</li>
-                                            <li>Untuk konfirmasi sebelum mengirim barang/jasa ke customer</li>
-                                        </ul>
-                                    </div>
+                                    <h5 class="mb-3 fw-bold">2. Status Pembayaran</h5>
+                                    <p class="text-muted">Endpoint untuk mengecek status pembayaran transaksi berdasarkan nomor referensi.</p>
 
                                     <!-- Endpoint Info -->
                                     <div class="mb-4">
-                                        <h6 class="fw-bold mb-2"><i class="ti ti-link me-1"></i> URL API</h6>
+                                        <h6 class="fw-bold mb-2">Endpoint</h6>
                                         <div class="d-flex align-items-center gap-2 mb-2">
                                             <span class="endpoint-badge post">POST</span>
                                             <div class="endpoint-url bg-body-secondary flex-grow-1">http://localhost:8080/v1.0/payment-status</div>
                                         </div>
-                                        <small class="text-muted"><i class="ti ti-info-circle me-1"></i>Kirim request ke URL ini untuk cek status</small>
                                     </div>
 
                                     <!-- Request Parameters -->
                                     <div class="mb-4">
-                                        <h6 class="fw-bold mb-2"><i class="ti ti-file-text me-1"></i> Data yang Perlu Dikirim</h6>
-                                        <p class="small text-muted mb-3">Yang perlu dikirim sangat sederhana, cukup 2 data:</p>
+                                        <h6 class="fw-bold mb-2">Request Body Parameters</h6>
                                         <div class="table-responsive">
                                             <table class="table table-bordered param-table">
                                                 <thead>
@@ -347,14 +294,14 @@
                                                     <tr>
                                                         <td><code>token_qrin</code></td>
                                                         <td>String</td>
-                                                        <td><span class="required-badge">Wajib</span></td>
-                                                        <td><strong>Token keamanan Anda</strong></td>
+                                                        <td><span class="required-badge">Required</span></td>
+                                                        <td>Token autentikasi merchant</td>
                                                     </tr>
                                                     <tr>
                                                         <td><code>partnerReferenceNo</code></td>
                                                         <td>String</td>
-                                                        <td><span class="required-badge">Wajib</span></td>
-                                                        <td><strong>Nomor invoice/order yang ingin dicek.</strong> Contoh: "INV-001", "ORDER-12345"</td>
+                                                        <td><span class="required-badge">Required</span></td>
+                                                        <td>Nomor referensi transaksi yang ingin dicek</td>
                                                     </tr>
                                                 </tbody>
                                             </table>
@@ -363,344 +310,157 @@
 
                                     <!-- Request Example -->
                                     <div class="mb-4">
-                                        <h6 class="fw-bold mb-2"><i class="ti ti-code me-1"></i> Contoh Request</h6>
-                                        <div class="alert alert-light border mb-2">
-                                            <small><i class="ti ti-info-circle me-1"></i><strong>Penjelasan:</strong> Cek status pembayaran untuk order "TRX-2026021312345"</small>
-                                        </div>
+                                        <h6 class="fw-bold mb-2">Request Example</h6>
                                         <pre class="code-block"><code>{
-  "token_qrin": "your-merchant-token-here",    <span style="color: #94a3b8;">← Token Anda</span>
-  "partnerReferenceNo": "TRX-2026021312345"    <span style="color: #94a3b8;">← Order yang ingin dicek</span>
+  "token_qrin": "your-merchant-token-here",
+  "partnerReferenceNo": "TRX-2026021312345"
 }</code></pre>
                                     </div>
 
                                     <!-- Response Examples -->
                                     <div class="mb-4">
-                                        <h6 class="fw-bold mb-3"><i class="ti ti-arrow-back-up me-1"></i> Kemungkinan Jawaban dari Sistem</h6>
+                                        <h6 class="fw-bold mb-3">Response Examples</h6>
 
                                         <!-- Success - Pending -->
-                                        <div class="mb-4">
-                                            <div class="d-flex align-items-center mb-2">
-                                                <i class="ti ti-clock text-warning me-2"></i>
-                                                <strong class="text-warning">Status: Menunggu Pembayaran</strong>
-                                            </div>
-                                            <p class="small text-mut ed mb-2">QRIS sudah dibuat tapi customer belum bayar:</p>
+                                        <div class="mb-3">
+                                            <p class="mb-2"><strong class="text-warning">Success - Pending (200 OK)</strong></p>
                                             <pre class="code-block"><code>{
   "success": true,
   "message": "Transaksi ditemukan",
   "data": {
     "partnerReferenceNo": "TRX-2026021312345",
     "amount": "10000.00",
-    "status": "pending",                     <span style="color: #94a3b8;">← Belum dibayar</span>
-    "createdAt": "2026-02-13 13:00:00",      <span style="color: #94a3b8;">← Waktu QRIS dibuat</span>
-    "validUntil": "2026-02-13 15:30:00"      <span style="color: #94a3b8;">← Batas waktu bayar</span>
+    "status": "pending",
+    "createdAt": "2026-02-13 13:00:00",
+    "validUntil": "2026-02-13 15:30:00"
   }
 }</code></pre>
-                                            <div class="alert alert-warning border-0 mt-2">
-                                                <small><i class="ti ti-clock me-1"></i><strong>Arti:</strong> Transaksi ditemukan tapi customer belum membayar. Tunggu customer scan dan bayar.</small>
-                                            </div>
                                         </div>
 
                                         <!-- Success - Paid -->
-                                        <div class="mb-4">
-                                            <div class="d-flex align-items-center mb-2">
-                                                <i class="ti ti-circle-check text-success me-2"></i>
-                                                <strong class="text-success">Status: Sudah Dibayar ✓</strong>
-                                            </div>
-                                            <p class="small text-muted mb-2">Customer sudah berhasil membayar:</p>
+                                        <div class="mb-3">
+                                            <p class="mb-2"><strong class="text-success">Success - Paid (200 OK)</strong></p>
                                             <pre class="code-block response-success"><code>{
   "success": true,
   "message": "Transaksi ditemukan",
   "data": {
     "partnerReferenceNo": "TRX-2026021312345",
     "amount": "10000.00",
-    "status": "success",                     <span style="color: #94a3b8;">← Pembayaran berhasil!</span>
-    "paidAt": "2026-02-13 13:15:30",         <span style="color: #94a3b8;">← Waktu customer bayar</span>
-    "paymentMethod": "QRIS",                 <span style="color: #94a3b8;">← Metode pembayaran</span>
-    "customerName": "John Doe"               <span style="color: #94a3b8;">← Nama pembayar</span>
+    "status": "success",
+    "paidAt": "2026-02-13 13:15:30",
+    "paymentMethod": "QRIS",
+    "customerName": "John Doe"
   }
 }</code></pre>
-                                            <div class="alert alert-success border-0 mt-2">
-                                                <small><i class="ti ti-check me-1"></i><strong>Arti:</strong> Transaksi sudah dibayar! Anda bisa proses pesanan/kirim barang ke customer.</small>
-                                            </div>
                                         </div>
 
                                         <!-- Error - Not Found -->
                                         <div>
-                                            <div class="d-flex align-items-center mb-2">
-                                                <i class="ti ti-circle-x text-danger me-2"></i>
-                                                <strong class="text-danger">Transaksi Tidak Ditemukan</strong>
-                                            </div>
-                                            <p class="small text-muted mb-2">Nomor referensi tidak ada dalam sistem:</p>
+                                            <p class="mb-2"><strong class="text-danger">Error - Not Found (404)</strong></p>
                                             <pre class="code-block response-error"><code>{
-  "success": false,                        <span style="color: #94a3b8;">← Gagal</span>
-  "message": "Transaksi tidak ditemukan",  <span style="color: #94a3b8;">← Pesan error</span>
+  "success": false,
+  "message": "Transaksi tidak ditemukan",
   "data": null
 }</code></pre>
-                                            <div class="alert alert-danger border-0 mt-2">
-                                                <small><i class="ti ti-alert-triangle me-1"></i><strong>Troubleshooting:</strong> Cek kembali nomor referensi yang Anda kirim, mungkin salah ketik.</small>
-                                            </div>
                                         </div>
                                     </div>
                                 </div>
 
                                 <!-- Webhook Tab -->
                                 <div class="tab-pane fade" id="webhook" role="tabpanel">
-                                    <div class="d-flex align-items-center mb-3">
-                                        <i class="ti ti-webhook text-info me-2" style="font-size: 32px;"></i>
-                                        <div>
-                                            <h5 class="mb-1 fw-bold">3. Callback / Webhook - Notifikasi Otomatis</h5>
-                                            <p class="text-muted mb-0 small">Sistem akan mengirim pemberitahuan otomatis ke server Anda saat customer membayar</p>
-                                        </div>
-                                    </div>
+                                    <h5 class="mb-3 fw-bold">3. Callback / Webhook</h5>
+                                    <p class="text-muted">Sistem akan mengirimkan notifikasi ke URL callback merchant ketika terjadi perubahan status transaksi.</p>
 
-                                    <!-- Simple Explanation -->
-                                    <div class="alert alert-light border mb-4">
-                                        <h6 class="fw-bold mb-2"><i class="ti ti-bulb-filled text-warning me-1"></i> Apa Itu Webhook? (Penjelasan Sederhana)</h6>
-                                        <p class="mb-2 small">Bayangkan webhook seperti <strong>notifikasi WhatsApp otomatis</strong>:</p>
-                                        <ul class="small mb-2">
-                                            <li><strong>Tanpa Webhook:</strong> Anda harus terus-menerus cek status pembayaran ("Sudah bayar belum? Sudah bayar belum?")</li>
-                                            <li><strong>Dengan Webhook:</strong> Sistem otomatis kirim pesan ke server Anda begitu customer bayar ("Hei, customer sudah bayar!")</li>
-                                        </ul>
-                                        <p class="mb-0 small"><strong>Keuntungan:</strong> Lebih efisien, hemat resources, dan customer tidak perlu menunggu lama.</p>
-                                    </div>
-
-                                    <!-- How It Works -->
-                                    <div class="card mb-4">
-                                        <div class="card-body">
-                                            <h6 class="fw-bold mb-3"><i class="ti ti-timeline me-1"></i> Cara Kerja Webhook</h6>
-                                            <div class="row g-2">
-                                                <div class="col-md-3">
-                                                    <div class="text-center">
-                                                        <div class="badge bg-primary p-2 mb-2 w-100">1. Customer Bayar</div>
-                                                        <small class="text-muted">Customer scan QRIS dan bayar</small>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-1 d-flex align-items-center justify-content-center">
-                                                    <i class="ti ti-arrow-right"></i>
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <div class="text-center">
-                                                        <div class="badge bg-success p-2 mb-2 w-100">2. Sistem Deteksi</div>
-                                                        <small class="text-muted">Sistem tahu pembayaran berhasil</small>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-1 d-flex align-items-center justify-content-center">
-                                                    <i class="ti ti-arrow-right"></i>
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <div class="text-center">
-                                                        <div class="badge bg-info p-2 mb-2 w-100">3. Kirim ke Server Anda</div>
-                                                        <small class="text-muted">Sistem POST data ke URL callback Anda</small>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <!-- Setup Webhook -->
+                                    <!-- Webhook Info -->
                                     <div class="mb-4">
-                                        <h6 class="fw-bold mb-2"><i class="ti ti-settings me-1"></i> Cara Setting Webhook</h6>
-                                        <div class="alert alert-info border-0 mb-3">
-                                            <div class="row align-items-center">
-                                                <div class="col-md-8">
-                                                    <p class="mb-1"><strong>Langkah Setup:</strong></p>
-                                                    <ol class="small mb-0 ps-3">
-                                                        <li>Buka menu <strong>Setting Merchant</strong> di dashboard</li>
-                                                        <li>Isi field <strong>URL Callback</strong> dengan alamat server Anda</li>
-                                                        <li>Simpan dan selesai!</li>
-                                                    </ol>
-                                                </div>
-                                                <div class="col-md-4 text-center">
-                                                    <i class="ti ti-circle-check" style="font-size: 64px; opacity: 0.3;"></i>
-                                                </div>
-                                            </div>
+                                        <div class="alert alert-info border-0">
+                                            <h6 class="fw-bold mb-2"><i class="ti ti-settings me-1"></i> Konfigurasi Webhook</h6>
+                                            <p class="mb-1">URL Callback dapat dikonfigurasi di halaman <strong>Setting Merchant</strong> pada dashboard Anda.</p>
+                                            <p class="mb-0 text-muted small">Pastikan endpoint callback Anda dapat menerima HTTP POST request dengan format JSON.</p>
                                         </div>
-                                        <p class="small text-muted"><i class="ti ti-info-circle me-1"></i>Contoh URL Callback: <code>https://tokoweb.com/api/payment-notification</code></p>
                                     </div>
 
-                                    <!-- What System Sends -->
+                                    <!-- Webhook Request -->
                                     <div class="mb-4">
-                                        <h6 class="fw-bold mb-2"><i class="ti ti-file-download me-1"></i> Data yang Dikirim Sistem ke Anda</h6>
-                                        <p class="small text-muted mb-3">Ketika customer bayar, sistem akan POST data ini ke URL callback Anda:</p>
+                                        <h6 class="fw-bold mb-2">Webhook Request (Dikirim oleh sistem)</h6>
+                                        <div class="d-flex align-items-center gap-2 mb-3">
+                                            <span class="endpoint-badge post">POST</span>
+                                            <div class="endpoint-url bg-body-secondary flex-grow-1">https://your-merchant-site.com/webhook/payment-notification</div>
+                                        </div>
+
                                         <div class="table-responsive mb-3">
                                             <table class="table table-bordered param-table">
                                                 <thead>
                                                     <tr>
-                                                        <th style="width: 200px;">Field</th>
+                                                        <th style="width: 200px;">Parameter</th>
                                                         <th style="width: 100px;">Type</th>
-                                                        <th>Penjelasan</th>
+                                                        <th>Description</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     <tr>
                                                         <td><code>partnerReferenceNo</code></td>
                                                         <td>String</td>
-                                                        <td><strong>Nomor order/invoice Anda</strong> yang tadi dibuat</td>
+                                                        <td>Nomor referensi transaksi</td>
                                                     </tr>
                                                     <tr>
                                                         <td><code>amount</code></td>
                                                         <td>String</td>
-                                                        <td><strong>Jumlah yang dibayar</strong> customer</td>
+                                                        <td>Nominal pembayaran</td>
                                                     </tr>
                                                     <tr>
                                                         <td><code>status</code></td>
                                                         <td>String</td>
-                                                        <td><strong>Status pembayaran:</strong> "success" (berhasil), "failed" (gagal), atau "expired" (kadaluarsa)</td>
+                                                        <td>Status transaksi (success/failed/expired)</td>
                                                     </tr>
                                                     <tr>
                                                         <td><code>paidAt</code></td>
                                                         <td>String</td>
-                                                        <td><strong>Kapan customer bayar</strong> (hanya ada jika status = success)</td>
+                                                        <td>Waktu pembayaran (jika success)</td>
                                                     </tr>
                                                     <tr>
                                                         <td><code>paymentMethod</code></td>
                                                         <td>String</td>
-                                                        <td><strong>Cara bayar:</strong> "QRIS"</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td><code>customerName</code></td>
-                                                        <td>String</td>
-                                                        <td><strong>Nama customer</strong> yang bayar</td>
+                                                        <td>Metode pembayaran (QRIS)</td>
                                                     </tr>
                                                     <tr>
                                                         <td><code>signature</code></td>
                                                         <td>String</td>
-                                                        <td><strong>Kode keamanan</strong> untuk memastikan data benar dari sistem kami</td>
+                                                        <td>Hash signature untuk validasi</td>
                                                     </tr>
                                                 </tbody>
                                             </table>
                                         </div>
 
-                                        <p class="mb-2"><strong><i class="ti ti-code me-1"></i> Contoh Data yang Dikirim:</strong></p>
-                                        <div class="alert alert-light border mb-2">
-                                            <small><i class="ti ti-info-circle me-1"></i>Sistem akan POST JSON ini ke URL callback Anda saat customer berhasil bayar</small>
-                                        </div>
+                                        <p class="mb-2"><strong>Webhook Payload Example:</strong></p>
                                         <pre class="code-block"><code>{
-  "partnerReferenceNo": "TRX-2026021312345",  <span style="color: #94a3b8;">← Nomor order Anda</span>
-  "amount": "10000.00",                        <span style="color: #94a3b8;">← Nominal yang dibayar</span>
-  "status": "success",                         <span style="color: #94a3b8;">← Pembayaran berhasil!</span>
-  "paidAt": "2026-02-13 13:15:30",             <span style="color: #94a3b8;">← Waktu bayar</span>
+  "partnerReferenceNo": "TRX-2026021312345",
+  "amount": "10000.00",
+  "status": "success",
+  "paidAt": "2026-02-13 13:15:30",
   "paymentMethod": "QRIS",
-  "customerName": "John Doe",                  <span style="color: #94a3b8;">← Nama pembayar</span>
-  "signature": "abc123def456..."               <span style="color: #94a3b8;">← Kode keamanan</span>
+  "customerName": "John Doe",
+  "signature": "abc123def456ghi789jkl012mno345pqr678stu901vwx234yz"
 }</code></pre>
-                                    </div>
-
-                                    <!-- What To Do -->
-                                    <div class="mb-4">
-                                        <h6 class="fw-bold mb-2"><i class="ti ti-checklist me-1"></i> Yang Perlu Anda Lakukan</h6>
-                                        <div class="card">
-                                            <div class="card-body">
-                                                <p class="small mb-3"><strong>Server Anda harus:</strong></p>
-                                                <div class="row g-3">
-                                                    <div class="col-md-6">
-                                                        <div class="border-start border-3 border-primary ps-3">
-                                                            <h6 class="fw-bold small mb-2">1. Terima Data</h6>
-                                                            <p class="small text-muted mb-0">Buat endpoint yang bisa menerima HTTP POST dengan data JSON</p>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <div class="border-start border-3 border-success ps-3">
-                                                            <h6 class="fw-bold small mb-2">2. Verifikasi Signature</h6>
-                                                            <p class="small text-muted mb-0">Cek <code>signature</code> untuk pastikan data dari sistem kami (bukan palsu)</p>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <div class="border-start border-3 border-info ps-3">
-                                                            <h6 class="fw-bold small mb-2">3. Update Order</h6>
-                                                            <p class="small text-muted mb-0">Jika status = "success", update status order di database Anda menjadi "Lunas/Paid"</p>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <div class="border-start border-3 border-warning ps-3">
-                                                            <h6 class="fw-bold small mb-2">4. Kirim Response</h6>
-                                                            <p class="small text-muted mb-0">Balas dengan HTTP 200 dan JSON konfirmasi</p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
                                     </div>
 
                                     <!-- Expected Response -->
                                     <div class="mb-4">
-                                        <h6 class="fw-bold mb-2"><i class="ti ti-arrow-back-up me-1"></i> Response yang Harus Anda Kirim Balik</h6>
-                                        <p class="small text-muted mb-2">Setelah menerima webhook, server Anda harus membalas dengan:</p>
+                                        <h6 class="fw-bold mb-2">Expected Response dari Merchant</h6>
+                                        <p class="text-muted small mb-2">Endpoint callback merchant harus merespon dengan HTTP 200 untuk konfirmasi penerimaan webhook.</p>
                                         <pre class="code-block response-success"><code>{
-  "success": true,         <span style="color: #94a3b8;">← Konfirmasi sudah terima</span>
+  "success": true,
   "message": "Webhook received"
 }</code></pre>
-                                        <div class="alert alert-success border-0 mt-2">
-                                            <small><i class="ti ti-check me-1"></i><strong>Penting:</strong> Response ini memberitahu sistem bahwa Anda sudah terima notifikasi. Jika tidak ada response, sistem akan coba kirim ulang.</small>
-                                        </div>
                                     </div>
 
-                                    <!-- Security Warning -->
+                                    <!-- Verification -->
                                     <div class="alert alert-warning border-0">
-                                        <h6 class="fw-bold mb-2"><i class="ti ti-shield-check me-1"></i> Keamanan Penting!</h6>
-                                        <p class="small mb-2"><strong>Selalu verifikasi <code>signature</code>!</strong></p>
-                                        <p class="small mb-0">Signature adalah kode keamanan yang memastikan webhook benar-benar dari sistem kami, bukan dari orang jahat yang coba kirim data palsu. Jangan pernah skip verifikasi ini!</p>
+                                        <h6 class="fw-bold mb-2"><i class="ti ti-shield-check me-1"></i> Signature Verification</h6>
+                                        <p class="mb-0 small">Selalu verifikasi signature yang diterima untuk memastikan webhook berasal dari sistem kami. Signature dihitung menggunakan HMAC-SHA256 dengan secret key merchant Anda.</p>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Status Codes Reference -->
-            <div class="row mt-3">
-                <div class="col-md-6">
-                    <div class="card">
-                        <div class="card-body">
-                            <h6 class="fw-bold mb-3"><i class="ti ti-list-numbers me-1"></i> HTTP Status Codes</h6>
-                            <table class="table table-sm mb-0">
-                                <tr>
-                                    <td><code>200</code></td>
-                                    <td>Success - Request berhasil diproses</td>
-                                </tr>
-                                <tr>
-                                    <td><code>400</code></td>
-                                    <td>Bad Request - Parameter tidak valid</td>
-                                </tr>
-                                <tr>
-                                    <td><code>401</code></td>
-                                    <td>Unauthorized - Token tidak valid</td>
-                                </tr>
-                                <tr>
-                                    <td><code>404</code></td>
-                                    <td>Not Found - Data tidak ditemukan</td>
-                                </tr>
-                                <tr>
-                                    <td><code>500</code></td>
-                                    <td>Server Error - Terjadi kesalahan server</td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="card">
-                        <div class="card-body">
-                            <h6 class="fw-bold mb-3"><i class="ti ti-flag me-1"></i> Transaction Status</h6>
-                            <table class="table table-sm mb-0">
-                                <tr>
-                                    <td><code>pending</code></td>
-                                    <td>Menunggu pembayaran</td>
-                                </tr>
-                                <tr>
-                                    <td><code>success</code></td>
-                                    <td>Pembayaran berhasil</td>
-                                </tr>
-                                <tr>
-                                    <td><code>failed</code></td>
-                                    <td>Pembayaran gagal</td>
-                                </tr>
-                                <tr>
-                                    <td><code>expired</code></td>
-                                    <td>QRIS sudah kadaluarsa</td>
-                                </tr>
-                            </table>
                         </div>
                     </div>
                 </div>
