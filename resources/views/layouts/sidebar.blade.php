@@ -1,3 +1,9 @@
+<style>
+    nav .app-nav .main-nav > li.no-sub.active > a {
+        color: rgba(var(--white), 1);
+        background: rgba(var(--primary), 1);
+    }
+</style>
 <nav>
     <div class="app-logo">
         <a class="logo d-inline-block" href="/dashboard">
