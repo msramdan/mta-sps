@@ -90,24 +90,6 @@
                 </div>
             </div>
 
-            <!-- Intro Card -->
-            <div class="row mb-3">
-                <div class="col-12">
-                    <div class="card border-primary">
-                        <div class="card-body">
-                            <div class="d-flex align-items-center mb-2">
-                                <i class="ti ti-info-circle text-primary me-2" style="font-size: 24px;"></i>
-                                <h5 class="mb-0">Informasi Umum</h5>
-                            </div>
-                            <p class="text-muted mb-2">Dokumentasi API untuk integrasi sistem pembayaran QRIS. Semua request menggunakan format JSON dan memerlukan autentikasi menggunakan <code>token_qrin</code>.</p>
-                            <div class="alert alert-warning border-0 mb-0">
-                                <strong><i class="ti ti-shield-lock me-1"></i> Authentication:</strong> Setiap request wajib menyertakan <code>token_qrin</code> yang dapat diperoleh dari dashboard merchant Anda.
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             <!-- API Endpoints -->
             <div class="row">
                 <div class="col-12">
