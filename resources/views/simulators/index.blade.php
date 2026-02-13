@@ -3,188 +3,198 @@
 @section('title', __(key: 'Simulator'))
 
 @push('css')
-{{-- https://github.com/tsayen/dom-to-image/issues/147 --}}
-<style>
-    .qris-merchant-design-wrapper {
-        position: relative;
-        overflow: hidden;
-        border-radius: 10px;
-        box-shadow: rgba(0, 0, 0, 0.08) 0px 4px 12px, rgba(0, 0, 0, 0.12) 0px 2px 4px;
-        width: 100%;
-        max-width: 280px;
-        margin: 0 auto;
-    }
+    {{-- https://github.com/tsayen/dom-to-image/issues/147 --}}
+    <style>
+        .qris-merchant-design-wrapper {
+            position: relative;
+            overflow: hidden;
+            border-radius: 10px;
+            box-shadow: rgba(0, 0, 0, 0.08) 0px 4px 12px, rgba(0, 0, 0, 0.12) 0px 2px 4px;
+            width: 100%;
+            max-width: 280px;
+            margin: 0 auto;
+        }
 
-    .header-qris-template .header-qris-template-left {
-        width: 50%;
-        background: #fff;
-        padding: 10px;
-        display: flex;
-        align-items: center;
-        justify-content: start;
-    }
-    .header-qris-template .header-qris-template-right {
-        width: 50%;
-        background: #fff;
-        padding: 10px;
-        display: flex;
-        align-items: center;
-        justify-content: end;
-    }
+        .header-qris-template .header-qris-template-left {
+            width: 50%;
+            background: #fff;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: start;
+        }
 
-    .qris-info-overview {
-        text-align: center;
-        overflow: hidden;
-        position: relative;
-        z-index: 5;
-    }
+        .header-qris-template .header-qris-template-right {
+            width: 50%;
+            background: #fff;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: end;
+        }
 
-    .nmid-section {
-        background: transparent;
-        padding: 8px;
-        border-radius: 6px;
-        display: inline-block;
-    }
+        .qris-info-overview {
+            text-align: center;
+            overflow: hidden;
+            position: relative;
+            z-index: 5;
+        }
 
-    .qris-footer-branding {
-        padding-top: 0.5rem;
-    }
+        .nmid-section {
+            background: transparent;
+            padding: 8px;
+            border-radius: 6px;
+            display: inline-block;
+        }
 
-    .pop-in {
-        animation: pop-up 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) forwards;
-    }
+        .qris-footer-branding {
+            padding-top: 0.5rem;
+        }
 
-    .pop-out {
-        animation: pop-out 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) forwards !important;
-    }
+        .pop-in {
+            animation: pop-up 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) forwards;
+        }
 
-    @keyframes pop-up {
-        0% {
-            transform: scale(0);
+        .pop-out {
+            animation: pop-out 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) forwards !important;
+        }
+
+        @keyframes pop-up {
+            0% {
+                transform: scale(0);
+                opacity: 0;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes pop-out {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(0);
+                opacity: 0;
+            }
+        }
+
+        .icon-step-useqr {
+            background: white;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            padding: 3px;
+        }
+
+        .screenshot-effect {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: #fff;
+            display: none;
+            z-index: 6;
             opacity: 0;
+            left: 0px;
+            animation: screenshot-effect-anim 3s cubic-bezier(0.250, 0.460, 0.450, 0.940) forwards;
         }
-        100% {
-            transform: scale(1);
-            opacity: 1;
-        }
-    }
 
-    @keyframes pop-out {
-        0% {
-            transform: scale(1);
-            opacity: 1;
+        .screenshot-effect canvas {
+            width: 100%;
+            height: 100%;
+            transition: all 0.5s ease;
+            transition-delay: 500ms;
+            animation: fade-in 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) forwards;
         }
-        100% {
-            transform: scale(0);
-            opacity: 0;
+
+        @keyframes fade-in {
+            0% {
+                opacity: 0;
+            }
+
+            100% {
+                opacity: 1;
+            }
         }
-    }
 
-    .icon-step-useqr {
-        background: white;
-        border-radius: 50%;
-        width: 25px;
-        height: 25px;
-        padding: 3px;
-    }
+        @keyframes screenshot-effect-anim {
+            0% {
+                opacity: 1;
+                transform: scale(1)
+            }
 
-    .screenshot-effect {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        background: #fff;
-        display: none;
-        z-index: 6;
-        opacity: 0;
-        left: 0px;
-        animation: screenshot-effect-anim 3s cubic-bezier(0.250, 0.460, 0.450, 0.940) forwards;
-    }
+            5% {
+                opacity: 0;
+            }
 
-    .screenshot-effect canvas {
-        width: 100%;
-        height: 100%;
-        transition: all 0.5s ease;
-        transition-delay: 500ms;
-        animation: fade-in 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) forwards;
-    }
+            10% {
+                opacity: 1;
+                transform: scale(1)
+            }
 
-    @keyframes fade-in {
-        0% {
-            opacity: 0;
+            20% {
+                transform: scale(0.8)
+            }
+
+            61% {
+                opacity: 1;
+                transform: scale(0.8)
+            }
+
+            90% {
+                opacity: 1;
+                transform: scale(0.8)
+            }
+
+            100% {
+                opacity: 0;
+                transform: scale(0.8)
+            }
         }
-        100% {
-            opacity: 1;
-        }
-    }
 
-    @keyframes screenshot-effect-anim {
-        0% {
-            opacity: 1;
-            transform: scale(1)
+        #generateBtn {
+            width: 100%;
+            padding: 12px;
+            font-weight: 600;
         }
-        5% {
-            opacity: 0;
-        }
-        10% {
-            opacity: 1;
-            transform: scale(1)
-        }
-        20% {
-            transform: scale(0.8)
-        }
-        61% {
-            opacity: 1;
-            transform: scale(0.8)
-        }
-        90% {
-            opacity: 1;
-            transform: scale(0.8)
-        }
-        100% {
-            opacity: 0;
-            transform: scale(0.8)
-        }
-    }
 
-    #generateBtn {
-        width: 100%;
-        padding: 12px;
-        font-weight: 600;
-    }
+        .form-label {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 8px;
+        }
 
-    .form-label {
-        font-weight: 600;
-        color: #495057;
-        margin-bottom: 8px;
-    }
+        .loading-qris {
+            position: absolute;
+            box-shadow: 0 0 10px 0 rgb(0 0 0 / 20%);
+            width: 224px;
+            height: 65px;
+            background: rgba(255, 255, 255, 88%);
+            z-index: 10;
+            transform: translate(50%, 0);
+            border-radius: 8px;
+            top: -100px;
+            transition: all 0.5s ease;
+        }
 
-    .loading-qris {
-        position: absolute;
-        box-shadow: 0 0 10px 0 rgb(0 0 0 / 20%);
-        width: 224px;
-        height: 65px;
-        background: rgba(255, 255, 255, 88%);
-        z-index: 10;
-        transform: translate(50%, 0);
-        border-radius: 8px;
-        top: -100px;
-        transition: all 0.5s ease;
-    }
+        .loading-qris-content {
+            display: flex;
+        }
 
-    .loading-qris-content {
-        display: flex;
-    }
+        .loading-qris-content-left img {
+            width: 47px;
+            margin-top: 5px;
+            margin-left: 10px;
+        }
 
-    .loading-qris-content-left img {
-        width: 47px;
-        margin-top: 5px;
-        margin-left: 10px;
-    }
-
-    .loading-qris-content-right {
-        padding-top: 20px;
-    }
-</style>
+        .loading-qris-content-right {
+            padding-top: 20px;
+        }
+    </style>
 @endpush
 
 @section('content')
@@ -210,7 +220,7 @@
 
 
             <div class="row">
-                <div class="col-md-4 order-md-1">
+                <div class="col-md-6">
                     <div class="card">
                         <div class="card-header">
                             <h5>{{ __('Generate QRIS') }}</h5>
@@ -243,8 +253,8 @@
                     </div>
                 </div>
 
-                <div class="col-md-4 order-md-2">
-                    <div class="card">
+                <div class="col-md-6">
+                    <div class="card mb-3">
                         <div class="card-header">
                             <h5><i class="ph-duotone ph-qr-code me-2"></i>{{ __('QRIS Payment') }}</h5>
                         </div>
@@ -255,7 +265,8 @@
                                     <div class="loading-qris">
                                         <div class="loading-qris-content">
                                             <div class="loading-qris-content-left">
-                                                <div class="spinner-border text-primary" role="status" style="width: 47px; height: 47px; margin-top: 5px; margin-left: 10px;">
+                                                <div class="spinner-border text-primary" role="status"
+                                                    style="width: 47px; height: 47px; margin-top: 5px; margin-left: 10px;">
                                                     <span class="visually-hidden">Loading...</span>
                                                 </div>
                                             </div>
@@ -264,19 +275,27 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div id="qris-merchant" style="width: 100%; height: 100%; overflow:visible !important; padding: 4px; position:relative; background: white;">
+                                    <div id="qris-merchant"
+                                        style="width: 100%; height: 100%; overflow:visible !important; padding: 4px; position:relative; background: white;">
                                         <div class="qris-info-overview">
                                             <div class="qris-logo-top mb-2">
-                                                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Logo_QRIS.svg/1280px-Logo_QRIS.svg.png" alt="QRIS" style="width: 180px; display: block; margin: 0 auto;">
+                                                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Logo_QRIS.svg/1280px-Logo_QRIS.svg.png"
+                                                    alt="QRIS" style="width: 180px; display: block; margin: 0 auto;">
                                             </div>
-                                            <div id="qrCodeContainer" style="display: inline-block; margin: 0.5rem 0;"></div>
+                                            <div id="qrCodeContainer" style="display: inline-block; margin: 0.5rem 0;">
+                                            </div>
                                             <div class="nmid-section mb-2">
-                                                <p class="text-center mb-0" style="font-size: 0.95rem; font-weight: 600; color: #000;">NMID : <span id="nmid" style="font-weight: 700;">ID2026020900005</span></p>
+                                                <p class="text-center mb-0"
+                                                    style="font-size: 0.95rem; font-weight: 600; color: #000;">NMID : <span
+                                                        id="nmid" style="font-weight: 700;">ID2026020900005</span></p>
                                             </div>
                                             <div class="qris-footer-branding pb-1">
-                                                <div style="display: flex; align-items: center; justify-content: center; gap: 8px;">
-                                                    <span style="font-size: 0.9rem; color: #6c757d; font-weight: 700;">QRIS by</span>
-                                                    <img src="https://upload.wikimedia.org/wikipedia/commons/1/1f/Logo_Nobubank.png" alt="Nobu" style="height: 30px;">
+                                                <div
+                                                    style="display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                                    <span style="font-size: 0.9rem; color: #6c757d; font-weight: 700;">QRIS
+                                                        by</span>
+                                                    <img src="https://upload.wikimedia.org/wikipedia/commons/1/1f/Logo_Nobubank.png"
+                                                        alt="Nobu" style="height: 30px;">
                                                 </div>
                                             </div>
                                         </div>
@@ -289,27 +308,23 @@
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="col-md-4 order-md-3">
                     <div class="card">
                         <div class="card-header">
                             <h5>{{ __('Instruksi Pembayaran QRIS') }}</h5>
                         </div>
                         <div class="card-body">
-                            <div class="mb-3">
+                            <div class="mb-0">
                                 <h6 class="fw-bold">{{ __('Cara Bayar dengan QRIS') }}</h6>
                                 <ol class="mb-0" style="padding-left: 1.2rem; font-size: 0.9rem;">
-                                    <li class="mb-2">Buka aplikasi pembayaran digital Anda (GoPay, OVO, Dana, ShopeePay, dll)</li>
+                                    <li class="mb-2">Buka aplikasi pembayaran digital Anda (GoPay, OVO, Dana, ShopeePay,
+                                        dll)</li>
                                     <li class="mb-2">Pilih menu Scan QR atau bayar dengan QRIS</li>
                                     <li class="mb-2">Arahkan kamera ke QR Code yang ditampilkan</li>
                                     <li class="mb-2">Periksa detail pembayaran (merchant & nominal)</li>
                                     <li class="mb-2">Masukkan PIN untuk konfirmasi pembayaran</li>
                                     <li class="mb-0">Simpan bukti transaksi Anda</li>
                                 </ol>
-                            </div>
-                            <div class="alert alert-info mb-0" style="font-size: 0.85rem;">
-                                <i class="ph-duotone ph-info"></i> <strong>Info:</strong> QRIS dapat digunakan di semua aplikasi e-wallet yang mendukung pembayaran QRIS.
                             </div>
                         </div>
                     </div>
