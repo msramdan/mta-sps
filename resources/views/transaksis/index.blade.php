@@ -41,6 +41,7 @@
                                     <thead>
                                         <tr>
                                             <th>{{ __('No. Referensi') }}</th>
+                                            <th>{{ __('No. Ref. Merchant') }}</th>
                                             <th>{{ __('Tanggal') }}</th>
                                             <th>{{ __('Merchant') }}</th>
                                             <th>{{ __('Pelanggan') }}</th>
@@ -69,6 +70,10 @@
             columns: [{
                     data: 'no_referensi',
                     name: 'no_referensi'
+                },
+                {
+                    data: 'no_ref_merchant',
+                    name: 'no_ref_merchant'
                 },
                 {
                     data: 'tanggal_transaksi',
@@ -105,7 +110,7 @@
                 }
             ],
             order: [
-                [1, 'desc']
+                [2, 'desc']
             ]
         });
     </script>

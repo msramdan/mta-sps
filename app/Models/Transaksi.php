@@ -82,11 +82,16 @@ class Transaksi extends Model
             }
 
             // Auto-generate no_referensi if not set
+            // Format: kode_merchant-Ymd-6 digit random
             if (empty($model->no_referensi)) {
+                // Get merchant's kode_merchant
+                $merchant = Merchant::find($model->merchant_id);
+                $kodeMerchant = $merchant ? $merchant->kode_merchant : 'UNKNOWN';
+
                 do {
-                    $timestamp = now()->format('YmdHis');
-                    $random = str_pad(rand(0, 9999), 4, '0', STR_PAD_LEFT);
-                    $noReferensi = 'TRX' . $timestamp . $random;
+                    $datePart = now()->format('ymd'); // Ymd format (260213)
+                    $random = str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT);
+                    $noReferensi = $kodeMerchant . '-' . $datePart . '-' . $random;
                 } while (self::where('no_referensi', $noReferensi)->exists());
 
                 $model->no_referensi = $noReferensi;

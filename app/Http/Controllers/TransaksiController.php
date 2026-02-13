@@ -48,6 +48,9 @@ class TransaksiController extends Controller implements HasMiddleware
 
                     return $showBtn . $editBtn . $deleteBtn;
                 })
+                ->editColumn('no_ref_merchant', function ($transaksi) {
+                    return $transaksi->no_ref_merchant ?? '-';
+                })
                 ->editColumn('merchant_id', function ($transaksi) {
                     return $transaksi->merchant?->nama_merchant ?? '-';
                 })
