@@ -26,28 +26,167 @@
                 </div>
             </div>
 
-            <div class="row\">\n                <div class=\"col-12\">\n                    <div class=\"card\">\n                        <div class=\"card-body\">\n                            <div class=\"row\">\n                                <!-- COL KIRI: Informasi Transaksi & Pelanggan -->\n                                <div class=\"col-lg-6 col-md-12\">\n                                    <!-- 1. Informasi Transaksi -->\n                                    <div class=\"card border mb-3\">\n                                        <div class=\"card-header py-2\">\n                                            <h6 class=\"mb-0 fw-bold small\">\n                                                <i class=\"fas fa-receipt me-1\"></i> Informasi Transaksi\n                                            </h6>\n                                        </div>\n                                        <div class=\"card-body p-3\">\n                                            <table class=\"table table-sm table-borderless mb-0\">\n                                                <tr>\n                                                    <td class=\"fw-bold\" style=\"width: 40%\">No. Referensi</td>\n                                                    <td>\n                                                        <span class=\"badge bg-dark\">{{ $transaksi->no_referensi }}</span>\n                                                    </td>\n                                                </tr>\n                                                <tr>\n                                                    <td class=\"fw-bold\">No. Ref. Merchant</td>\n                                                    <td>{{ $transaksi->no_ref_merchant ?? '-' }}</td>\n                                                </tr>\n                                                <tr>\n                                                    <td class=\"fw-bold\">Tanggal Transaksi</td>\n                                                    <td><small>{{ $transaksi->tanggal_transaksi->format('d M Y H:i:s') }}</small></td>\n                                                </tr>\n                                                <tr>\n                                                    <td class=\"fw-bold\">Merchant</td>\n                                                    <td>\n                                                        {{ $transaksi->merchant?->nama_merchant ?? '-' }}\n                                                        @if($transaksi->merchant?->kode_merchant)\n                                                            <br>\n                                                            <span class=\"badge bg-primary\">{{ $transaksi->merchant->kode_merchant }}</span>\n                                                        @endif\n                                                    </td>\n                                                </tr>\n                                                <tr>\n                                                    <td class=\"fw-bold\">Status</td>\n                                                    <td>\n                                                        @if ($transaksi->status == 'pending')\n                                                            <span class=\"badge bg-warning\">Pending</span>\n                                                        @elseif($transaksi->status == 'success')\n                                                            <span class=\"badge bg-success\">Success</span>\n                                                        @elseif($transaksi->status == 'failed')\n                                                            <span class=\"badge bg-danger\">Failed</span>\n                                                        @elseif($transaksi->status == 'expired')\n                                                            <span class=\"badge bg-secondary\">Expired</span>\n                                                        @else\n                                                            <span class=\"badge bg-light text-dark\">Unknown</span>\n                                                        @endif\n                                                    </td>\n                                                </tr>\n                                            </table>\n                                        </div>\n                                    </div>\n\n                                    <!-- 2. Informasi Pelanggan -->\n                                    <div class=\"card border mb-3\">\n                                        <div class=\"card-header py-2\">\n                                            <h6 class=\"mb-0 fw-bold small\">\n                                                <i class=\"fas fa-user me-1\"></i> Informasi Pelanggan\n                                            </h6>\n                                        </div>\n                                        <div class=\"card-body p-3\">\n                                            <table class=\"table table-sm table-borderless mb-0\">\n                                                <tr>\n                                                    <td class=\"fw-bold\" style=\"width: 40%\">Nama</td>\n                                                    <td>{{ $transaksi->nama_pelanggan }}</td>\n                                                </tr>\n                                                <tr>\n                                                    <td class=\"fw-bold\">Email</td>\n                                                    <td>{{ $transaksi->email_pelanggan ?? '-' }}</td>\n                                                </tr>\n                                                <tr>\n                                                    <td class=\"fw-bold\">No. Telepon</td>\n                                                    <td>{{ $transaksi->no_telpon_pelanggan ?? '-' }}</td>\n                                                </tr>\n                                            </table>\n                                        </div>\n                                    </div>\n\n                                    <!-- 3. Informasi Pembayaran -->\n                                    <div class=\"card border mb-3\">\n                                        <div class=\"card-header py-2\">\n                                            <h6 class=\"mb-0 fw-bold small\">\n                                                <i class=\"fas fa-money-bill me-1\"></i> Informasi Pembayaran\n                                            </h6>\n                                        </div>\n                                        <div class=\"card-body p-3\">\n                                            <table class=\"table table-sm table-borderless mb-0\">\n                                                <tr>\n                                                    <td class=\"fw-bold\" style=\"width: 40%\">Biaya</td>\n                                                    <td class=\"fs-6\">Rp {{ number_format($transaksi->biaya, 0, ',', '.') }}</td>\n                                                </tr>\n                                                <tr>\n                                                    <td class=\"fw-bold\">Jumlah Dibayar</td>\n                                                    <td class=\"fs-6\">Rp {{ number_format($transaksi->jumlah_dibayar, 0, ',', '.') }}</td>\n                                                </tr>\n                                            </table>\n                                        </div>\n                                    </div>\n                                </div>\n\n                                <!-- COL KANAN: Payload & Callback -->\n                                <div class=\"col-lg-6 col-md-12\">\n                                    <!-- 4. Payload Generate QR -->\n                                    <div class=\"card border mb-3\">\n                                        <div class=\"card-header py-2\">\n                                            <h6 class=\"mb-0 fw-bold small\">\n                                                <i class=\"fas fa-code me-1\"></i> Payload Generate QR\n                                            </h6>\n                                        </div>\n                                        <div class=\"card-body p-3\">\n                                            @if ($transaksi->payload_generate_qr)\n                                                <pre class=\"bg-light p-2 rounded mb-0 small\"\n                                                    style=\"max-height: 250px; overflow-y: auto; font-size: 0.7rem;\">{{ $transaksi->payload_generate_qr }}</pre>\n                                            @else\n                                                <span class=\"text-muted fst-italic small\">-</span>\n                                            @endif\n                                        </div>\n                                    </div>\n\n                                    <!-- 5. Callback -->\n                                    <div class=\"card border mb-3\">\n                                        <div class=\"card-header py-2\">\n                                            <h6 class=\"mb-0 fw-bold small\">\n                                                <i class=\"fas fa-exchange-alt me-1\"></i> Callback\n                                            </h6>\n                                        </div>\n                                        <div class=\"card-body p-3\">\n                                            <table class=\"table table-sm table-borderless mb-2\">\n                                                <tr>\n                                                    <td class=\"fw-bold\" style=\"width: 40%\">Tanggal Callback</td>\n                                                    <td><small>{{ $transaksi->tanggal_callback ? $transaksi->tanggal_callback->format('d M Y H:i:s') : '-' }}</small></td>\n                                                </tr>\n                                            </table>\n                                            @if ($transaksi->callback)\n                                                <label class=\"fw-bold small\">Response:</label>\n                                                <pre class=\"bg-light p-2 rounded small\"\n                                                    style=\"max-height: 200px; overflow-y: auto; font-size: 0.7rem;\">{{ $transaksi->callback }}</pre>\n                                            @else\n                                                <span class=\"text-muted fst-italic small\">Belum ada callback</span>\n                                            @endif\n                                        </div>\n                                    </div>\n                                </div>\n                            </div>\n                        </div>\n                    </div>\n                </div>\n            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <!-- COL KIRI: Informasi Transaksi & Pelanggan -->
+                                <div class="col-lg-6 col-md-12">
+                                    <!-- 1. Informasi Transaksi -->
+                                    <div class="card border mb-4">
+                                        <div class="card-header py-2">
+                                            <h6 class="mb-0 fw-bold">
+                                                <i class="fas fa-receipt me-1"></i> Informasi Transaksi
+                                            </h6>
+                                        </div>
+                                        <div class="card-body p-3">
+                                            <table class="table table-sm table-borderless mb-0">
+                                                <tr>
+                                                    <td class="fw-bold" style="width: 40%">No. Referensi</td>
+                                                    <td>
+                                                        <span class="badge bg-dark">{{ $transaksi->no_referensi }}</span>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="fw-bold">No. Ref. Merchant</td>
+                                                    <td>{{ $transaksi->no_ref_merchant ?? '-' }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="fw-bold">Tanggal Transaksi</td>
+                                                    <td>{{ $transaksi->tanggal_transaksi->format('d M Y H:i:s') }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="fw-bold">Merchant</td>
+                                                    <td>
+                                                        {{ $transaksi->merchant?->nama_merchant ?? '-' }}
+                                                        @if($transaksi->merchant?->kode_merchant)
+                                                            <br>
+                                                            <span class="badge bg-primary">{{ $transaksi->merchant->kode_merchant }}</span>
+                                                        @endif
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="fw-bold">Status</td>
+                                                    <td>
+                                                        @if ($transaksi->status == 'pending')
+                                                            <span class="badge bg-warning">Pending</span>
+                                                        @elseif($transaksi->status == 'success')
+                                                            <span class="badge bg-success">Success</span>
+                                                        @elseif($transaksi->status == 'failed')
+                                                            <span class="badge bg-danger">Failed</span>
+                                                        @elseif($transaksi->status == 'expired')
+                                                            <span class="badge bg-secondary">Expired</span>
+                                                        @else
+                                                            <span class="badge bg-light text-dark">Unknown</span>
+                                                        @endif
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                    <!-- 2. Informasi Pelanggan -->
+                                    <div class="card border mb-4">
+                                        <div class="card-header py-2">
+                                            <h6 class="mb-0 fw-bold">
+                                                <i class="fas fa-user me-1"></i> Informasi Pelanggan
+                                            </h6>
+                                        </div>
+                                        <div class="card-body p-3">
+                                            <table class="table table-sm table-borderless mb-0">
+                                                <tr>
+                                                    <td class="fw-bold" style="width: 40%">Nama</td>
+                                                    <td>{{ $transaksi->nama_pelanggan }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="fw-bold">Email</td>
+                                                    <td>{{ $transaksi->email_pelanggan ?? '-' }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="fw-bold">No. Telepon</td>
+                                                    <td>{{ $transaksi->no_telpon_pelanggan ?? '-' }}</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                    <!-- 3. Informasi Pembayaran -->
+                                    <div class="card border mb-4">
+                                        <div class="card-header py-2">
+                                            <h6 class="mb-0 fw-bold">
+                                                <i class="fas fa-money-bill me-1"></i> Informasi Pembayaran
+                                            </h6>
+                                        </div>
+                                        <div class="card-body p-3">
+                                            <table class="table table-sm table-borderless mb-0">
+                                                <tr>
+                                                    <td class="fw-bold" style="width: 40%">Biaya</td>
+                                                    <td class="fs-5">Rp {{ number_format($transaksi->biaya, 0, ',', '.') }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="fw-bold">Jumlah Dibayar</td>
+                                                    <td class="fs-5">Rp {{ number_format($transaksi->jumlah_dibayar, 0, ',', '.') }}</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- COL KANAN: Payload & Callback -->
+                                <div class="col-lg-6 col-md-12">
+                                    <!-- 4. Payload Generate QR -->
+                                    <div class="card border mb-4">
+                                        <div class="card-header py-2">
+                                            <h6 class="mb-0 fw-bold">
+                                                <i class="fas fa-code me-1"></i> Payload Generate QR
+                                            </h6>
+                                        </div>
+                                        <div class="card-body p-3">
+                                            @if ($transaksi->payload_generate_qr)
+                                                <pre class="bg-light p-2 rounded mb-0"
+                                                    style="max-height: 250px; overflow-y: auto; font-size: 0.75rem;">{{ $transaksi->payload_generate_qr }}</pre>
+                                            @else
+                                                <span class="text-muted fst-italic">-</span>
+                                            @endif
+                                        </div>
+                                    </div>
+
+                                    <!-- 5. Callback -->
+                                    <div class="card border mb-4">
+                                        <div class="card-header py-2">
+                                            <h6 class="mb-0 fw-bold">
+                                                <i class="fas fa-exchange-alt me-1"></i> Callback
+                                            </h6>
+                                        </div>
+                                        <div class="card-body p-3">
+                                            <table class="table table-sm table-borderless mb-2">
+                                                <tr>
+                                                    <td class="fw-bold" style="width: 40%">Tanggal Callback</td>
+                                                    <td>{{ $transaksi->tanggal_callback ? $transaksi->tanggal_callback->format('d M Y H:i:s') : '-' }}</td>
+                                                </tr>
+                                            </table>
+                                            @if ($transaksi->callback)
+                                                <label class="fw-bold small">Response:</label>
+                                                <pre class="bg-light p-2 rounded"
+                                                    style="max-height: 200px; overflow-y: auto; font-size: 0.75rem;">{{ $transaksi->callback }}</pre>
+                                            @else
+                                                <span class="text-muted fst-italic">Belum ada callback</span>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <div class="row mt-3">
                 <div class="col-12">
                     <a href="{{ route('transaksis.index') }}" class="btn btn-secondary">
                         <i class="fas fa-arrow-left"></i> Kembali
                     </a>
-                    @can('transaksi edit')
-                        <a href="{{ route('transaksis.edit', $transaksi->id) }}" class="btn btn-warning">
-                            <i class="fas fa-edit"></i> Edit
-                        </a>
-                    @endcan
-                    @can('transaksi delete')
-                        <form action="{{ route('transaksis.destroy', $transaksi->id) }}" method="POST" class="d-inline">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-danger"
-                                onclick="return confirm('Yakin ingin menghapus transaksi ini?')">
-                                <i class="fas fa-trash"></i> Hapus
-                            </button>
-                        </form>
-                    @endcan
                 </div>
             </div>
         </div>
