@@ -24,14 +24,12 @@
             </div>
 
             <div class="d-flex justify-content-end">
-                {{-- @can('tarik saldo create') --}}
+                @can('tarik saldo create')
                     <a href="{{ route(name: 'tarik-saldos.create') }}" class="btn btn-primary mb-3 me-3">
                         <i class="fas fa-plus"></i>
                         {{ __(key: 'Tambah') }}
                     </a>
-                {{-- @endcan --}}
-
-
+                @endcan
             </div>
 
             <div class="row">

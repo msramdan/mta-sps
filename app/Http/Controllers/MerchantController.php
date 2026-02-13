@@ -47,7 +47,6 @@ class MerchantController extends Controller implements HasMiddleware
             $merchants = Merchant::with(relations: ['bank:id,nama_bank']);
 
             return Datatables::of(source: $merchants)
-                ->addColumn(name: 'bank', content: fn($row): ?string => $row?->bank?->nama_bank ?? '')
                 ->addColumn(name: 'action', content: 'merchants.include.action')
                 ->toJson();
         }

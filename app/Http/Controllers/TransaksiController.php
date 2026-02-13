@@ -38,16 +38,7 @@ class TransaksiController extends Controller implements HasMiddleware
             $transaksis = Transaksi::with('merchant:id,nama_merchant,kode_merchant')->latest();
 
             return DataTables::of($transaksis)
-                ->addColumn('action', function ($transaksi) {
-                    $showBtn = '<a href="' . route('transaksis.show', $transaksi->id) . '" class="btn btn-sm btn-info me-1"><i class="fas fa-eye"></i></a>';
-                    $editBtn = '<a href="' . route('transaksis.edit', $transaksi->id) . '" class="btn btn-sm btn-warning me-1"><i class="fas fa-edit"></i></a>';
-                    $deleteBtn = '<form action="' . route('transaksis.destroy', $transaksi->id) . '" method="POST" class="d-inline">
-                        ' . csrf_field() . method_field('DELETE') . '
-                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm(\'Yakin ingin menghapus?\')"><i class="fas fa-trash"></i></button>
-                    </form>';
-
-                    return $showBtn . $editBtn . $deleteBtn;
-                })
+                ->addColumn('action', 'transaksis.include.action')
                 ->editColumn('no_ref_merchant', function ($transaksi) {
                     return $transaksi->no_ref_merchant ?? '-';
                 })
