@@ -44,9 +44,7 @@
 											<th>{{ __(key: 'Jumlah') }}</th>
 											<th>{{ __(key: 'Biaya') }}</th>
 											<th>{{ __(key: 'Diterima') }}</th>
-											<th>{{ __(key: 'Bank') }}</th>
-											<th>{{ __(key: 'Pemilik Rekening') }}</th>
-											<th>{{ __(key: 'Nomor Rekening') }}</th>
+									<th>{{ __(key: 'Rek. Tujuan') }}</th>
 											<th>{{ __(key: 'Status') }}</th>
 											<th>{{ __(key: 'Bukti Trf') }}</th>
                                             <th>{{ __(key: 'Action') }}</th>
@@ -62,7 +60,7 @@
     </main>
 
     <div class="modal fade" id="withdrawalModal" tabindex="-1" aria-labelledby="withdrawalModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="withdrawalModalLabel"><i class="ti ti-cash me-2"></i>Pengajuan Penarikan Saldo</h5>
@@ -71,87 +69,63 @@
                 <form id="withdrawalForm">
                     @csrf
                     <div class="modal-body">
-                        <div class="row">
-                            <div class="col-lg-7">
-                                <div class="mb-4">
-                                    <label for="jumlah" class="form-label fw-bold">Jumlah Penarikan</label>
-                                    <div class="input-group input-group-lg">
-                                        <span class="input-group-text">Rp</span>
-                                        <input type="number" name="jumlah" id="jumlah"
-                                            class="form-control"
-                                            placeholder="0"
-                                            min="10000"
-                                            step="1000"
-                                            required />
-                                    </div>
-                                    <div class="form-text" id="jumlah-error" style="color: #dc3545; display: none;"></div>
-                                    <div class="form-text">Minimal penarikan Rp 10.000</div>
+                        <!-- Informasi Saldo & Biaya -->
+                        <div class="row g-2 mb-3">
+                            <div class="col-6">
+                                <div class="border rounded p-2 text-center">
+                                    <small class="text-muted d-block">Saldo Tersedia</small>
+                                    <h5 class="text-primary mb-0" id="merchant-balance">Rp 0</h5>
                                 </div>
                             </div>
-
-                            <div class="col-lg-5">
-                                <!-- Informasi Saldo -->
-                                <div class="card mb-3 border-primary">
-                                    <div class="card-header bg-primary text-white">
-                                        <h6 class="mb-0"><i class="ti ti-wallet me-2"></i>Saldo Merchant</h6>
-                                    </div>
-                                    <div class="card-body text-center">
-                                        <h3 class="text-primary mb-0" id="merchant-balance">Rp 0</h3>
-                                        <p class="text-muted small mb-0">Saldo Tersedia</p>
-                                    </div>
-                                </div>
-
-                                <!-- Informasi Biaya -->
-                                <div class="card mb-3">
-                                    <div class="card-header">
-                                        <h6 class="mb-0"><i class="ti ti-receipt me-2"></i>Biaya Admin</h6>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="d-flex justify-content-between">
-                                            <span>Biaya Admin:</span>
-                                            <span class="fw-bold">Rp 2.500</span>
-                                        </div>
-                                    </div>
+                            <div class="col-6">
+                                <div class="border rounded p-2 text-center">
+                                    <small class="text-muted d-block">Biaya Admin</small>
+                                    <h5 class="text-danger mb-0">Rp 7.500</h5>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="row">
-                            <div class="col-12">
-                                <!-- Informasi Rekening Tujuan -->
-                                <div class="card mb-3">
-                                    <div class="card-header">
-                                        <h6 class="mb-0"><i class="ti ti-building-bank me-2"></i>Rekening Tujuan</h6>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <div class="col-md-4 mb-2">
-                                                <small class="text-muted d-block">Bank</small>
-                                                <strong id="merchant-bank">-</strong>
-                                            </div>
-                                            <div class="col-md-4 mb-2">
-                                                <small class="text-muted d-block">Nomor Rekening</small>
-                                                <strong id="merchant-rekening">-</strong>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <small class="text-muted d-block">Atas Nama</small>
-                                                <strong id="merchant-pemilik">-</strong>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                        <!-- Jumlah Penarikan -->
+                        <div class="mb-3">
+                            <label for="jumlah" class="form-label fw-bold">Jumlah Penarikan</label>
+                            <div class="input-group">
+                                <span class="input-group-text">Rp</span>
+                                <input type="number" name="jumlah" id="jumlah"
+                                    class="form-control"
+                                    placeholder="0"
+                                    min="200000"
+                                    step="1000"
+                                    required />
+                            </div>
+                            <div class="form-text" id="jumlah-error" style="color: #dc3545; display: none;"></div>
+                            <small class="form-text text-muted">Minimal penarikan Rp 200.000</small>
+                        </div>
 
-                                <!-- Informasi Waktu Proses -->
-                                <div class="alert alert-warning">
-                                    <div class="d-flex align-items-start">
-                                        <i class="ti ti-clock fs-4 me-2"></i>
-                                        <div>
-                                            <strong>Waktu Pemrosesan</strong>
-                                            <p class="mb-0 small">Penarikan akan diproses maksimal 1x24 jam pada hari kerja.</p>
-                                        </div>
-                                    </div>
+                        <!-- Rekening Tujuan -->
+                        <div class="border rounded p-3 mb-3">
+                            <h6 class="mb-2"><i class="ti ti-building-bank me-2"></i>Rekening Tujuan</h6>
+                            <div class="row g-2">
+                                <div class="col-12">
+                                    <small class="text-muted">Bank:</small>
+                                    <div class="fw-bold" id="merchant-bank">-</div>
+                                </div>
+                                <div class="col-6">
+                                    <small class="text-muted">No. Rekening:</small>
+                                    <div class="fw-bold" id="merchant-rekening">-</div>
+                                </div>
+                                <div class="col-6">
+                                    <small class="text-muted">Atas Nama:</small>
+                                    <div class="fw-bold" id="merchant-pemilik">-</div>
                                 </div>
                             </div>
+                        </div>
+
+                        <!-- Info Waktu -->
+                        <div class="alert alert-warning mb-0 py-2">
+                            <small>
+                                <i class="ti ti-clock me-1"></i>
+                                <strong>Waktu Proses:</strong> Maksimal 1x24 jam pada hari kerja
+                            </small>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -201,16 +175,16 @@
                     }
                 },
 				{
-                    data: 'bank',
-                    name: 'bank.nama_bank'
-                },
-				{
-                    data: 'pemilik_rekening',
-                    name: 'pemilik_rekening',
-                },
-				{
-                    data: 'nomor_rekening',
-                    name: 'nomor_rekening',
+                    data: null,
+                    name: 'rekening_tujuan',
+                    orderable: false,
+                    render: function(data, type, row) {
+                        return `<div class="small">
+                            <div class="fw-bold">${row.bank || '-'}</div>
+                            <div class="text-muted">${row.nomor_rekening || '-'}</div>
+                            <div>${row.pemilik_rekening || '-'}</div>
+                        </div>`;
+                    }
                 },
 				{
                     data: 'status',
@@ -237,11 +211,11 @@
                     searchable: false,
                     render: function(data) {
                         if (data) {
-                            return `<div class="avatar">
-                                <img src="${data}" alt="Bukti Trf"  />
-                            </div>`;
+                            return `<a href="${data}" target="_blank" class="btn btn-sm btn-primary">
+                                <i class="ti ti-file"></i> Lihat
+                            </a>`;
                         }
-                        return '-';
+                        return '<span class="text-muted">-</span>';
                     }
                 },
                 {

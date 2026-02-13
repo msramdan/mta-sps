@@ -20,7 +20,7 @@ class StoreTarikSaldoRequest extends FormRequest
     public function rules(): array
     {
         return [
-			'jumlah' => 'required|numeric|min:10000',
+			'jumlah' => 'required|numeric|min:200000',
         ];
     }
 }

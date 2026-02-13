@@ -101,7 +101,7 @@ class TarikSaldoController extends Controller implements HasMiddleware
         }
 
         // Default biaya admin
-        $biaya = 2500;
+        $biaya = 7500;
 
         return view(view: 'tarik-saldos.create', data: compact('merchant', 'biaya'));
     }
@@ -156,7 +156,7 @@ class TarikSaldoController extends Controller implements HasMiddleware
         }
 
         // Calculate biaya and diterima
-        $biaya = 2500; // Fixed admin fee
+        $biaya = 7500; // Fixed admin fee
         $diterima = $validated['jumlah'] - $biaya;
 
         // Auto-fill data from merchant
