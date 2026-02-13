@@ -5,24 +5,6 @@
         <div class="row">
             <div class="col-md-6 mb-3">
                 <div class="form-group">
-                    <label for="merchant_id">Merchant <span class="text-danger">*</span></label>
-                    <select name="merchant_id" id="merchant_id"
-                        class="form-control merchant-select-ajax @error('merchant_id') is-invalid @enderror" required>
-                        <option value="">Pilih Merchant</option>
-                        @if(isset($transaksi) && $transaksi->merchant)
-                            <option value="{{ $transaksi->merchant->id }}" selected>
-                                {{ $transaksi->merchant->nama_merchant }} ({{ $transaksi->merchant->kode_merchant }})
-                            </option>
-                        @endif
-                    </select>
-                    @error('merchant_id')
-                        <span class="text-danger">{{ $message }}</span>
-                    @enderror
-                </div>
-            </div>
-
-            <div class="col-md-6 mb-3">
-                <div class="form-group">
                     <label for="tanggal_transaksi">Tanggal Transaksi</label>
                     <input type="datetime-local" name="tanggal_transaksi" id="tanggal_transaksi"
                         class="form-control @error('tanggal_transaksi') is-invalid @enderror"

@@ -15,13 +15,29 @@ class UpdateTransaksiRequest extends FormRequest
     }
 
     /**
+     * Prepare the data for validation.
+     */
+    protected function prepareForValidation()
+    {
+        $merchantId = session('sessionMerchant');
+
+        if (!$merchantId) {
+            abort(403, 'Merchant session tidak ditemukan. Silakan pilih merchant terlebih dahulu.');
+        }
+
+        $this->merge([
+            'merchant_id' => $merchantId,
+        ]);
+    }
+
+    /**
      * Get the validation rules that apply to the request.
      */
     public function rules(): array
     {
         return [
-            'tanggal_transaksi' => 'nullable|date',
             'merchant_id' => 'required|exists:merchants,id',
+            'tanggal_transaksi' => 'nullable|date',
             'no_ref_merchant' => 'required|string|max:100',
             'nama_pelanggan' => 'nullable|string|max:150',
             'email_pelanggan' => 'nullable|email|max:255',
@@ -42,7 +58,6 @@ class UpdateTransaksiRequest extends FormRequest
     {
         return [
             'tanggal_transaksi' => 'Tanggal Transaksi',
-            'merchant_id' => 'Merchant',
             'no_ref_merchant' => 'No. Referensi Merchant',
             'nama_pelanggan' => 'Nama Pelanggan',
             'email_pelanggan' => 'Email Pelanggan',

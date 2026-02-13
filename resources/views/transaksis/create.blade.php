@@ -53,35 +53,4 @@
     </main>
 @endsection
 
-@push('js')
-<script>
-    $(document).ready(function() {
-        $('.merchant-select-ajax').select2({
-            theme: 'bootstrap-5',
-            placeholder: 'Pilih Merchant',
-            allowClear: true,
-            ajax: {
-                url: '{{ route('merchants.search') }}',
-                dataType: 'json',
-                delay: 250,
-                data: function(params) {
-                    return {
-                        q: params.term,
-                        page: params.page || 1
-                    };
-                },
-                processResults: function(data) {
-                    return {
-                        results: data.results,
-                        pagination: {
-                            more: data.pagination.more
-                        }
-                    };
-                },
-                cache: true
-            },
-            minimumInputLength: 0
-        });
-    });
-</script>
-@endpush
+
