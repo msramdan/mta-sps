@@ -69,4 +69,25 @@ class SettingMerchantController extends Controller implements HasMiddleware
         Alert::success('Berhasil', 'Merchant berhasil diperbarui.');
         return redirect()->route('merchants.index');
     }
+
+    public function switchMerchant(Request $request): JsonResponse
+    {
+        $merchantId = $request->input('merchant_id');
+        $userId = auth()->id();
+
+        // Validate that user has access to this merchant
+        $hasAccess = DB::table('assign_merchants')
+            ->where('user_id', $userId)
+            ->where('merchant_id', $merchantId)
+            ->exists();
+
+        if (!$hasAccess) {
+            return response()->json(['success' => false, 'message' => 'Akses ditolak'], 403);
+        }
+
+        // Update session
+        session(['sessionMerchant' => $merchantId]);
+
+        return response()->json(['success' => true]);
+    }
 }

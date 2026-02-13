@@ -45,6 +45,8 @@ Route::middleware(['auth', 'web'])->group(function () {
         ->name('setting-merchant.index');
     Route::put('/setting-merchant', [SettingMerchantController::class, 'update'])
         ->name('setting-merchant.update');
+    Route::post('/switch-merchant', [SettingMerchantController::class, 'switchMerchant'])
+        ->name('switch-merchant');
 
     // Transaksi Management
     Route::resource('transaksis', TransaksiController::class);

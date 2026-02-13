@@ -35,7 +35,17 @@ class TransaksiController extends Controller implements HasMiddleware
     public function index(): View|JsonResponse
     {
         if (request()->ajax()) {
-            $transaksis = Transaksi::with('merchant:id,nama_merchant,kode_merchant')->latest();
+            $query = Transaksi::with('merchant:id,nama_merchant,kode_merchant');
+
+            // Filter by session merchant - no data if no session
+            $merchantId = session('sessionMerchant');
+            if ($merchantId) {
+                $query->where('merchant_id', $merchantId);
+            } else {
+                $query->whereRaw('1 = 0'); // Return empty if no merchant session
+            }
+
+            $transaksis = $query->latest();
 
             return DataTables::of($transaksis)
                 ->addColumn('action', 'transaksis.include.action')

@@ -49,6 +49,35 @@
 
     <div class="app-nav" id="app-simple-bar">
         <ul class="main-nav p-0 mt-2">
+            @can('setting merchant')
+                @if (Auth::user()->hasRole('User Merchant'))
+                    @php
+                        $userId = Auth::id();
+                        $assignMerchants = DB::table('assign_merchants')
+                            ->join('merchants', 'assign_merchants.merchant_id', '=', 'merchants.id')
+                            ->where('assign_merchants.user_id', $userId)
+                            ->select('merchants.id', 'merchants.nama_merchant', 'merchants.kode_merchant')
+                            ->get();
+                        $currentMerchantId = session('sessionMerchant');
+                    @endphp
+
+                    @if ($assignMerchants->count() > 1)
+                        <li class="no-sub mb-2">
+                            <div class="px-3 py-2">
+                                <label class="text-muted small mb-1"><i class="ti ti-building-store me-1"></i> Pilih Merchant</label>
+                                <select class="form-select form-select-sm" id="merchant-selector" onchange="switchMerchant(this.value)">
+                                    @foreach ($assignMerchants as $merchant)
+                                        <option value="{{ $merchant->id }}" {{ $currentMerchantId == $merchant->id ? 'selected' : '' }}>
+                                            {{ $merchant->nama_merchant }} ({{ $merchant->kode_merchant }})
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </li>
+                    @endif
+                @endif
+            @endcan
+
             <li class="no-sub{{ request()->routeIs('dashboard.*') || request()->is('dashboard') ? ' active' : '' }}">
                 <a href="{{ route('dashboard') }}">
                     <i class="ti ti-layout-dashboard fs-5 me-2"></i>
@@ -171,3 +200,25 @@
         <span class="menu-next"><i class="ti ti-chevron-right"></i></span>
     </div>
 </nav>
+
+<script>
+    function switchMerchant(merchantId) {
+        if (!merchantId) return;
+
+        fetch('{{ route('switch-merchant') }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({ merchant_id: merchantId })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                window.location.reload();
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    }
+</script>

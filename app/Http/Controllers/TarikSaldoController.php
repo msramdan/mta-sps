@@ -40,12 +40,20 @@ class TarikSaldoController extends Controller implements HasMiddleware
     public function index(): View|JsonResponse
     {
         if (request()->ajax()) {
-            $tarikSaldos = TarikSaldo::with(relations: ['merchant:id,nama_merchant', 'bank:id,nama_bank', ]);
+            $query = TarikSaldo::with(relations: ['merchant:id,nama_merchant', 'bank:id,nama_bank']);
 
-            return Datatables::of(source: $tarikSaldos)
+            // Filter by session merchant - no data if no session
+            $merchantId = session('sessionMerchant');
+            if ($merchantId) {
+                $query->where('merchant_id', $merchantId);
+            } else {
+                $query->whereRaw('1 = 0'); // Return empty if no merchant session
+            }
+
+            return Datatables::of(source: $query)
                 ->addColumn(name: 'merchant', content: fn($row): ?string => $row?->merchant?->nama_merchant ?? '')
 				->addColumn(name: 'bank', content: fn($row): ?string => $row?->bank?->nama_bank ?? '')
-				
+
                 ->addColumn(name: 'action', content: 'tarik-saldos.include.action')
                 ->toJson();
         }
@@ -67,7 +75,7 @@ class TarikSaldoController extends Controller implements HasMiddleware
     public function store(StoreTarikSaldoRequest $request): RedirectResponse
     {
         $validated = $request->validated();
-        
+
         $validated['bukti_trf'] = $this->imageServiceV2->upload(name: 'bukti_trf', path: $this->buktiTrfPath, disk: $this->disk);
 
         TarikSaldo::create(attributes: $validated);
@@ -102,7 +110,7 @@ class TarikSaldoController extends Controller implements HasMiddleware
     public function update(UpdateTarikSaldoRequest $request, TarikSaldo $tarikSaldo): RedirectResponse
     {
         $validated = $request->validated();
-        
+
         $validated['bukti_trf'] = $this->imageServiceV2->upload(name: 'bukti_trf', path: $this->buktiTrfPath, defaultImage: $tarikSaldo?->bukti_trf, disk: $this->disk);
 
         $tarikSaldo->update(attributes: $validated);
@@ -118,12 +126,12 @@ class TarikSaldoController extends Controller implements HasMiddleware
     {
         try {
             $buktiTrf = $tarikSaldo->bukti_trf;
-			
+
             $tarikSaldo->delete();
 
             $this->imageServiceV2->delete(path: $this->buktiTrfPath, image: $buktiTrf, disk: $this->disk);
 
-			
+
             Alert::success('Berhasil', 'tarik saldo berhasil dihapus.');
             return redirect()->route('tarik-saldos.index');
         } catch (\Exception $e) {
@@ -132,5 +140,5 @@ class TarikSaldoController extends Controller implements HasMiddleware
         }
     }
 
-    
+
 }
