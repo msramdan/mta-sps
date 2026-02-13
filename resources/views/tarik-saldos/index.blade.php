@@ -151,7 +151,7 @@
             columns: [
                 {
                     data: 'merchant',
-                    name: 'merchant.nama_merchant'
+                    name: 'merchant'
                 },
 				{
                     data: 'jumlah',

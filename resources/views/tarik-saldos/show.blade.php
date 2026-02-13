@@ -34,7 +34,7 @@
                                 <table class="table table-hover table-striped">
                                     <tr>
                     <td class="fw-bold">{{ __(key: 'Merchant') }}</td>
-                    <td>{{ $tarikSaldo->merchant ? $tarikSaldo->merchant->nama_merchant : '' }}</td>
+                    <td>{{ $tarikSaldo->nama_merchant ?? '' }}</td>
                 </tr>
 <tr>
                     <td class="fw-bold">{{ __(key: 'Jumlah') }}</td>
@@ -50,7 +50,7 @@
                 </tr>
 <tr>
                     <td class="fw-bold">{{ __(key: 'Bank') }}</td>
-                    <td>{{ $tarikSaldo->bank ? $tarikSaldo->bank->nama_bank : '' }}</td>
+                    <td>{{ $tarikSaldo->nama_bank ?? '' }}</td>
                 </tr>
 <tr>
                     <td class="fw-bold">{{ __(key: 'Pemilik Rekening') }}</td>
@@ -89,11 +89,11 @@
 
                                     <tr>
                                         <td class="fw-bold">{{ __(key: 'Created at') }}</td>
-                                        <td>{{ $tarikSaldo->created_at->format('Y-m-d H:i:s') }}</td>
+                                        <td>{{ $tarikSaldo->created_at ? date('Y-m-d H:i:s', strtotime($tarikSaldo->created_at)) : '-' }}</td>
                                     </tr>
                                     <tr>
                                         <td class="fw-bold">{{ __(key: 'Updated at') }}</td>
-                                        <td>{{ $tarikSaldo->updated_at->format('Y-m-d H:i:s') }}</td>
+                                        <td>{{ $tarikSaldo->updated_at ? date('Y-m-d H:i:s', strtotime($tarikSaldo->updated_at)) : '-' }}</td>
                                     </tr>
                                 </table>
                             </div>
