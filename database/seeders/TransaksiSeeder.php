@@ -81,7 +81,7 @@ class TransaksiSeeder extends Seeder
             'tanggal_transaksi' => now()->subDays(1),
             'merchant_id' => $merchantId,
             'no_referensi' => $kodeMerchant . '-' . now()->subDays(1)->format('ymd') . '-789003',
-            'no_ref_merchant' => null,
+            'no_ref_merchant' => 'MERCHANT-REF-003',
             'nama_pelanggan' => 'Bob Wilson',
             'email_pelanggan' => null,
             'no_telpon_pelanggan' => '083456789012',
