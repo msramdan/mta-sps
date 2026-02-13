@@ -9,9 +9,9 @@
         position: relative;
         overflow: hidden;
         border-radius: 10px;
-        box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
+        box-shadow: rgba(0, 0, 0, 0.08) 0px 4px 12px, rgba(0, 0, 0, 0.12) 0px 2px 4px;
         width: 100%;
-        max-width: 360px;
+        max-width: 280px;
         margin: 0 auto;
     }
 
@@ -210,7 +210,7 @@
 
 
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-4 order-md-1">
                     <div class="card">
                         <div class="card-header">
                             <h5>{{ __('Generate QRIS') }}</h5>
@@ -243,12 +243,12 @@
                     </div>
                 </div>
 
-                <div class="col-md-6">
+                <div class="col-md-4 order-md-2">
                     <div class="card">
-                        <div class="card-header bg-primary text-white">
-                            <h5 class="mb-0"><i class="ph-duotone ph-qr-code me-2"></i>{{ __('QRIS Payment') }}</h5>
+                        <div class="card-header">
+                            <h5><i class="ph-duotone ph-qr-code me-2"></i>{{ __('QRIS Payment') }}</h5>
                         </div>
-                        <div class="card-body text-center p-4">
+                        <div class="card-body text-center p-2">
                             <div id="qrisResult" class="d-none">
                                 <div class="card qris-merchant-design-wrapper">
                                     <div class="screenshot-effect"></div>
@@ -264,10 +264,10 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div id="qris-merchant" style="width: 100%; height: 100%; overflow:visible !important; padding: 8px; position:relative; background: white;">
+                                    <div id="qris-merchant" style="width: 100%; height: 100%; overflow:visible !important; padding: 4px; position:relative; background: white;">
                                         <div class="qris-info-overview">
                                             <div class="qris-logo-top mb-2">
-                                                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Logo_QRIS.svg/1280px-Logo_QRIS.svg.png" alt="QRIS" style="width: 200px; display: block; margin: 0 auto;">
+                                                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Logo_QRIS.svg/1280px-Logo_QRIS.svg.png" alt="QRIS" style="width: 180px; display: block; margin: 0 auto;">
                                             </div>
                                             <div id="qrCodeContainer" style="display: inline-block; margin: 0.5rem 0;"></div>
                                             <div class="nmid-section mb-2">
@@ -286,6 +286,30 @@
                             <div id="noResult" class="text-muted py-5">
                                 <i class="ph-duotone ph-qr-code" style="font-size: 5rem; opacity: 0.3;"></i>
                                 <p class="mt-3">{{ __('Generate QRIS untuk menampilkan') }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 order-md-3">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>{{ __('Instruksi Pembayaran QRIS') }}</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <h6 class="fw-bold">{{ __('Cara Bayar dengan QRIS') }}</h6>
+                                <ol class="mb-0" style="padding-left: 1.2rem; font-size: 0.9rem;">
+                                    <li class="mb-2">Buka aplikasi pembayaran digital Anda (GoPay, OVO, Dana, ShopeePay, dll)</li>
+                                    <li class="mb-2">Pilih menu Scan QR atau bayar dengan QRIS</li>
+                                    <li class="mb-2">Arahkan kamera ke QR Code yang ditampilkan</li>
+                                    <li class="mb-2">Periksa detail pembayaran (merchant & nominal)</li>
+                                    <li class="mb-2">Masukkan PIN untuk konfirmasi pembayaran</li>
+                                    <li class="mb-0">Simpan bukti transaksi Anda</li>
+                                </ol>
+                            </div>
+                            <div class="alert alert-info mb-0" style="font-size: 0.85rem;">
+                                <i class="ph-duotone ph-info"></i> <strong>Info:</strong> QRIS dapat digunakan di semua aplikasi e-wallet yang mendukung pembayaran QRIS.
                             </div>
                         </div>
                     </div>
