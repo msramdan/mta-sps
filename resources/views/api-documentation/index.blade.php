@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', __(key: 'API Documentation'))
+@section('title', __(key: 'Dokumentasi API'))
 
 @push('css')
 <style>
@@ -74,7 +74,7 @@
         <div class="container-fluid">
             <div class="row m-1">
                 <div class="col-12">
-                    <h4 class="main-title">{{ __(key: 'API Documentation') }}</h4>
+                    <h4 class="main-title">{{ __(key: 'Dokumentasi API') }}</h4>
                     <ul class="app-line-breadcrumbs mb-3">
                         <li class="">
                             <a class="f-s-14 f-w-500" href="/">
@@ -84,7 +84,7 @@
                             </a>
                         </li>
                         <li class="active">
-                            <a class="f-s-14 f-w-500" href="#">{{ __(key: 'API Documentation') }}</a>
+                            <a class="f-s-14 f-w-500" href="#">{{ __(key: 'Dokumentasi API') }}</a>
                         </li>
                     </ul>
                 </div>
