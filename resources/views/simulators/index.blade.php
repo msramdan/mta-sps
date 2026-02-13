@@ -85,7 +85,7 @@
 @endsection
 
 @push('js')
-    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script>
         document.getElementById('qrisForm').addEventListener('submit', async function(e) {
             e.preventDefault();
@@ -125,16 +125,14 @@
                     const qrContainer = document.getElementById('qrCodeContainer');
                     qrContainer.innerHTML = ''; // Clear previous QR
 
-                    QRCode.toCanvas(result.data.qris_content, {
+                    // Create QR Code using QRCodeJS
+                    new QRCode(qrContainer, {
+                        text: result.data.qris_content,
                         width: 300,
-                        margin: 2
-                    }, function(error, canvas) {
-                        if (error) {
-                            console.error(error);
-                            alert('Error generating QR code');
-                        } else {
-                            qrContainer.appendChild(canvas);
-                        }
+                        height: 300,
+                        colorDark: "#000000",
+                        colorLight: "#ffffff",
+                        correctLevel: QRCode.CorrectLevel.H
                     });
 
                     // Update details
