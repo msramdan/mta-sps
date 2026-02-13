@@ -106,6 +106,9 @@ class MerchantController extends Controller implements HasMiddleware
     {
         $validated = $request->validated();
 
+        // Exclude kode_merchant from update (should never be updated)
+        unset($validated['kode_merchant']);
+
         $validated['logo'] = $this->imageServiceV2->upload(name: 'logo', path: $this->logoPath, defaultImage: $merchant?->logo, disk: $this->disk);
         $validated['ktp'] = $this->imageServiceV2->upload(name: 'ktp', path: $this->ktpPath, defaultImage: $merchant?->ktp, disk: $this->disk);
 

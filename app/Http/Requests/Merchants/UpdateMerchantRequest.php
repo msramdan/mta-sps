@@ -19,10 +19,7 @@ class UpdateMerchantRequest extends FormRequest
      */
     public function rules(): array
     {
-        $merchantId = $this->route('merchant')->id ?? null;
-
         return [
-            'kode_merchant' => 'nullable|string|max:8|unique:merchants,kode_merchant,' . $merchantId . ',id',
             'nama_merchant' => 'required|string|max:150',
 			'logo' => 'nullable|image|max:1024',
 			'url_callback' => 'required|url',
