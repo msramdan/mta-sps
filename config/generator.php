@@ -160,6 +160,22 @@ return [
             ]
         ],
         [
+            'header' => 'Simulator QRIS',
+            'permissions' => [
+                'simulator view'
+            ],
+            'menus' => [
+                [
+                    'title' => 'Simulator QRIS',
+                    'icon' => '<i class="ti ti-qrcode fs-5 me-2"></i>',
+                    'route' => '/simulators',
+                    'permission' => 'simulator view',
+                    'permissions' => [],
+                    'submenus' => []
+                ]
+            ]
+        ],
+        [
             'header' => 'Utilities',
             'permissions' => [
                 'user view',
@@ -188,6 +204,6 @@ return [
                     ]
                 ]
             ]
-        ],
+        ]
     ]
 ];

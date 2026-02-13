@@ -47,4 +47,10 @@ Route::middleware(['auth', 'web'])->group(function () {
 
     // Tarik Saldo Management
     Route::resource('tarik-saldos', TarikSaldoController::class);
+
+    // Simulator Management
+    Route::get('/simulators', [App\Http\Controllers\SimulatorController::class, 'index'])
+        ->name('simulators.index');
+    Route::post('/simulators/generate-qris', [App\Http\Controllers\SimulatorController::class, 'generateQris'])
+        ->name('simulators.generate-qris');
 });
