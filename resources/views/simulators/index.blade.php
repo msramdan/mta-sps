@@ -233,9 +233,6 @@
                                     <label for="merchant_id" class="form-label">{{ __('Merchant') }}</label>
                                     <select class="form-select" id="merchant_id" name="merchant_id" required>
                                         <option value="">{{ __('Pilih Merchant') }}</option>
-                                        @foreach ($merchants as $merchant)
-                                            <option value="{{ $merchant->id }}">{{ $merchant->nama_merchant }}</option>
-                                        @endforeach
                                     </select>
                                 </div>
 
@@ -337,6 +334,36 @@
 @push('js')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script>
+        // Initialize Select2 for merchant search
+        $(document).ready(function() {
+            $('#merchant_id').select2({
+                theme: 'bootstrap-5',
+                placeholder: '{{ __('Pilih Merchant') }}',
+                allowClear: true,
+                ajax: {
+                    url: '{{ route('merchants.search') }}',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function(params) {
+                        return {
+                            q: params.term,
+                            page: params.page || 1
+                        };
+                    },
+                    processResults: function(data) {
+                        return {
+                            results: data.results,
+                            pagination: {
+                                more: data.pagination.more
+                            }
+                        };
+                    },
+                    cache: true
+                },
+                minimumInputLength: 0
+            });
+        });
+
         document.getElementById('qrisForm').addEventListener('submit', async function(e) {
             e.preventDefault();
 

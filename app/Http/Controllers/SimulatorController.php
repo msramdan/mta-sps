@@ -25,8 +25,7 @@ class SimulatorController extends Controller implements HasMiddleware
 
     public function index(): View|JsonResponse
     {
-        $merchants = Merchant::all();
-        return view(view: 'simulators.index', data: compact('merchants'));
+        return view(view: 'simulators.index');
     }
 
     public function generateQris(Request $request): JsonResponse

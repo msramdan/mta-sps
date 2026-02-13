@@ -12,6 +12,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->string('kode_merchant', 8)->unique();
             $table->string('nama_merchant', 150);
+            $table->decimal('balance', 15, 2)->default(0);
             $table->string('logo')->nullable();
             $table->string('url_callback')->nullable();
             $table->string('token_qrin')->nullable();

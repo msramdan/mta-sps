@@ -162,4 +162,45 @@ class MerchantController extends Controller implements HasMiddleware
         Alert::success('Berhasil', "Merchant berhasil {$statusText}.");
         return redirect()->route('merchants.show', $merchant->id);
     }
+
+    /**
+     * Search merchants for AJAX select
+     */
+    public function search(Request $request): JsonResponse
+    {
+        $search = $request->get('q', '');
+        $page = $request->get('page', 1);
+        $perPage = 10;
+
+        $query = Merchant::query()
+            ->select('id', 'nama_merchant', 'kode_merchant')
+            ->where('status', 'approved'); // Only show approved merchants
+
+        if (!empty($search)) {
+            $query->where(function ($q) use ($search) {
+                $q->where('nama_merchant', 'LIKE', "%{$search}%")
+                  ->orWhere('kode_merchant', 'LIKE', "%{$search}%");
+            });
+        }
+
+        $total = $query->count();
+        $merchants = $query->offset(($page - 1) * $perPage)
+            ->limit($perPage)
+            ->get();
+
+        $results = $merchants->map(function ($merchant) {
+            return [
+                'id' => $merchant->id,
+                'text' => "{$merchant->nama_merchant} ({$merchant->kode_merchant})",
+            ];
+        });
+
+        return response()->json([
+            'results' => $results,
+            'pagination' => [
+                'more' => ($page * $perPage) < $total
+            ]
+        ]);
+    }
 }
+

@@ -82,9 +82,7 @@ class TransaksiController extends Controller implements HasMiddleware
      */
     public function create(): View
     {
-        $merchants = Merchant::where('status', 'approved')->get(['id', 'nama_merchant', 'kode_merchant']);
-
-        return view('transaksis.create', compact('merchants'));
+        return view('transaksis.create');
     }
 
     /**
@@ -115,9 +113,9 @@ class TransaksiController extends Controller implements HasMiddleware
      */
     public function edit(Transaksi $transaksi): View
     {
-        $merchants = Merchant::where('status', 'approved')->get(['id', 'nama_merchant', 'kode_merchant']);
+        $transaksi->load('merchant:id,nama_merchant,kode_merchant');
 
-        return view('transaksis.edit', compact('transaksi', 'merchants'));
+        return view('transaksis.edit', compact('transaksi'));
     }
 
     /**

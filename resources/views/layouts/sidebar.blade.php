@@ -63,7 +63,7 @@
                     <li class="no-sub mb-2">
                         <div class="px-3 py-2">
                             <label class="text-muted small mb-1"><i class="ti ti-building-store me-1"></i> Pilih Merchant</label>
-                            <select class="form-select form-select-sm" id="merchant-selector" onchange="switchMerchant(this.value)">
+                            <select class="form-select form-select-sm" id="merchant-selector">
                                 @foreach ($assignMerchants as $merchant)
                                     <option value="{{ $merchant->id }}" {{ $currentMerchantId == $merchant->id ? 'selected' : '' }}>
                                         {{ $merchant->nama_merchant }} ({{ $merchant->kode_merchant }})
@@ -198,6 +198,25 @@
 </nav>
 
 <script>
+    // Initialize Select2 for merchant selector in sidebar
+    $(document).ready(function() {
+        if ($('#merchant-selector').length) {
+            $('#merchant-selector').select2({
+                theme: 'bootstrap-5',
+                placeholder: 'Pilih Merchant',
+                allowClear: false,
+                minimumResultsForSearch: 5, // Show search only if more than 5 items
+                width: '100%',
+                dropdownParent: $('.app-nav')
+            });
+
+            // Handle change event
+            $('#merchant-selector').on('change', function() {
+                switchMerchant($(this).val());
+            });
+        }
+    });
+
     function switchMerchant(merchantId) {
         if (!merchantId) return;
 

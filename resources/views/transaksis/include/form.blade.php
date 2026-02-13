@@ -7,14 +7,13 @@
                 <div class="form-group">
                     <label for="merchant_id">Merchant <span class="text-danger">*</span></label>
                     <select name="merchant_id" id="merchant_id"
-                        class="form-control @error('merchant_id') is-invalid @enderror" required>
+                        class="form-control merchant-select-ajax @error('merchant_id') is-invalid @enderror" required>
                         <option value="">Pilih Merchant</option>
-                        @foreach ($merchants as $merchant)
-                            <option value="{{ $merchant->id }}"
-                                {{ (isset($transaksi) && $transaksi->merchant_id == $merchant->id) || old('merchant_id') == $merchant->id ? 'selected' : '' }}>
-                                {{ $merchant->nama_merchant }} ({{ $merchant->kode_merchant }})
+                        @if(isset($transaksi) && $transaksi->merchant)
+                            <option value="{{ $transaksi->merchant->id }}" selected>
+                                {{ $transaksi->merchant->nama_merchant }} ({{ $transaksi->merchant->kode_merchant }})
                             </option>
-                        @endforeach
+                        @endif
                     </select>
                     @error('merchant_id')
                         <span class="text-danger">{{ $message }}</span>

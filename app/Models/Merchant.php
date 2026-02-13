@@ -34,6 +34,7 @@ class Merchant extends Model
     protected $fillable = [
         'kode_merchant',
         'nama_merchant',
+        'balance',
         'logo',
         'url_callback',
         'token_qrin',
@@ -63,6 +64,7 @@ class Merchant extends Model
             'id' => 'string',
             'kode_merchant' => 'string',
             'nama_merchant' => 'string',
+            'balance' => 'decimal:2',
             'logo' => 'string',
             'url_callback' => 'string',
             'token_qrin' => 'string',

@@ -40,6 +40,8 @@ Route::middleware(['auth', 'web'])->group(function () {
     Route::resource('merchants', MerchantController::class);
     Route::post('/merchants/{merchant}/review', [MerchantController::class, 'review'])
         ->name('merchants.review');
+    Route::get('/merchants-search', [MerchantController::class, 'search'])
+        ->name('merchants.search');
 
     Route::get('/setting-merchant', [SettingMerchantController::class, 'index'])
         ->name('setting-merchant.index');

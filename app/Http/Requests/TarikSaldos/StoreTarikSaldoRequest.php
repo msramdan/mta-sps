@@ -20,15 +20,7 @@ class StoreTarikSaldoRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'merchant_id' => 'required|exists:App\Models\Merchant,id',
-			'jumlah' => 'required|numeric',
-			'biaya' => 'required|numeric',
-			'diterima' => 'required|numeric',
-			'bank_id' => 'required|exists:App\Models\Bank,id',
-			'pemilik_rekening' => 'required|string',
-			'nomor_rekening' => 'required|string',
-			'status' => 'required|in:pending,process,success,reject',
-			'bukti_trf' => 'required|image|max:2048',
+			'jumlah' => 'required|numeric|min:10000',
         ];
     }
 }

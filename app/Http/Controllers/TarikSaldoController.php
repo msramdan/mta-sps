@@ -64,9 +64,25 @@ class TarikSaldoController extends Controller implements HasMiddleware
     /**
      * Show the form for creating a new resource.
      */
-    public function create(): View
+    public function create(): View|RedirectResponse
     {
-        return view(view: 'tarik-saldos.create');
+        // Get merchant from session
+        $merchantId = session('sessionMerchant');
+        if (!$merchantId) {
+            Alert::error('Gagal', 'Merchant tidak ditemukan di session.');
+            return redirect()->route('tarik-saldos.index');
+        }
+
+        $merchant = \App\Models\Merchant::with('bank')->find($merchantId);
+        if (!$merchant) {
+            Alert::error('Gagal', 'Data merchant tidak ditemukan.');
+            return redirect()->route('tarik-saldos.index');
+        }
+
+        // Default biaya admin
+        $biaya = 2500;
+
+        return view(view: 'tarik-saldos.create', data: compact('merchant', 'biaya'));
     }
 
     /**
@@ -76,11 +92,43 @@ class TarikSaldoController extends Controller implements HasMiddleware
     {
         $validated = $request->validated();
 
-        $validated['bukti_trf'] = $this->imageServiceV2->upload(name: 'bukti_trf', path: $this->buktiTrfPath, disk: $this->disk);
+        // Get merchant from session
+        $merchantId = session('sessionMerchant');
+        if (!$merchantId) {
+            Alert::error('Gagal', 'Merchant tidak ditemukan di session.');
+            return redirect()->back();
+        }
+
+        // Get merchant data
+        $merchant = \App\Models\Merchant::find($merchantId);
+        if (!$merchant || !$merchant->bank_id) {
+            Alert::error('Gagal', 'Data bank merchant tidak ditemukan. Silakan lengkapi data merchant terlebih dahulu.');
+            return redirect()->back();
+        }
+
+        // Check if merchant has enough balance
+        if ($merchant->balance < $validated['jumlah']) {
+            Alert::error('Gagal', 'Saldo tidak mencukupi untuk melakukan penarikan.');
+            return redirect()->back()->withInput();
+        }
+
+        // Calculate biaya and diterima
+        $biaya = 2500; // Fixed admin fee
+        $diterima = $validated['jumlah'] - $biaya;
+
+        // Auto-fill data from merchant
+        $validated['merchant_id'] = $merchantId;
+        $validated['bank_id'] = $merchant->bank_id;
+        $validated['biaya'] = $biaya;
+        $validated['diterima'] = $diterima;
+        $validated['pemilik_rekening'] = $merchant->pemilik_rekening;
+        $validated['nomor_rekening'] = $merchant->nomor_rekening;
+        $validated['status'] = 'pending';
+        $validated['bukti_trf'] = null; // Will be uploaded by admin later
 
         TarikSaldo::create(attributes: $validated);
 
-        Alert::success('Berhasil', 'tarik saldo berhasil dibuat.');
+        Alert::success('Berhasil', 'Pengajuan penarikan saldo berhasil dibuat. Penarikan akan diproses maksimal 1x24 jam.');
         return redirect()->route('tarik-saldos.index');
     }
 

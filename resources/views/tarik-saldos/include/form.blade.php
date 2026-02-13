@@ -1,25 +1,6 @@
 <div class="row mb-2">
     <div class="col-md-6 mb-3">
         <div class="form-group">
-            <label for="merchant-id">{{ __(key: 'Merchant') }}</label>
-            <select class="form-select @error('merchant_id') is-invalid @enderror" name="merchant_id" id="merchant-id" class="form-control" required>
-                <option value="" selected disabled>-- {{ __(key: 'Select merchant') }} --</option>
-                
-                        @foreach ($merchants as $merchant)
-                            <option value="{{ $merchant?->id }}" {{ isset($tarikSaldo) && $tarikSaldo?->merchant_id == $merchant?->id ? 'selected' : (old(key: 'merchant_id') == $merchant?->id ? 'selected' : '') }}>
-                                {{ $merchant?->nama_merchant }}
-                            </option>
-                        @endforeach
-            </select>
-            @error('merchant_id')
-                <span class="text-danger">
-                    {{ $message }}
-                </span>
-            @enderror
-        </div>
-    </div>
-    <div class="col-md-6 mb-3">
-        <div class="form-group">
             <label for="jumlah">{{ __(key: 'Jumlah') }}</label>
             <input type="number" name="jumlah" id="jumlah" class="form-control @error('jumlah') is-invalid @enderror" value="{{ isset($tarikSaldo) ? $tarikSaldo->jumlah : old(key: 'jumlah') }}" placeholder="{{ __(key: 'Jumlah') }}" required />
             @error('jumlah')
@@ -45,25 +26,6 @@
             <label for="diterima">{{ __(key: 'Diterima') }}</label>
             <input type="number" name="diterima" id="diterima" class="form-control @error('diterima') is-invalid @enderror" value="{{ isset($tarikSaldo) ? $tarikSaldo->diterima : old(key: 'diterima') }}" placeholder="{{ __(key: 'Diterima') }}" required />
             @error('diterima')
-                <span class="text-danger">
-                    {{ $message }}
-                </span>
-            @enderror
-        </div>
-    </div>
-    <div class="col-md-6 mb-3">
-        <div class="form-group">
-            <label for="bank-id">{{ __(key: 'Bank') }}</label>
-            <select class="form-select @error('bank_id') is-invalid @enderror" name="bank_id" id="bank-id" class="form-control" required>
-                <option value="" selected disabled>-- {{ __(key: 'Select bank') }} --</option>
-                
-                        @foreach ($banks as $bank)
-                            <option value="{{ $bank?->id }}" {{ isset($tarikSaldo) && $tarikSaldo?->bank_id == $bank?->id ? 'selected' : (old(key: 'bank_id') == $bank?->id ? 'selected' : '') }}>
-                                {{ $bank?->nama_bank }}
-                            </option>
-                        @endforeach
-            </select>
-            @error('bank_id')
                 <span class="text-danger">
                     {{ $message }}
                 </span>
@@ -100,7 +62,7 @@
                 <option value="pending" {{ isset($tarikSaldo) && $tarikSaldo->status == 'pending' ? 'selected' : (old(key: 'status') == 'pending' ? 'selected' : '') }}>pending</option>
 		<option value="process" {{ isset($tarikSaldo) && $tarikSaldo->status == 'process' ? 'selected' : (old(key: 'status') == 'process' ? 'selected' : '') }}>process</option>
 		<option value="success" {{ isset($tarikSaldo) && $tarikSaldo->status == 'success' ? 'selected' : (old(key: 'status') == 'success' ? 'selected' : '') }}>success</option>
-		<option value="reject" {{ isset($tarikSaldo) && $tarikSaldo->status == 'reject' ? 'selected' : (old(key: 'status') == 'reject' ? 'selected' : '') }}>reject</option>			
+		<option value="reject" {{ isset($tarikSaldo) && $tarikSaldo->status == 'reject' ? 'selected' : (old(key: 'status') == 'reject' ? 'selected' : '') }}>reject</option>
             </select>
             @error('status')
                 <span class="text-danger">
