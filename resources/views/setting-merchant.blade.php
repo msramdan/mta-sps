@@ -264,20 +264,20 @@
                                             </div>
                                             <div class="col-md-6 mb-3">
                                                 <div class="form-group">
-                                                    <label for="apikey">API Key <span
+                                                    <label for="token_qrin">Token QRIN <span
                                                             class="text-danger">*</span></label>
                                                     <div class="input-group">
-                                                        <input type="text" name="apikey" id="apikey"
-                                                            class="form-control @error('apikey') is-invalid @enderror"
-                                                            value="{{ isset($merchant) ? $merchant->apikey : old('apikey') }}"
-                                                            placeholder="API Key" required readonly />
+                                                        <input type="text" name="token_qrin" id="token_qrin"
+                                                            class="form-control @error('token_qrin') is-invalid @enderror"
+                                                            value="{{ isset($merchant) ? $merchant->token_qrin : old('token_qrin') }}"
+                                                            placeholder="Token QRIS" required readonly />
                                                         <button type="button" class="btn btn-outline-secondary"
-                                                            onclick="generateApiKey()"
+                                                            onclick="generateTokenQrin()"
                                                             @if(in_array($merchant->status, ['approved', 'rejected', 'suspended'])) disabled @endif>
                                                             <i class="fas fa-key"></i> Generate
                                                         </button>
                                                     </div>
-                                                    @error('apikey')
+                                                    @error('token_qrin')
                                                         <span class="text-danger">
                                                             {{ $message }}
                                                         </span>
@@ -285,35 +285,7 @@
                                                     @if($merchant->status == 'pending')
                                                         <div class="form-text">
                                                             <i class="fas fa-info-circle text-warning me-1"></i>
-                                                            Klik Generate untuk membuat API Key baru
-                                                        </div>
-                                                    @endif
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6 mb-3">
-                                                <div class="form-group">
-                                                    <label for="secretkey">Secret Key <span
-                                                            class="text-danger">*</span></label>
-                                                    <div class="input-group">
-                                                        <input type="text" name="secretkey" id="secretkey"
-                                                            class="form-control @error('secretkey') is-invalid @enderror"
-                                                            value="{{ isset($merchant) ? $merchant->secretkey : old('secretkey') }}"
-                                                            placeholder="Secret Key" required readonly />
-                                                        <button type="button" class="btn btn-outline-secondary"
-                                                            onclick="generateSecretKey()"
-                                                            @if(in_array($merchant->status, ['approved', 'rejected', 'suspended'])) disabled @endif>
-                                                            <i class="fas fa-key"></i> Generate
-                                                        </button>
-                                                    </div>
-                                                    @error('secretkey')
-                                                        <span class="text-danger">
-                                                            {{ $message }}
-                                                        </span>
-                                                    @enderror
-                                                    @if($merchant->status == 'pending')
-                                                        <div class="form-text">
-                                                            <i class="fas fa-info-circle text-warning me-1"></i>
-                                                            Simpan Secret Key dengan aman dan jangan bagikan kepada siapapun
+                                                            Klik Generate untuk membuat Token QRIS baru
                                                         </div>
                                                     @endif
                                                 </div>
@@ -396,19 +368,7 @@
 
                                 @push('js')
                                     <script>
-                                        function generateApiKey() {
-                                            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-                                            let result = '';
-                                            const length = 32;
-
-                                            for (let i = 0; i < length; i++) {
-                                                result += characters.charAt(Math.floor(Math.random() * characters.length));
-                                            }
-
-                                            document.getElementById('apikey').value = result;
-                                        }
-
-                                        function generateSecretKey() {
+                                        function generateTokenQrin() {
                                             const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
                                             let result = '';
                                             const length = 64;
@@ -417,13 +377,7 @@
                                                 result += characters.charAt(Math.floor(Math.random() * characters.length));
                                             }
 
-                                            document.getElementById('secretkey').value = result;
-                                        }
-
-                                        // Generate both keys with one button if needed
-                                        function generateBothKeys() {
-                                            generateApiKey();
-                                            generateSecretKey();
+                                            document.getElementById('token_qrin').value = result;
                                         }
                                     </script>
                                 @endpush
