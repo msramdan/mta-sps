@@ -22,8 +22,8 @@ class StoreTransaksiRequest extends FormRequest
         return [
             'tanggal_transaksi' => 'nullable|date',
             'merchant_id' => 'required|exists:merchants,id',
-            'no_ref_merchant' => 'nullable|string|max:100',
-            'nama_pelanggan' => 'required|string|max:150',
+            'no_ref_merchant' => 'required|string|max:100',
+            'nama_pelanggan' => 'nullable|string|max:150',
             'email_pelanggan' => 'nullable|email|max:255',
             'no_telpon_pelanggan' => 'nullable|string|max:20',
             'biaya' => 'required|numeric|min:0',

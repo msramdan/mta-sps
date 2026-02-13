@@ -37,11 +37,11 @@
 
             <div class="col-md-6 mb-3">
                 <div class="form-group">
-                    <label for="no_ref_merchant">No. Referensi Merchant</label>
+                    <label for="no_ref_merchant">No. Referensi Merchant <span class="text-danger">*</span></label>
                     <input type="text" name="no_ref_merchant" id="no_ref_merchant"
                         class="form-control @error('no_ref_merchant') is-invalid @enderror"
                         value="{{ isset($transaksi) ? $transaksi->no_ref_merchant : old('no_ref_merchant') }}"
-                        placeholder="Referensi dari sistem merchant" maxlength="100" />
+                        placeholder="Referensi dari sistem merchant" maxlength="100" required />
                     @error('no_ref_merchant')
                         <span class="text-danger">{{ $message }}</span>
                     @enderror
@@ -81,11 +81,11 @@
         <div class="row">
             <div class="col-md-6 mb-3">
                 <div class="form-group">
-                    <label for="nama_pelanggan">Nama Pelanggan <span class="text-danger">*</span></label>
+                    <label for="nama_pelanggan">Nama Pelanggan</label>
                     <input type="text" name="nama_pelanggan" id="nama_pelanggan"
                         class="form-control @error('nama_pelanggan') is-invalid @enderror"
                         value="{{ isset($transaksi) ? $transaksi->nama_pelanggan : old('nama_pelanggan') }}"
-                        placeholder="Nama lengkap pelanggan" maxlength="150" required />
+                        placeholder="Nama lengkap pelanggan" maxlength="150" />
                     @error('nama_pelanggan')
                         <span class="text-danger">{{ $message }}</span>
                     @enderror

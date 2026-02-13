@@ -97,7 +97,7 @@
                                             <table class="table table-sm table-borderless mb-0">
                                                 <tr>
                                                     <td class="fw-bold" style="width: 40%">Nama</td>
-                                                    <td>{{ $transaksi->nama_pelanggan }}</td>
+                                                    <td>{{ $transaksi->nama_pelanggan ?? '-' }}</td>
                                                 </tr>
                                                 <tr>
                                                     <td class="fw-bold">Email</td>

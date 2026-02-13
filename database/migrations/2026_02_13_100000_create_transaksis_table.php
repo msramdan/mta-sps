@@ -14,8 +14,8 @@ return new class extends Migration
             $table->uuid('merchant_id');
             $table->foreign('merchant_id')->references('id')->on('merchants')->cascadeOnDelete();
             $table->string('no_referensi', 100)->unique();
-            $table->string('no_ref_merchant', 100)->nullable();
-            $table->string('nama_pelanggan', 150);
+            $table->string('no_ref_merchant', 100);
+            $table->string('nama_pelanggan', 150)->nullable();
             $table->string('email_pelanggan')->nullable();
             $table->string('no_telpon_pelanggan', 20)->nullable();
             $table->decimal('biaya', 15, 2)->default(0);
