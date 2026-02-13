@@ -34,7 +34,8 @@ class RoleAndPermissionSeeder extends Seeder
         $merchantPermissions = [
             'setting merchant',
             'tarik saldo view',
-            'tarik saldo create'
+            'tarik saldo create',
+            'transaksi view'
         ];
 
         // Berikan permission hanya yang diperlukan untuk User Merchant
