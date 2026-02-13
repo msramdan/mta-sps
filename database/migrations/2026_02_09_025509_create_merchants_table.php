@@ -10,6 +10,7 @@ return new class extends Migration
     {
         Schema::create('merchants', function (Blueprint $table) {
             $table->uuid('id')->primary();
+            $table->string('kode_merchant', 8)->unique();
             $table->string('nama_merchant', 150);
             $table->string('logo')->nullable();
             $table->string('url_callback')->nullable();

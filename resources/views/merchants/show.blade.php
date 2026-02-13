@@ -47,6 +47,12 @@
                                                     <td>{{ $merchant->nama_merchant }}</td>
                                                 </tr>
                                                 <tr>
+                                                    <td class="fw-bold">Kode Merchant</td>
+                                                    <td>
+                                                        <span class="badge bg-primary">{{ $merchant->kode_merchant }}</span>
+                                                    </td>
+                                                </tr>
+                                                <tr>
                                                     <td class="fw-bold">Logo</td>
                                                     <td>
                                                         @if ($merchant->logo)

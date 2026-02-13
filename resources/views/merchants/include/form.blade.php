@@ -19,6 +19,24 @@
             </div>
 
             <div class="col-md-6 mb-3">
+                <div class="form-group">
+                    <label for="kode-merchant">Kode Merchant</label>
+                    <input type="text" name="kode_merchant" id="kode-merchant"
+                        class="form-control @error('kode_merchant') is-invalid @enderror"
+                        value="{{ isset($merchant) ? $merchant->kode_merchant : old('kode_merchant') }}"
+                        placeholder="Otomatis generate: QR123456" maxlength="8" readonly />
+                    @error('kode_merchant')
+                        <span class="text-danger">
+                            {{ $message }}
+                        </span>
+                    @enderror
+                    <div class="form-text">
+                        Kode merchant akan otomatis di-generate saat menyimpan data.
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 mb-3">
                 <div class="row g-0">
                     <div class="col-md-5 text-center">
                         <img src="{{ $merchant?->logo ?? 'https://placehold.co/300?text=No+Image+Available' }}"

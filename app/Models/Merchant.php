@@ -32,6 +32,7 @@ class Merchant extends Model
      * @var string[]
      */
     protected $fillable = [
+        'kode_merchant',
         'nama_merchant',
         'logo',
         'url_callback',
@@ -60,6 +61,7 @@ class Merchant extends Model
     {
         return [
             'id' => 'string',
+            'kode_merchant' => 'string',
             'nama_merchant' => 'string',
             'logo' => 'string',
             'url_callback' => 'string',
@@ -92,6 +94,16 @@ class Merchant extends Model
         static::creating(function ($model) {
             if (empty($model->{$model->getKeyName()})) {
                 $model->{$model->getKeyName()} = (string) Str::uuid();
+            }
+
+            // Auto-generate kode_merchant if not set
+            if (empty($model->kode_merchant)) {
+                do {
+                    $randomNumber = str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT);
+                    $kodeMerchant = 'QR' . $randomNumber;
+                } while (self::where('kode_merchant', $kodeMerchant)->exists());
+
+                $model->kode_merchant = $kodeMerchant;
             }
         });
     }

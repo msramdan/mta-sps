@@ -40,7 +40,8 @@
                                 <table class="display w-100 row-border-table table-responsive" id="data-table">
                                     <thead>
                                         <tr>
-                                            <th style="width: 50px;"></th>
+                                            <th style="width: 20px;"></th>
+                                            <th>Kode Merchant</th>
                                             <th>Nama Merchant</th>
                                             <th>Logo</th>
                                             <th>Status</th>
@@ -123,11 +124,11 @@
                                value="${d.nomor_rekening || '-'}" readonly
                                style="font-family: monospace;">
                         ${d.nomor_rekening ? `
-                        <button type="button" class="btn btn-sm btn-outline-primary ms-1"
-                                onclick="copyToClipboard('${d.nomor_rekening}')">
-                            <i class="fas fa-copy"></i>
-                        </button>
-                        ` : ''}
+                            <button type="button" class="btn btn-sm btn-outline-primary ms-1"
+                                    onclick="copyToClipboard('${d.nomor_rekening}')">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                            ` : ''}
                     </div>
                 </div>
             </div>
@@ -159,7 +160,14 @@
                         orderable: false,
                         data: null,
                         defaultContent: '<i class="fas fa-chevron-right expand-icon"></i>',
-                        width: '50px'
+                        width: '20px'
+                    },
+                    {
+                        data: 'kode_merchant',
+                        name: 'kode_merchant',
+                        render: function(data) {
+                            return `<span class="badge bg-primary">${data}</span>`;
+                        }
                     },
                     {
                         data: 'nama_merchant',

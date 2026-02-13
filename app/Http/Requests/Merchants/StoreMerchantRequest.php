@@ -20,6 +20,7 @@ class StoreMerchantRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'kode_merchant' => 'nullable|string|max:8|unique:merchants,kode_merchant',
             'nama_merchant' => 'required|string|max:150',
 			'logo' => 'required|image|max:1024',
 			'url_callback' => 'required|url',

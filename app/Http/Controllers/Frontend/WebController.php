@@ -76,9 +76,16 @@ class WebController extends Controller
             // Step 2: Generate UUID untuk merchant
             $merchantId = (string) Str::uuid();
 
+            // Step 2.5: Generate kode_merchant unik
+            do {
+                $randomNumber = str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT);
+                $kodeMerchant = 'QR' . $randomNumber;
+            } while (DB::table('merchants')->where('kode_merchant', $kodeMerchant)->exists());
+
             // Step 3: Insert ke table merchants
             DB::table('merchants')->insert([
                 'id' => $merchantId,
+                'kode_merchant' => $kodeMerchant,
                 'nama_merchant' => $request->nama_perusahaan,
                 'logo' => null,
                 'url_callback' => null,

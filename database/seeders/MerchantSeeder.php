@@ -26,6 +26,7 @@ class MerchantSeeder extends Seeder
         // Insert merchant dengan konfigurasi Nobu
         DB::table('merchants')->insert([
             'id' => $merchantId,
+            'kode_merchant' => 'QR000001',
             'nama_merchant' => 'Tecanusa',
             'logo' => 'merchant-aktif.png',
             'url_callback' => 'https://merchant-aktif.test/callback',
