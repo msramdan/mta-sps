@@ -10,7 +10,8 @@ use App\Http\Controllers\{
     MerchantController,
     TarikSaldoController,
     SettingMerchantController,
-    TransaksiController
+    TransaksiController,
+    ApiDocumentationController
 };
 use App\Http\Controllers\Frontend\WebController;
 
@@ -65,4 +66,8 @@ Route::middleware(['auth', 'web'])->group(function () {
         ->name('simulators.index');
     Route::post('/simulators/generate-qris', [App\Http\Controllers\SimulatorController::class, 'generateQris'])
         ->name('simulators.generate-qris');
+
+    // API Documentation
+    Route::get('/api-documentation', [ApiDocumentationController::class, 'index'])
+        ->name('api-documentation.index');
 });

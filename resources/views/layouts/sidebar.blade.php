@@ -184,8 +184,8 @@
                 @endif
             @endforeach
 
-            <li class="no-sub">
-                <a href="{{ route('dashboard') }}">
+            <li class="no-sub{{ request()->routeIs('api-documentation.*') || request()->is('api-documentation') ? ' active' : '' }}">
+                <a href="{{ route('api-documentation.index') }}">
                     <i class="ti ti-code fs-5 me-2"></i>
                     Dokumentasi API
                 </a>
