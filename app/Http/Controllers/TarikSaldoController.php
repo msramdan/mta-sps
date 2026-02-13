@@ -26,13 +26,12 @@ class TarikSaldoController extends Controller implements HasMiddleware
     public static function middleware(): array
     {
         return [
-            // 'auth',
+            'auth',
 
-            // TODO: uncomment this code below if you are using spatie permission
-            // new Middleware(middleware: 'permission:tarik saldo view', only: ['index', 'show', 'getMerchantData']),
-            // new Middleware(middleware: 'permission:pengajuan tarik saldo', only: ['create', 'store']),
-            // new Middleware(middleware: 'permission:konfirmasi tarik saldo', only: ['edit', 'update']),
-            // new Middleware(middleware: 'permission:batalkan tarik saldo', only: ['cancel']),
+            new Middleware(middleware: 'permission:tarik saldo view', only: ['index', 'show', 'getMerchantData']),
+            new Middleware(middleware: 'permission:pengajuan tarik saldo', only: ['store']),
+            new Middleware(middleware: 'permission:konfirmasi tarik saldo', only: ['update']),
+            new Middleware(middleware: 'permission:batalkan tarik saldo', only: ['cancel']),
         ];
     }
 
@@ -108,35 +107,6 @@ class TarikSaldoController extends Controller implements HasMiddleware
         ];
 
         return response()->json($response);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create(): View|RedirectResponse
-    {
-        // Get merchant from session
-        $merchantId = session('sessionMerchant');
-        if (!$merchantId) {
-            Alert::error('Gagal', 'Merchant tidak ditemukan di session.');
-            return redirect()->route('tarik-saldos.index');
-        }
-
-        $merchant = DB::table('merchants')
-            ->leftJoin('banks', 'merchants.bank_id', '=', 'banks.id')
-            ->where('merchants.id', $merchantId)
-            ->select('merchants.*', 'banks.nama_bank')
-            ->first();
-
-        if (!$merchant) {
-            Alert::error('Gagal', 'Data merchant tidak ditemukan.');
-            return redirect()->route('tarik-saldos.index');
-        }
-
-        // Default biaya admin
-        $biaya = 7500;
-
-        return view(view: 'tarik-saldos.create', data: compact('merchant', 'biaya'));
     }
 
     /**
@@ -241,30 +211,6 @@ class TarikSaldoController extends Controller implements HasMiddleware
     }
 
     /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id): View
-    {
-        $tarikSaldo = DB::table('tarik_saldos')
-            ->leftJoin('merchants', 'tarik_saldos.merchant_id', '=', 'merchants.id')
-            ->leftJoin('banks', 'tarik_saldos.bank_id', '=', 'banks.id')
-            ->where('tarik_saldos.id', $id)
-            ->select(
-                'tarik_saldos.*',
-                'merchants.nama_merchant',
-                'banks.nama_bank'
-            )
-            ->first();
-
-        if (!$tarikSaldo) {
-            Alert::error('Gagal', 'Data tarik saldo tidak ditemukan.');
-            return redirect()->route('tarik-saldos.index');
-        }
-
-		return view(view: 'tarik-saldos.edit', data: compact(var_name: 'tarikSaldo'));
-    }
-
-    /**
      * Update the specified resource in storage.
      */
     public function update(UpdateTarikSaldoRequest $request, string $id): RedirectResponse
@@ -284,33 +230,6 @@ class TarikSaldoController extends Controller implements HasMiddleware
 
         Alert::success('Berhasil', 'tarik saldo berhasil diperbarui.');
         return redirect()->route('tarik-saldos.index');
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id): RedirectResponse
-    {
-        try {
-            $tarikSaldo = DB::table('tarik_saldos')->where('id', $id)->first();
-
-            if (!$tarikSaldo) {
-                Alert::error('Gagal', 'Data tarik saldo tidak ditemukan.');
-                return redirect()->route('tarik-saldos.index');
-            }
-
-            $buktiTrf = $tarikSaldo->bukti_trf;
-
-            DB::table('tarik_saldos')->where('id', $id)->delete();
-
-            $this->imageServiceV2->delete(path: $this->buktiTrfPath, image: $buktiTrf, disk: $this->disk);
-
-            Alert::success('Berhasil', 'tarik saldo berhasil dihapus.');
-            return redirect()->route('tarik-saldos.index');
-        } catch (\Exception $e) {
-            Alert::error('Gagal', 'tarik saldo tidak dapat dihapus karena terkait dengan tabel lain.');
-            return redirect()->route('tarik-saldos.index');
-        }
     }
 
     /**
