@@ -53,6 +53,12 @@
                                                     </td>
                                                 </tr>
                                                 <tr>
+                                                    <td class="fw-bold">Balance</td>
+                                                    <td>
+                                                        <span class="badge bg-success fs-6">Rp {{ number_format($merchant->balance ?? 0, 0, ',', '.') }}</span>
+                                                    </td>
+                                                </tr>
+                                                <tr>
                                                     <td class="fw-bold">Logo</td>
                                                     <td>
                                                         @if ($merchant->logo)

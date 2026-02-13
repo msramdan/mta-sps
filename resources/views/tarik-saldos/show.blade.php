@@ -38,15 +38,15 @@
                 </tr>
 <tr>
                     <td class="fw-bold">{{ __(key: 'Jumlah') }}</td>
-                    <td>{{ $tarikSaldo->jumlah }}</td>
+                    <td>Rp {{ number_format($tarikSaldo->jumlah, 0, ',', '.') }}</td>
                 </tr>
 <tr>
                     <td class="fw-bold">{{ __(key: 'Biaya') }}</td>
-                    <td>{{ $tarikSaldo->biaya }}</td>
+                    <td>Rp {{ number_format($tarikSaldo->biaya, 0, ',', '.') }}</td>
                 </tr>
 <tr>
                     <td class="fw-bold">{{ __(key: 'Diterima') }}</td>
-                    <td>{{ $tarikSaldo->diterima }}</td>
+                    <td>Rp {{ number_format($tarikSaldo->diterima, 0, ',', '.') }}</td>
                 </tr>
 <tr>
                     <td class="fw-bold">{{ __(key: 'Bank') }}</td>
@@ -62,12 +62,28 @@
                 </tr>
 <tr>
                     <td class="fw-bold">{{ __(key: 'Status') }}</td>
-                    <td>{{ $tarikSaldo->status }}</td>
+                    <td>
+                        @if($tarikSaldo->status === 'pending')
+                            <span class="badge bg-warning text-dark">Pending</span>
+                        @elseif($tarikSaldo->status === 'process')
+                            <span class="badge bg-info">Diproses</span>
+                        @elseif($tarikSaldo->status === 'success')
+                            <span class="badge bg-success">Berhasil</span>
+                        @elseif($tarikSaldo->status === 'reject')
+                            <span class="badge bg-danger">Ditolak</span>
+                        @else
+                            <span class="badge bg-secondary">{{ $tarikSaldo->status }}</span>
+                        @endif
+                    </td>
                 </tr>
                                     <tr>
                                         <td class="fw-bold">{{ __(key: 'Bukti Trf') }}</td>
                                         <td>
-                                            <img src="{{ $tarikSaldo->bukti_trf }}" alt="Bukti Trf" class="rounded img-fluid" style="object-fit: cover; width: 350px; height: 200px;" />
+                                            @if($tarikSaldo->bukti_trf)
+                                                <img src="{{ $tarikSaldo->bukti_trf }}" alt="Bukti Trf" class="rounded img-fluid" style="object-fit: cover; width: 350px; height: 200px;" />
+                                            @else
+                                                <span class="text-muted">Belum ada bukti transfer</span>
+                                            @endif
                                         </td>
                                     </tr>
 
