@@ -9,7 +9,8 @@ use App\Http\Controllers\{
     BankController,
     MerchantController,
     TarikSaldoController,
-    SettingMerchantController
+    SettingMerchantController,
+    TransaksiController
 };
 use App\Http\Controllers\Frontend\WebController;
 
@@ -44,6 +45,9 @@ Route::middleware(['auth', 'web'])->group(function () {
         ->name('setting-merchant.index');
     Route::put('/setting-merchant', [SettingMerchantController::class, 'update'])
         ->name('setting-merchant.update');
+
+    // Transaksi Management
+    Route::resource('transaksis', TransaksiController::class);
 
     // Tarik Saldo Management
     Route::resource('tarik-saldos', TarikSaldoController::class);

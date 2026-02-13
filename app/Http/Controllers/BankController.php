@@ -21,10 +21,10 @@ class BankController extends Controller implements HasMiddleware
             // 'auth',
 
             // TODO: uncomment this code below if you are using spatie permission
-            // new Middleware(middleware: 'permission:bank view', only: ['index', 'show']),
-            // new Middleware(middleware: 'permission:bank create', only: ['create', 'store']),
-            // new Middleware(middleware: 'permission:bank edit', only: ['edit', 'update']),
-            // new Middleware(middleware: 'permission:bank delete', only: ['destroy']),
+            new Middleware(middleware: 'permission:bank view', only: ['index', 'show']),
+            new Middleware(middleware: 'permission:bank create', only: ['create', 'store']),
+            new Middleware(middleware: 'permission:bank edit', only: ['edit', 'update']),
+            new Middleware(middleware: 'permission:bank delete', only: ['destroy']),
         ];
     }
 
@@ -57,7 +57,7 @@ class BankController extends Controller implements HasMiddleware
      */
     public function store(StoreBankRequest $request): RedirectResponse
     {
-        
+
         Bank::create(attributes: $request->validated());
 
         Alert::success('Berhasil', 'bank berhasil dibuat.');
@@ -85,7 +85,7 @@ class BankController extends Controller implements HasMiddleware
      */
     public function update(UpdateBankRequest $request, Bank $bank): RedirectResponse
     {
-        
+
         $bank->update(attributes: $request->validated());
 
         Alert::success('Berhasil', 'bank berhasil diperbarui.');
@@ -108,5 +108,5 @@ class BankController extends Controller implements HasMiddleware
         }
     }
 
-    
+
 }

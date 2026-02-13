@@ -144,6 +144,22 @@ return [
             ]
         ],
         [
+            'header' => 'Transaksi',
+            'permissions' => [
+                'transaksi view'
+            ],
+            'menus' => [
+                [
+                    'title' => 'Transaksi',
+                    'icon' => '<i class="ti ti-receipt fs-5 me-2"></i>',
+                    'route' => '/transaksis',
+                    'permission' => 'transaksi view',
+                    'permissions' => [],
+                    'submenus' => []
+                ]
+            ]
+        ],
+        [
             'header' => 'Bank',
             'permissions' => [
                 'bank view'
