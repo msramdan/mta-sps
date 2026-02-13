@@ -128,22 +128,6 @@ return [
             ]
         ],
         [
-            'header' => 'Tarik Saldo',
-            'permissions' => [
-                'tarik saldo view'
-            ],
-            'menus' => [
-                [
-                    'title' => 'Tarik Saldo',
-                    'icon' => '<i class="ti ti-transfer-out fs-5 me-2"></i>',
-                    'route' => '/tarik-saldos',
-                    'permission' => 'tarik saldo view',
-                    'permissions' => [],
-                    'submenus' => []
-                ]
-            ]
-        ],
-        [
             'header' => 'Transaksi',
             'permissions' => [
                 'transaksi view'
@@ -154,6 +138,22 @@ return [
                     'icon' => '<i class="ti ti-receipt fs-5 me-2"></i>',
                     'route' => '/transaksis',
                     'permission' => 'transaksi view',
+                    'permissions' => [],
+                    'submenus' => []
+                ]
+            ]
+        ],
+        [
+            'header' => 'Tarik Saldo',
+            'permissions' => [
+                'tarik saldo view'
+            ],
+            'menus' => [
+                [
+                    'title' => 'Tarik Saldo',
+                    'icon' => '<i class="ti ti-transfer-out fs-5 me-2"></i>',
+                    'route' => '/tarik-saldos',
+                    'permission' => 'tarik saldo view',
                     'permissions' => [],
                     'submenus' => []
                 ]
