@@ -53,6 +53,7 @@ class Merchant extends Model
         'ktp',
         'catatan',
         'status',
+        'beban_biaya',
     ];
 
     /**
@@ -83,6 +84,7 @@ class Merchant extends Model
             'ktp' => 'string',
             'catatan' => 'string',
             'status' => 'string',
+            'beban_biaya' => 'string',
             'created_at' => 'datetime:Y-m-d H:i:s',
             'updated_at' => 'datetime:Y-m-d H:i:s',
         ];

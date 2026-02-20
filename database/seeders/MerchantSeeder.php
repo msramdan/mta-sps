@@ -47,6 +47,7 @@ class MerchantSeeder extends Seeder
             'ktp' => 'ktp-sample.png',
             'catatan' => 'Merchant Tecanusa untuk testing aplikasi QRIN.',
             'status' => 'approved',
+            'beban_biaya' => 'Merchant',
             'created_at' => now(),
             'updated_at' => now(),
         ]);
@@ -78,6 +79,7 @@ class MerchantSeeder extends Seeder
             'ktp' => 'ktp-sample.png',
             'catatan' => 'Merchant Sinarmas Digital untuk testing multi-merchant.',
             'status' => 'approved',
+            'beban_biaya' => 'Pelanggan',
             'created_at' => now(),
             'updated_at' => now(),
         ]);

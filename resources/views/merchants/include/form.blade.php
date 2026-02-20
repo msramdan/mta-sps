@@ -128,6 +128,26 @@
                 </div>
             </div>
 
+            <div class="col-md-6 mb-3">
+                <div class="form-group">
+                    <label for="beban-biaya">Beban Biaya <span class="text-danger">*</span></label>
+                    <select class="form-select @error('beban_biaya') is-invalid @enderror" name="beban_biaya" id="beban-biaya" required>
+                        <option value="" disabled>-- Pilih Beban Biaya --</option>
+                        @php
+                            $bebanBiaya = old('beban_biaya', isset($merchant) ? ($merchant->beban_biaya ?? 'Merchant') : 'Merchant');
+                        @endphp
+                        <option value="Merchant" {{ $bebanBiaya === 'Merchant' ? 'selected' : '' }}>Merchant</option>
+                        <option value="Pelanggan" {{ $bebanBiaya === 'Pelanggan' ? 'selected' : '' }}>Pelanggan</option>
+                    </select>
+                    @error('beban_biaya')
+                        <span class="text-danger">{{ $message }}</span>
+                    @enderror
+                    <div class="form-text">
+                        Merchant = biaya ditanggung merchant; Pelanggan = biaya ditanggung pelanggan.
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 

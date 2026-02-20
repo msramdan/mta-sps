@@ -123,6 +123,16 @@
                                                     </td>
                                                 </tr>
                                                 <tr>
+                                                    <td class="fw-bold">Beban Biaya</td>
+                                                    <td>
+                                                        @if($merchant->beban_biaya === 'Pelanggan')
+                                                            <span class="badge bg-info">Pelanggan</span>
+                                                        @else
+                                                            <span class="badge bg-primary">Merchant</span>
+                                                        @endif
+                                                    </td>
+                                                </tr>
+                                                <tr>
                                                     <td class="fw-bold">Dibuat</td>
                                                     <td><small
                                                             class="text-muted">{{ $merchant->created_at->format('d M Y H:i') }}</small>

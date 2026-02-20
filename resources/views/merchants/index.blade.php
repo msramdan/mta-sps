@@ -45,6 +45,7 @@
                                             <th>Nama Merchant</th>
                                             <th>Logo</th>
                                             <th>Status</th>
+                                            <th>Beban Biaya</th>
                                             <th>Balance</th>
                                             <th>Action</th>
                                         </tr>
@@ -94,6 +95,13 @@
                                         title="Show/Hide">
                                     <i class="fas fa-eye"></i>
                                 </button>
+                            </div>
+                        </div>
+
+                        <div class="detail-row mb-2">
+                            <label class="detail-label text-muted small mb-1">Beban Biaya</label>
+                            <div class="detail-value">
+                                <span class="badge ${d.beban_biaya === 'Pelanggan' ? 'bg-info' : 'bg-primary'}">${d.beban_biaya || 'Merchant'}</span>
                             </div>
                         </div>
                     </div>
@@ -205,6 +213,12 @@
                                     return '<span class="badge bg-light text-dark">Unknown</span>';
                             }
                         }
+                    },
+                    {
+                        data: 'beban_biaya',
+                        name: 'beban_biaya',
+                        orderable: true,
+                        searchable: true
                     },
                     {
                         data: 'balance',

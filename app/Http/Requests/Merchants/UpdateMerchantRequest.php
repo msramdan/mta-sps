@@ -28,6 +28,7 @@ class UpdateMerchantRequest extends FormRequest
 			'pemilik_rekening' => 'required|string|max:100',
 			'nomor_rekening' => 'required|string|max:50',
 			'status' => 'required|in:pending,approved,rejected,suspended',
+            'beban_biaya' => 'required|in:Merchant,Pelanggan',
         ];
     }
 }
