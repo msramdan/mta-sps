@@ -88,27 +88,15 @@
                 </div>
 
                 <div class="col-12 col-lg-6">
-                    {{-- spacer when side by side --}}
-                </div>
-
-                <div class="col-12">
                     <div class="card border">
                         <div class="card-header py-2">
-                            <h6 class="mb-0 fw-bold"><i class="ti ti-send me-1"></i> Payload Generate QR</h6>
+                            <h6 class="mb-0 fw-bold"><i class="ti ti-send me-1"></i> Payload & Response Generate QR</h6>
                         </div>
                         <div class="card-body p-3">
-                            <pre class="rounded border p-3 mb-0 bg-light">{{ $payloadPretty ?: '-' }}</pre>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-12">
-                    <div class="card border">
-                        <div class="card-header py-2">
-                            <h6 class="mb-0 fw-bold"><i class="ti ti-file-response me-1"></i> Response Generate QR</h6>
-                        </div>
-                        <div class="card-body p-3">
-                            <pre class="rounded border p-3 mb-0 bg-light">{{ $responsePretty ?: '-' }}</pre>
+                            <p class="small fw-bold text-muted mb-1">Payload</p>
+                            <pre class="rounded border p-3 mb-3">{{ $payloadPretty ?: '-' }}</pre>
+                            <p class="small fw-bold text-muted mb-1">Response</p>
+                            <pre class="rounded border p-3 mb-0">{{ $responsePretty ?: '-' }}</pre>
                         </div>
                     </div>
                 </div>

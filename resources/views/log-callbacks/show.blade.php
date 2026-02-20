@@ -99,16 +99,12 @@
                 </div>
 
                 <div class="col-12 col-lg-6">
-                    {{-- spacer --}}
-                </div>
-
-                <div class="col-12">
                     <div class="card border">
                         <div class="card-header py-2">
                             <h6 class="mb-0 fw-bold"><i class="ti ti-send me-1"></i> Payload Callback</h6>
                         </div>
                         <div class="card-body p-3">
-                            <pre class="rounded border p-3 mb-0 bg-light">{{ $payloadPretty ?: '-' }}</pre>
+                            <pre class="rounded border p-3 mb-0">{{ $payloadPretty ?: '-' }}</pre>
                         </div>
                     </div>
                 </div>
