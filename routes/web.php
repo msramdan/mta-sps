@@ -11,7 +11,9 @@ use App\Http\Controllers\{
     TarikSaldoController,
     SettingMerchantController,
     TransaksiController,
-    ApiDocumentationController
+    ApiDocumentationController,
+    LogGenerateQrController,
+    LogCallbackController
 };
 use App\Http\Controllers\Frontend\WebController;
 
@@ -33,6 +35,12 @@ Route::middleware(['auth', 'web'])->group(function () {
 
     // Role & Permission Management
     Route::resource('roles', RoleAndPermissionController::class);
+
+    // System Log
+    Route::get('/log-generate-qrs', [LogGenerateQrController::class, 'index'])->name('log-generate-qrs.index');
+    Route::get('/log-generate-qrs/{logGenerateQr}', [LogGenerateQrController::class, 'show'])->name('log-generate-qrs.show');
+    Route::get('/log-callbacks', [LogCallbackController::class, 'index'])->name('log-callbacks.index');
+    Route::get('/log-callbacks/{logCallback}', [LogCallbackController::class, 'show'])->name('log-callbacks.show');
 
     // Bank Management
     Route::resource('banks', BankController::class);

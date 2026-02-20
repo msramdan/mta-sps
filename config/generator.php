@@ -192,6 +192,36 @@ return [
             ]
         ],
         [
+            'header' => 'System Log',
+            'permissions' => [
+                'log generate qr view',
+                'log callback view'
+            ],
+            'menus' => [
+                [
+                    'title' => 'System Log',
+                    'icon' => '<i class="ti ti-file-text fs-5 me-2"></i>',
+                    'route' => null,
+                    'permissions' => [
+                        'log generate qr view',
+                        'log callback view'
+                    ],
+                    'submenus' => [
+                        [
+                            'title' => 'Log Generate QR',
+                            'route' => 'log-generate-qrs',
+                            'permission' => 'log generate qr view'
+                        ],
+                        [
+                            'title' => 'Log Callback',
+                            'route' => 'log-callbacks',
+                            'permission' => 'log callback view'
+                        ]
+                    ]
+                ]
+            ]
+        ],
+        [
             'header' => 'Utilities',
             'permissions' => [
                 'user view',
