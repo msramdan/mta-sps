@@ -306,23 +306,17 @@
                         </div>
                     </div>
 
-                    <div class="card">
+                    <div class="card d-none" id="apiResponseCard">
                         <div class="card-header">
-                            <h5>{{ __('Instruksi Pembayaran QRIS') }}</h5>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">{{ __('API Response') }}</h5>
+                                <button type="button" class="btn btn-sm btn-outline-primary" id="copyResponseBtn">
+                                    <i class="ph-duotone ph-copy me-2"></i>{{ __('Copy') }}
+                                </button>
+                            </div>
                         </div>
                         <div class="card-body">
-                            <div class="mb-0">
-                                <h6 class="fw-bold">{{ __('Cara Bayar dengan QRIS') }}</h6>
-                                <ol class="mb-0" style="padding-left: 1.2rem; font-size: 0.9rem;">
-                                    <li class="mb-2">Buka aplikasi pembayaran digital Anda (GoPay, OVO, Dana, ShopeePay,
-                                        dll)</li>
-                                    <li class="mb-2">Pilih menu Scan QR atau bayar dengan QRIS</li>
-                                    <li class="mb-2">Arahkan kamera ke QR Code yang ditampilkan</li>
-                                    <li class="mb-2">Periksa detail pembayaran (merchant & nominal)</li>
-                                    <li class="mb-2">Masukkan PIN untuk konfirmasi pembayaran</li>
-                                    <li class="mb-0">Simpan bukti transaksi Anda</li>
-                                </ol>
-                            </div>
+                            <pre id="apiResponseContent" style="background: #f8f9fa; padding: 15px; border-radius: 6px; overflow-x: auto; max-height: 400px;"><code id="apiResponseCode" style="font-size: 0.85rem;"></code></pre>
                         </div>
                     </div>
                 </div>
@@ -412,6 +406,12 @@
                     // Update details
                     document.getElementById('nmid').textContent = result.data.storeId || 'ID2026020900005';
 
+                    // Display API Response
+                    const apiResponseCard = document.getElementById('apiResponseCard');
+                    const apiResponseCode = document.getElementById('apiResponseCode');
+                    apiResponseCode.textContent = JSON.stringify(result, null, 2);
+                    apiResponseCard.classList.remove('d-none');
+
                     // Show success alert with SweetAlert
                     Swal.fire({
                         icon: 'success',
@@ -451,6 +451,34 @@
                 generateBtn.disabled = false;
                 generateBtn.innerHTML = '<i class="ph-duotone ph-qr-code"></i> {{ __('Generate QRIS') }}';
             }
+        });
+
+        // Copy Response Button
+        document.getElementById('copyResponseBtn').addEventListener('click', function() {
+            const responseCode = document.getElementById('apiResponseCode');
+            const textToCopy = responseCode.textContent;
+
+            navigator.clipboard.writeText(textToCopy).then(function() {
+                const btn = document.getElementById('copyResponseBtn');
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '<i class="ph-duotone ph-check me-2"></i>{{ __("Copied!") }}';
+                btn.classList.remove('btn-outline-primary');
+                btn.classList.add('btn-success');
+
+                setTimeout(function() {
+                    btn.innerHTML = originalText;
+                    btn.classList.remove('btn-success');
+                    btn.classList.add('btn-outline-primary');
+                }, 2000);
+            }).catch(function(err) {
+                console.error('Failed to copy: ', err);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: 'Gagal menyalin response',
+                    confirmButtonText: 'OK'
+                });
+            });
         });
     </script>
 @endpush
