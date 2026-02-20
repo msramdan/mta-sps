@@ -37,6 +37,7 @@ class BankController extends Controller implements HasMiddleware
             $banks = Bank::query();
 
             return DataTables::of(source: $banks)
+                ->addIndexColumn()
                 ->addColumn(name: 'action', content: 'banks.include.action')
                 ->toJson();
         }

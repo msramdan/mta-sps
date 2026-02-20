@@ -39,6 +39,7 @@
                                 <table class="display w-100 row-border-table table-responsive" id="data-table">
                                     <thead>
                                         <tr>
+                                            <th style="width: 50px">{{ __(key: 'No') }}</th>
                                             <th>{{ __(key: 'Name') }}</th>
                                             <th>{{ __(key: 'Email') }}</th>
                                             <th>{{ __(key: 'No Wa') }}</th>
@@ -63,7 +64,15 @@
             processing: true,
             serverSide: true,
             ajax: "{{ route(name: 'users.index') }}",
-            columns: [{
+            columns: [
+                {
+                    data: 'DT_RowIndex',
+                    name: 'DT_RowIndex',
+                    orderable: false,
+                    searchable: false,
+                    width: '50px'
+                },
+                {
                     data: 'avatar',
                     name: 'avatar',
                     orderable: false,

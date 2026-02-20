@@ -72,6 +72,7 @@
                                 <table class="display w-100 row-border-table table-responsive" id="data-table">
                                     <thead>
                                         <tr>
+                                            <th style="width: 50px">{{ __('No') }}</th>
                                             <th>{{ __('Tanggal') }}</th>
                                             <th>{{ __('Transaksi ID') }}</th>
                                             <th>{{ __('Merchant') }}</th>
@@ -106,6 +107,13 @@
                 }
             },
             columns: [
+                {
+                    data: 'DT_RowIndex',
+                    name: 'DT_RowIndex',
+                    orderable: false,
+                    searchable: false,
+                    width: '50px'
+                },
                 { data: 'created_at', name: 'created_at' },
                 { data: 'transaksi_id', name: 'transaksi_id' },
                 { data: 'merchant_id', name: 'merchant_id' },
@@ -130,7 +138,7 @@
                 },
                 { data: 'action', name: 'action', orderable: false, searchable: false }
             ],
-            order: [[0, 'desc']]
+            order: [[1, 'desc']]
         });
     </script>
 @endpush

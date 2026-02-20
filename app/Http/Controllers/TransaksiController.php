@@ -48,6 +48,7 @@ class TransaksiController extends Controller implements HasMiddleware
             $transaksis = $query->latest();
 
             return DataTables::of($transaksis)
+                ->addIndexColumn()
                 ->addColumn('action', 'transaksis.include.action')
                 ->editColumn('no_ref_merchant', function ($transaksi) {
                     return $transaksi->no_ref_merchant ?? '-';

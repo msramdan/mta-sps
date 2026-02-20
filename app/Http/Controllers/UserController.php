@@ -44,6 +44,7 @@ class UserController extends Controller implements HasMiddleware
             $users = User::with(relations: ['roles:id,name', 'assignedMerchants']);
 
             return Datatables::of(source: $users)
+                ->addIndexColumn()
                 ->addColumn(name: 'action', content: 'users.include.action')
                 ->addColumn(name: 'role', content: fn($row) => $row->getRoleNames()->toArray() !== [] ? $row->getRoleNames()[0] : '-')
                 ->addColumn(name: 'merchants', content: fn($row) => $row->assignedMerchants->pluck('nama_merchant')->implode(', ') ?: '-')

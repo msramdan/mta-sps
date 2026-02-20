@@ -40,6 +40,7 @@
                                 <table class="display w-100 row-border-table table-responsive" id="data-table">
                                     <thead>
                                         <tr>
+                                            <th style="width: 50px">{{ __(key: 'No') }}</th>
                                             <th>{{ __(key: 'Merchant') }}</th>
 											<th>{{ __(key: 'Jumlah') }}</th>
 											<th>{{ __(key: 'Biaya') }}</th>
@@ -149,6 +150,13 @@
             serverSide: true,
             ajax: "{{ route(name: 'tarik-saldos.index') }}",
             columns: [
+                {
+                    data: 'DT_RowIndex',
+                    name: 'DT_RowIndex',
+                    orderable: false,
+                    searchable: false,
+                    width: '50px'
+                },
                 {
                     data: 'merchant',
                     name: 'merchant'

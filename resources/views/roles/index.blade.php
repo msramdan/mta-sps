@@ -40,6 +40,7 @@
                                 <table class="display w-100 row-border-table table-responsive" id="data-table">
                                     <thead>
                                         <tr>
+                                            <th style="width: 50px">{{ __(key: 'No') }}</th>
                                             <th>{{ __(key: 'Name') }}</th>
                                             <th>{{ __(key: 'Action') }}</th>
                                         </tr>
@@ -60,7 +61,15 @@
             processing: true,
             serverSide: true,
             ajax: "{{ route(name: 'roles.index') }}",
-            columns: [{
+            columns: [
+                {
+                    data: 'DT_RowIndex',
+                    name: 'DT_RowIndex',
+                    orderable: false,
+                    searchable: false,
+                    width: '50px'
+                },
+                {
                     data: 'name',
                     name: 'name'
                 },

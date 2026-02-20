@@ -39,6 +39,7 @@ class RoleAndPermissionController extends Controller implements HasMiddleware
             $users = Role::query();
 
             return DataTables::of(source: $users)
+                ->addIndexColumn()
                 ->addColumn(name: 'created_at', content: fn ($row) => $row->created_at->format('Y-m-d H:i:s'))
                 ->addColumn(name: 'updated_at', content: fn ($row) => $row->updated_at->format('Y-m-d H:i:s'))
                 ->addColumn(name: 'action', content: 'roles.include.action')
