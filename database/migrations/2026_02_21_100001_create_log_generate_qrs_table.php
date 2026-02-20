@@ -1,0 +1,28 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('log_generate_qrs', function (Blueprint $table) {
+            $table->uuid('id')->primary();
+            $table->uuid('transaksi_id')->nullable();
+            $table->foreign('transaksi_id')->references('id')->on('transaksis')->nullOnDelete();
+            $table->uuid('merchant_id')->nullable();
+            $table->foreign('merchant_id')->references('id')->on('merchants')->nullOnDelete();
+            $table->text('payload_generate_qr')->nullable();
+            $table->text('response_generate_qr')->nullable();
+            $table->boolean('is_success')->nullable()->comment('Untuk filter cepat saat debug: true = sukses, false = gagal');
+            $table->timestamps();
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('log_generate_qrs');
+    }
+};

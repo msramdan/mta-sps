@@ -16,7 +16,6 @@ class DatabaseSeeder extends Seeder
             RoleAndPermissionSeeder::class,
             BankSeeder::class,
             MerchantSeeder::class,
-            TransaksiSeeder::class,
         ]);
     }
 }

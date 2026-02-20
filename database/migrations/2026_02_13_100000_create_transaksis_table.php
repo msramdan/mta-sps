@@ -21,9 +21,6 @@ return new class extends Migration
             $table->decimal('biaya', 15, 2)->default(0);
             $table->decimal('jumlah_dibayar', 15, 2)->default(0);
             $table->enum('status', ['pending', 'success', 'failed', 'expired'])->default('pending');
-            $table->text('payload_generate_qr')->nullable();
-            $table->text('callback')->nullable();
-            $table->dateTime('tanggal_callback')->nullable();
             $table->timestamps();
         });
     }
