@@ -404,13 +404,13 @@
 
                     // Create QR Code using QRCodeJS
                     new QRCode(qrContainer, {
-                        text: result.data.qris_content,
+                        text: result.data.qrContent,
                         width: 200,
                         height: 200,
                     });
 
                     // Update details
-                    document.getElementById('nmid').textContent = result.data.store_id || 'ID2026020900005';
+                    document.getElementById('nmid').textContent = result.data.storeId || 'ID2026020900005';
 
                     // Show success alert with SweetAlert
                     Swal.fire({

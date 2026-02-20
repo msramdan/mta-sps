@@ -62,11 +62,6 @@ class SimulatorController extends Controller implements HasMiddleware
                     'amount' => [
                         'value' => $formattedAmount,
                         'currency' => 'IDR'
-                    ],
-                    'additionalInfo' => [
-                        'validTime' => '9000',
-                        'tip' => 'false',
-                        'qrType' => '03'
                     ]
                 ]
             ];
@@ -78,6 +73,8 @@ class SimulatorController extends Controller implements HasMiddleware
             $response = Http::timeout(30)->post($qrinUrl, $payload);
 
             $result = $response->json();
+            var_dump($result);
+            die();
 
             // Return the response from QRIN API
             return response()->json($result);
