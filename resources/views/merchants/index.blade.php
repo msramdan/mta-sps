@@ -40,7 +40,6 @@
                                 <table class="display w-100 row-border-table table-responsive" id="data-table">
                                     <thead>
                                         <tr>
-                                            <th style="width: 50px">No</th>
                                             <th style="width: 20px;"></th>
                                             <th>Kode Merchant</th>
                                             <th>Nama Merchant</th>
@@ -159,13 +158,6 @@
                 ajax: "{{ route('merchants.index') }}",
                 columns: [
                     {
-                        data: 'DT_RowIndex',
-                        name: 'DT_RowIndex',
-                        orderable: false,
-                        searchable: false,
-                        width: '50px'
-                    },
-                    {
                         className: 'td-expand',
                         orderable: false,
                         data: null,
@@ -230,11 +222,11 @@
                     }
                 ],
                 order: [
-                    [2, 'asc']
+                    [1, 'asc']
                 ],
                 createdRow: function(row, data, dataIndex) {
-                    // Set width untuk kolom expand (index 1)
-                    $('td:eq(1)', row).addClass('td-expand');
+                    // Set width untuk kolom pertama
+                    $('td:eq(0)', row).addClass('td-expand');
                 }
             });
 

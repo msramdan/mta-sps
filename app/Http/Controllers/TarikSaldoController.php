@@ -60,7 +60,6 @@ class TarikSaldoController extends Controller implements HasMiddleware
             }
 
             return Datatables::of($query)
-                ->addIndexColumn()
                 ->addColumn(name: 'action', content: 'tarik-saldos.include.action')
                 ->toJson();
         }

@@ -42,7 +42,6 @@ class LogCallbackController extends Controller implements HasMiddleware
             $query->latest();
 
             return DataTables::of($query)
-                ->addIndexColumn()
                 ->addColumn('action', 'log-callbacks.include.action')
                 ->editColumn('merchant_id', function ($log) {
                     return $log->merchant ? $log->merchant->nama_merchant . ' (' . $log->merchant->kode_merchant . ')' : '-';

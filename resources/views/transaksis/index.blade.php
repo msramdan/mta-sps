@@ -40,7 +40,6 @@
                                 <table class="display w-100 row-border-table table-responsive" id="data-table">
                                     <thead>
                                         <tr>
-                                            <th style="width: 50px">{{ __('No') }}</th>
                                             <th>{{ __('No. Referensi') }}</th>
                                             <th>{{ __('No. Ref. Merchant') }}</th>
                                             <th>{{ __('Tanggal') }}</th>
@@ -69,13 +68,6 @@
             serverSide: true,
             ajax: "{{ route('transaksis.index') }}",
             columns: [
-                {
-                    data: 'DT_RowIndex',
-                    name: 'DT_RowIndex',
-                    orderable: false,
-                    searchable: false,
-                    width: '50px'
-                },
                 {
                     data: 'no_referensi',
                     name: 'no_referensi'
@@ -119,7 +111,7 @@
                 }
             ],
             order: [
-                [3, 'desc']
+                [2, 'desc']
             ]
         });
     </script>
