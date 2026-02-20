@@ -51,6 +51,10 @@
                                         <td>{{ $user->email }}</td>
                                     </tr>
                                     <tr>
+                                        <td class="fw-bold">No. WhatsApp</td>
+                                        <td>{{ $user->no_wa ?? '-' }}</td>
+                                    </tr>
+                                    <tr>
                                         <td class="fw-bold">{{ __(key: 'Role') }}</td>
                                         <td>{{ $user->getRoleNames()->toArray() !== [] ? $user->getRoleNames()[0] : '-' }}
                                         </td>

@@ -27,6 +27,22 @@
     </div>
     <div class="col-md-6 mb-3">
         <div class="form-group">
+            <label for="no-wa" class="form-label">No. WhatsApp <span class="text-danger">*</span></label>
+            <input type="tel" name="no_wa" id="no-wa"
+                class="form-control @error('no_wa') is-invalid @enderror"
+                placeholder="08xxx atau 62xxx (min 8, max 13 digit)"
+                value="{{ isset($user) ? $user->no_wa : old('no_wa') }}" required
+                maxlength="13" pattern="(08|62)[0-9]{8,11}">
+            @error('no_wa')
+                <div class="invalid-feedback">
+                    {{ $message }}
+                </div>
+            @enderror
+            <div class="form-text">Format: awalan 08 atau 62, minimal 8 digit, maksimal 13 digit.</div>
+        </div>
+    </div>
+    <div class="col-md-6 mb-3">
+        <div class="form-group">
             <label for="password" class="form-label">{{ __(key: 'Password') }}</label>
             <input type="password" name="password" id="password"
                 class="form-control @error('password') is-invalid @enderror" placeholder="{{ __(key: 'Password') }}"
