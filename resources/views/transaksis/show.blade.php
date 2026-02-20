@@ -69,7 +69,7 @@
                                             <table class="table table-sm table-borderless mb-0">
                                                 <tr>
                                                     <td class="fw-bold text-nowrap" style="width: 40%">No. Referensi</td>
-                                                    <td class="text-break"><span class="badge bg-dark">{{ $transaksi->no_referensi }}</span></td>
+                                                    <td class="text-break">{{ $transaksi->no_referensi }}</td>
                                                 </tr>
                                                 <tr>
                                                     <td class="fw-bold">No. Ref. Merchant</td>
@@ -82,10 +82,10 @@
                                                 <tr>
                                                     <td class="fw-bold">Merchant</td>
                                                     <td>
-                                                        {{ $transaksi->merchant?->nama_merchant ?? '-' }}
-                                                        @if($transaksi->merchant?->kode_merchant)
-                                                            <br>
-                                                            <span class="badge bg-primary">{{ $transaksi->merchant->kode_merchant }}</span>
+                                                        @if($transaksi->merchant)
+                                                            {{ $transaksi->merchant->kode_merchant ? $transaksi->merchant->kode_merchant . ' - ' : '' }}{{ $transaksi->merchant->nama_merchant ?? '-' }}
+                                                        @else
+                                                            -
                                                         @endif
                                                     </td>
                                                 </tr>
@@ -195,11 +195,11 @@
                                                                     <div class="row g-3">
                                                                         <div class="col-12">
                                                                             <span class="small fw-bold text-muted d-block mb-1">Payload Request</span>
-                                                                            <pre class="rounded border mb-0 overflow-auto" style="white-space: pre-wrap; background-color: #e8e0f0;">{{ $payloadPretty ?: '-' }}</pre>
+                                                                            <pre class="rounded border mb-0 overflow-auto" >{{ $payloadPretty ?: '-' }}</pre>
                                                                         </div>
                                                                         <div class="col-12">
                                                                             <span class="small fw-bold text-muted d-block mb-1">Response</span>
-                                                                            <pre class="rounded border mb-0 overflow-auto" style="white-space: pre-wrap; background-color: #e8e0f0;">{{ $responsePretty ?: '-' }}</pre>
+                                                                            <pre class="rounded border mb-0 overflow-auto" >{{ $responsePretty ?: '-' }}</pre>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -245,7 +245,7 @@
                                                             <div id="{{ $accId }}" class="accordion-collapse collapse" data-bs-parent="#accordionLogCallback">
                                                                 <div class="accordion-body pt-2 pb-2 px-3">
                                                                     <span class="small fw-bold text-muted d-block mb-1">Payload Callback</span>
-                                                                    <pre class="rounded border mb-0 overflow-auto" style="white-space: pre-wrap; background-color: #e8e0f0;">{{ $payloadPretty ?: '-' }}</pre>
+                                                                    <pre class="rounded border mb-0 overflow-auto" >{{ $payloadPretty ?: '-' }}</pre>
                                                                 </div>
                                                             </div>
                                                         </div>
