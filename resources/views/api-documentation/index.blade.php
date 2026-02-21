@@ -200,8 +200,12 @@
                                         </div>
 
                                         <div>
-                                            <p class="mb-2"><strong class="text-danger">Failed / Error Response</strong></p>
-                                            <pre class="code-block response-error"><code class="text-muted">{ }</code></pre>
+                                            <p class="mb-2"><strong class="text-danger">Failed / Error Response (400 Bad Request)</strong></p>
+                                            <pre class="code-block response-error"><code>{
+    "success": false,
+    "message": "token_qrin is required",
+    "data": null
+}</code></pre>
                                         </div>
                                     </div>
                                 </div>
@@ -273,8 +277,12 @@
                                         </div>
 
                                         <div>
-                                            <p class="mb-2"><strong class="text-danger">Failed / Error Response</strong></p>
-                                            <pre class="code-block response-error"><code class="text-muted">{ }</code></pre>
+                                            <p class="mb-2"><strong class="text-danger">Failed / Error Response (400 Bad Request)</strong></p>
+                                            <pre class="code-block response-error"><code>{
+    "success": false,
+    "message": "token_qrin is required",
+    "data": null
+}</code></pre>
                                         </div>
                                     </div>
                                 </div>

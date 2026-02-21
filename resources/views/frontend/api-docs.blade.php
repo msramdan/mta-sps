@@ -213,8 +213,12 @@
                                 <h6 class="section-title">Response</h6>
                                 <p class="mb-2"><strong class="text-success">Success (200 OK)</strong></p>
                                 <pre class="code-block response-success"><code class="text-muted">{ }</code></pre>
-                                <p class="mb-2 mt-3"><strong class="text-danger">Failed / Error</strong></p>
-                                <pre class="code-block response-error"><code class="text-muted">{ }</code></pre>
+                                <p class="mb-2 mt-3"><strong class="text-danger">Failed / Error (400 Bad Request)</strong></p>
+                                <pre class="code-block response-error"><code>{
+    "success": false,
+    "message": "token_qrin is required",
+    "data": null
+}</code></pre>
                             </div>
                         </div>
 
@@ -266,8 +270,12 @@
                                 <h6 class="section-title">Response</h6>
                                 <p class="mb-2"><strong class="text-success">Success (200 OK)</strong></p>
                                 <pre class="code-block response-success"><code class="text-muted">{ }</code></pre>
-                                <p class="mb-2 mt-3"><strong class="text-danger">Failed / Error</strong></p>
-                                <pre class="code-block response-error"><code class="text-muted">{ }</code></pre>
+                                <p class="mb-2 mt-3"><strong class="text-danger">Failed / Error (400 Bad Request)</strong></p>
+                                <pre class="code-block response-error"><code>{
+    "success": false,
+    "message": "token_qrin is required",
+    "data": null
+}</code></pre>
                             </div>
                         </div>
 
@@ -317,7 +325,7 @@
             </div>
             <hr class="my-3 opacity-25">
             <div class="text-center text-muted">
-                <p class="mb-0 small">&copy; {{ date('Y') }} QRIN Created By Tecanusa.</p>
+                <p class="mb-0 small">&copy; {{ date('Y') }} QRIN - PT. Teknologi Cipta Aplikasi Nusantara</p>
             </div>
         </div>
     </footer>

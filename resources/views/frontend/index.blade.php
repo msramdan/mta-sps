@@ -994,7 +994,7 @@
 
             <hr class="my-3 opacity-25">
             <div class="text-center text-muted">
-                <p class="mb-0 small">&copy; 2026 QRIN Created By Tecanusa.</p>
+                <p class="mb-0 small">&copy; {{ date('Y') }} QRIN - PT. Teknologi Cipta Aplikasi Nusantara</p>
             </div>
         </div>
     </footer>
