@@ -176,9 +176,9 @@
                                 <h6 class="section-title">Request Body</h6>
                                 <p class="text-muted small mb-2">Kirim JSON dengan <code>Content-Type: application/json</code></p>
                                 <pre class="code-block"><code>{
-    "token_qrin": "lQg0NUZV1oIho2uh19B27t986g5jlXkcQOCHywHRYBSvmxVC0BtA6CaKJTp0oews",
+    "token_qrin": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
     "request_payload_qris": {
-        "no_ref_merchant": "123423",
+        "no_ref_merchant": "TRX-123456789",
         "amount": {
             "value": "10000.00",
             "currency": "IDR"
@@ -235,9 +235,9 @@
                                 <h6 class="section-title">Request Body</h6>
                                 <p class="text-muted small mb-2">Kirim JSON dengan <code>Content-Type: application/json</code></p>
                                 <pre class="code-block"><code>{
-    "token_qrin": "vaWG5h7NHeWeyRjkkRYIuMXMjK4c0FEUuYxgSx4310hiAFFiGr2tF3tZ5g5mm2vw",
+    "token_qrin": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
     "request_payload_qris": {
-        "no_ref_merchant": "ramdan4"
+        "no_ref_merchant": "TRX-123456789"
     }
 }</code></pre>
                             </div>
