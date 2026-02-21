@@ -81,6 +81,7 @@
         .param-table th { font-weight: 600; }
         .param-table code { background: rgba(19, 115, 125, 0.15); padding: 2px 8px; border-radius: 4px; font-size: 13px; }
         .required-badge { background: #ef4444; color: white; padding: 3px 10px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+        .optional-badge { background: #6b7280; color: white; padding: 3px 10px; border-radius: 4px; font-size: 11px; font-weight: 600; }
         .section-title { font-size: 1rem; font-weight: 700; margin-bottom: 0.75rem; color: inherit; }
         .coming-soon-block { padding: 4rem 2rem; text-align: center; }
         .coming-soon-block .icon { font-size: 4rem; opacity: 0.4; }
@@ -182,6 +183,11 @@
         "amount": {
             "value": "10000.00",
             "currency": "IDR"
+        },
+        "additional_info": {
+            "customer_name": "Nama Pelanggan",
+            "customer_email": "emailpelanggan@domain.com",
+            "customer_phone": "081234567890"
         }
     }
 }</code></pre>
@@ -202,8 +208,11 @@
                                         <tbody>
                                             <tr><td><code>token_qrin</code></td><td>String</td><td><span class="required-badge">Ya</span></td><td>Token QRIN dari Setting Merchant</td></tr>
                                             <tr><td><code>request_payload_qris.no_ref_merchant</code></td><td>String</td><td><span class="required-badge">Ya</span></td><td>Nomor referensi unik transaksi</td></tr>
-                                            <tr><td><code>request_payload_qris.amount.value</code></td><td>String</td><td><span class="required-badge">Ya</span></td><td>Nominal (format: "10000.00")</td></tr>
-                                            <tr><td><code>request_payload_qris.amount.currency</code></td><td>String</td><td><span class="required-badge">Ya</span></td><td>Mata uang (contoh: "IDR")</td></tr>
+                                            <tr><td><code>request_payload_qris.amount.value</code></td><td>String</td><td><span class="required-badge">Ya</span></td><td>Nominal (format: "10000.00", minimal 1000.00)</td></tr>
+                                            <tr><td><code>request_payload_qris.amount.currency</code></td><td>String</td><td><span class="required-badge">Ya</span></td><td>Mata uang (wajib "IDR")</td></tr>
+                                            <tr><td><code>request_payload_qris.additional_info.customer_name</code></td><td>String</td><td><span class="optional-badge">Opsional</span></td><td>Nama pelanggan. Jika diisi, panjang 5–100 karakter.</td></tr>
+                                            <tr><td><code>request_payload_qris.additional_info.customer_email</code></td><td>String</td><td><span class="optional-badge">Opsional</span></td><td>Email pelanggan. Jika diisi, harus format email yang valid.</td></tr>
+                                            <tr><td><code>request_payload_qris.additional_info.customer_phone</code></td><td>String</td><td><span class="optional-badge">Opsional</span></td><td>Nomor telepon pelanggan. Jika diisi, 8–13 karakter, diawali 08 atau 62.</td></tr>
                                         </tbody>
                                     </table>
                                 </div>

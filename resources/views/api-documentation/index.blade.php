@@ -142,6 +142,11 @@
         "amount": {
             "value": "10000.00",
             "currency": "IDR"
+        },
+        "additional_info": {
+            "customer_name": "Nama Pelanggan",
+            "customer_email": "emailpelanggan@domain.com",
+            "customer_phone": "081234567890"
         }
     }
 }</code></pre>
@@ -177,13 +182,31 @@
                                                         <td><code>request_payload_qris.amount.value</code></td>
                                                         <td>String</td>
                                                         <td><span class="required-badge">Ya</span></td>
-                                                        <td>Nominal transaksi (format: "10000.00")</td>
+                                                        <td>Nominal transaksi (format: "10000.00", minimal 1000.00)</td>
                                                     </tr>
                                                     <tr>
                                                         <td><code>request_payload_qris.amount.currency</code></td>
                                                         <td>String</td>
                                                         <td><span class="required-badge">Ya</span></td>
-                                                        <td>Mata uang (contoh: "IDR")</td>
+                                                        <td>Mata uang (wajib "IDR")</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><code>request_payload_qris.additional_info.customer_name</code></td>
+                                                        <td>String</td>
+                                                        <td><span class="optional-badge">Opsional</span></td>
+                                                        <td>Nama pelanggan. Jika diisi, panjang 5–100 karakter.</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><code>request_payload_qris.additional_info.customer_email</code></td>
+                                                        <td>String</td>
+                                                        <td><span class="optional-badge">Opsional</span></td>
+                                                        <td>Email pelanggan. Jika diisi, harus format email yang valid.</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><code>request_payload_qris.additional_info.customer_phone</code></td>
+                                                        <td>String</td>
+                                                        <td><span class="optional-badge">Opsional</span></td>
+                                                        <td>Nomor telepon pelanggan. Jika diisi, 8–13 karakter, diawali 08 atau 62.</td>
                                                     </tr>
                                                 </tbody>
                                             </table>
