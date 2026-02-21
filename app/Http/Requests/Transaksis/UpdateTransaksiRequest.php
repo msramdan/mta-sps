@@ -42,14 +42,10 @@ class UpdateTransaksiRequest extends FormRequest
             'nama_pelanggan' => 'nullable|string|max:150',
             'email_pelanggan' => 'nullable|email|max:255',
             'no_telpon_pelanggan' => 'nullable|string|max:20',
-            'biaya' => 'required|numeric|min:0',
-            'jumlah_dibayar' => 'required|numeric|min:0',
-            'jumlah_diterima' => 'nullable|numeric|min:0',
+            'jumlah_dibayar' => 'required_if:beban_biaya,Merchant|nullable|numeric|min:0',
+            'jumlah_diterima' => 'required_if:beban_biaya,Pelanggan|nullable|numeric|min:0',
             'beban_biaya' => 'required|in:Merchant,Pelanggan',
             'status' => 'required|in:pending,success,failed,expired',
-            'payload_generate_qr' => 'nullable|string',
-            'callback' => 'nullable|string',
-            'tanggal_callback' => 'nullable|date',
         ];
     }
 
@@ -64,14 +60,10 @@ class UpdateTransaksiRequest extends FormRequest
             'nama_pelanggan' => 'Nama Pelanggan',
             'email_pelanggan' => 'Email Pelanggan',
             'no_telpon_pelanggan' => 'No. Telepon Pelanggan',
-            'biaya' => 'Biaya',
             'jumlah_dibayar' => 'Jumlah Dibayar',
             'jumlah_diterima' => 'Jumlah Diterima',
             'beban_biaya' => 'Beban Biaya',
             'status' => 'Status',
-            'payload_generate_qr' => 'Payload Generate QR',
-            'callback' => 'Callback',
-            'tanggal_callback' => 'Tanggal Callback',
         ];
     }
 }

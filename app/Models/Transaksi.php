@@ -98,6 +98,46 @@ class Transaksi extends Model
         });
     }
 
+    /** Fee: Nobu 0,7% + QRIN Rp 500 flat. */
+    private const FEE_PERCENT = 0.007;
+    private const FEE_FLAT = 500;
+
+    /**
+     * Charge to Merchant: total bayar dikurangi 0,7% + Rp 500.
+     * Input: jumlah_dibayar (pelanggan bayar). Output: biaya, jumlah_diterima.
+     *
+     * @return array{biaya: float, jumlah_diterima: float}
+     */
+    public static function hitungBiayaDanDiterima(float $jumlahDibayar): array
+    {
+        $biaya = round($jumlahDibayar * self::FEE_PERCENT + self::FEE_FLAT, 2);
+        $jumlahDiterima = round($jumlahDibayar - $biaya, 2);
+        if ($jumlahDiterima < 0) {
+            $jumlahDiterima = 0.0;
+        }
+        return ['biaya' => $biaya, 'jumlah_diterima' => $jumlahDiterima];
+    }
+
+    /**
+     * Charge to Pelanggan: merchant terima bersih, hitung pelanggan bayar X.
+     * X − (0,7%×X + 500) = jumlah_diterima → X = (jumlah_diterima + 500) / 0,993.
+     * Dibulatkan ke atas ke rupiah penuh agar merchant dapat minimal jumlah_diterima.
+     *
+     * @return array{jumlah_dibayar: float, biaya: float, jumlah_diterima: float}
+     */
+    public static function hitungDariJumlahDiterima(float $jumlahDiterima): array
+    {
+        $x = ($jumlahDiterima + self::FEE_FLAT) / (1 - self::FEE_PERCENT);
+        $jumlahDibayar = (float) (int) ceil($x); // bulatkan ke atas ke rupiah penuh (contoh: 10.574,02 → 10.575)
+        $biaya = round($jumlahDibayar * self::FEE_PERCENT + self::FEE_FLAT, 2);
+        $diterima = round($jumlahDibayar - $biaya, 2);
+        return [
+            'jumlah_dibayar' => $jumlahDibayar,
+            'biaya' => $biaya,
+            'jumlah_diterima' => $diterima,
+        ];
+    }
+
     /**
      * Relation: Transaksi belongs to Merchant (UUID).
      */

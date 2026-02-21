@@ -184,6 +184,20 @@ class TransaksiController extends Controller implements HasMiddleware
     public function store(StoreTransaksiRequest $request): RedirectResponse
     {
         $validated = $request->validated();
+        $bebanBiaya = $validated['beban_biaya'];
+
+        if ($bebanBiaya === 'Merchant') {
+            $jumlahDibayar = (float) ($validated['jumlah_dibayar'] ?? 0);
+            $hitung = Transaksi::hitungBiayaDanDiterima($jumlahDibayar);
+            $validated['biaya'] = $hitung['biaya'];
+            $validated['jumlah_diterima'] = $hitung['jumlah_diterima'];
+        } else {
+            $jumlahDiterima = (float) ($validated['jumlah_diterima'] ?? 0);
+            $hitung = Transaksi::hitungDariJumlahDiterima($jumlahDiterima);
+            $validated['jumlah_dibayar'] = $hitung['jumlah_dibayar'];
+            $validated['biaya'] = $hitung['biaya'];
+            $validated['jumlah_diterima'] = $hitung['jumlah_diterima'];
+        }
 
         Transaksi::create($validated);
 
@@ -224,6 +238,20 @@ class TransaksiController extends Controller implements HasMiddleware
 
         // Exclude no_referensi from update (should never be updated)
         unset($validated['no_referensi']);
+
+        $bebanBiaya = $validated['beban_biaya'];
+        if ($bebanBiaya === 'Merchant') {
+            $jumlahDibayar = (float) ($validated['jumlah_dibayar'] ?? 0);
+            $hitung = Transaksi::hitungBiayaDanDiterima($jumlahDibayar);
+            $validated['biaya'] = $hitung['biaya'];
+            $validated['jumlah_diterima'] = $hitung['jumlah_diterima'];
+        } else {
+            $jumlahDiterima = (float) ($validated['jumlah_diterima'] ?? 0);
+            $hitung = Transaksi::hitungDariJumlahDiterima($jumlahDiterima);
+            $validated['jumlah_dibayar'] = $hitung['jumlah_dibayar'];
+            $validated['biaya'] = $hitung['biaya'];
+            $validated['jumlah_diterima'] = $hitung['jumlah_diterima'];
+        }
 
         $transaksi->update($validated);
 

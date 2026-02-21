@@ -117,45 +117,38 @@
         </div>
     </div>
 
-    <!-- Informasi Pembayaran -->
+    <!-- Informasi Pembayaran: Total fee = 0,7% + Rp 500 (Nobu + QRIN) -->
+    @php
+        $bebanBiayaForm = old('beban_biaya', isset($transaksi) ? ($transaksi->beban_biaya ?? 'Merchant') : 'Merchant');
+        $displayLainLabel = $bebanBiayaForm === 'Pelanggan' ? 'Jumlah Dibayar (Pelanggan Bayar)' : 'Jumlah Diterima';
+        $displayLainValue = isset($transaksi)
+            ? ($bebanBiayaForm === 'Pelanggan' ? number_format($transaksi->jumlah_dibayar ?? 0, 0, ',', '.') : number_format($transaksi->jumlah_diterima ?? 0, 0, ',', '.'))
+            : '0';
+    @endphp
     <div class="col-12 mb-4">
         <h5 class="mb-3 border-bottom pb-2">Informasi Pembayaran</h5>
+        <div class="form-text mb-3">Ketentuan: Nobu 0,7% + QRIN Rp 500. Charge to Merchant = total bayar dikurangi biaya. Charge to Pelanggan = merchant terima bersih, pelanggan bayar dihitung otomatis.</div>
         <div class="row">
-            <div class="col-md-6 mb-3">
+            <div class="col-md-6 mb-3" id="wrap_input_dibayar" style="{{ $bebanBiayaForm === 'Pelanggan' ? 'display: none;' : '' }}">
                 <div class="form-group">
-                    <label for="biaya">Biaya <span class="text-danger">*</span></label>
-                    <div class="input-group">
-                        <span class="input-group-text">Rp</span>
-                        <input type="number" name="biaya" id="biaya"
-                            class="form-control @error('biaya') is-invalid @enderror"
-                            value="{{ isset($transaksi) ? $transaksi->biaya : old('biaya') }}"
-                            placeholder="0" min="0" step="0.01" required />
-                    </div>
-                    @error('biaya')
-                        <span class="text-danger">{{ $message }}</span>
-                    @enderror
-                </div>
-            </div>
-
-            <div class="col-md-6 mb-3">
-                <div class="form-group">
-                    <label for="jumlah_dibayar">Jumlah Dibayar <span class="text-danger">*</span></label>
+                    <label for="jumlah_dibayar">Jumlah Dibayar (Pelanggan Bayar) <span class="text-danger">*</span></label>
                     <div class="input-group">
                         <span class="input-group-text">Rp</span>
                         <input type="number" name="jumlah_dibayar" id="jumlah_dibayar"
                             class="form-control @error('jumlah_dibayar') is-invalid @enderror"
                             value="{{ isset($transaksi) ? $transaksi->jumlah_dibayar : old('jumlah_dibayar') }}"
-                            placeholder="0" min="0" step="0.01" required />
+                            placeholder="0" min="0" step="0.01" />
                     </div>
                     @error('jumlah_dibayar')
                         <span class="text-danger">{{ $message }}</span>
                     @enderror
+                    <div class="form-text small">Charge to Merchant: isi nominal yang dibayar pelanggan</div>
                 </div>
             </div>
 
-            <div class="col-md-6 mb-3">
+            <div class="col-md-6 mb-3" id="wrap_input_diterima" style="{{ $bebanBiayaForm === 'Pelanggan' ? '' : 'display: none;' }}">
                 <div class="form-group">
-                    <label for="jumlah_diterima">Jumlah Diterima</label>
+                    <label for="jumlah_diterima">Jumlah Diterima (Merchant Terima Bersih) <span class="text-danger">*</span></label>
                     <div class="input-group">
                         <span class="input-group-text">Rp</span>
                         <input type="number" name="jumlah_diterima" id="jumlah_diterima"
@@ -166,50 +159,112 @@
                     @error('jumlah_diterima')
                         <span class="text-danger">{{ $message }}</span>
                     @enderror
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Payload & Callback -->
-    <div class="col-12 mb-4">
-        <h5 class="mb-3 border-bottom pb-2">Payload & Callback</h5>
-        <div class="row">
-            <div class="col-md-6 mb-3">
-                <div class="form-group">
-                    <label for="payload_generate_qr">Payload Generate QR</label>
-                    <textarea name="payload_generate_qr" id="payload_generate_qr" rows="5"
-                        class="form-control @error('payload_generate_qr') is-invalid @enderror"
-                        placeholder="JSON payload dari generate QR">{{ isset($transaksi) ? $transaksi->payload_generate_qr : old('payload_generate_qr') }}</textarea>
-                    @error('payload_generate_qr')
-                        <span class="text-danger">{{ $message }}</span>
-                    @enderror
+                    <div class="form-text small">Charge to Pelanggan: isi nominal yang ingin diterima merchant</div>
                 </div>
             </div>
 
             <div class="col-md-6 mb-3">
                 <div class="form-group">
-                    <label for="callback">Callback Response</label>
-                    <textarea name="callback" id="callback" rows="5"
-                        class="form-control @error('callback') is-invalid @enderror"
-                        placeholder="JSON response callback">{{ isset($transaksi) ? $transaksi->callback : old('callback') }}</textarea>
-                    @error('callback')
-                        <span class="text-danger">{{ $message }}</span>
-                    @enderror
+                    <label for="biaya_display">Biaya (0,7% + Rp 500)</label>
+                    <div class="input-group">
+                        <span class="input-group-text">Rp</span>
+                        <input type="text" id="biaya_display" class="form-control bg-light" readonly
+                            value="{{ isset($transaksi) ? number_format($transaksi->biaya, 0, ',', '.') : '0' }}"
+                            aria-label="Biaya (otomatis)" />
+                    </div>
                 </div>
             </div>
 
-            <div class="col-md-6 mb-3">
+            <div class="col-md-6 mb-3" id="wrap_display_lain">
                 <div class="form-group">
-                    <label for="tanggal_callback">Tanggal Callback</label>
-                    <input type="datetime-local" name="tanggal_callback" id="tanggal_callback"
-                        class="form-control @error('tanggal_callback') is-invalid @enderror"
-                        value="{{ isset($transaksi) ? $transaksi->tanggal_callback?->format('Y-m-d\TH:i') : old('tanggal_callback') }}" />
-                    @error('tanggal_callback')
-                        <span class="text-danger">{{ $message }}</span>
-                    @enderror
+                    <label for="display_lain" id="label_display_lain">{{ $displayLainLabel }}</label>
+                    <div class="input-group">
+                        <span class="input-group-text">Rp</span>
+                        <input type="text" id="display_lain" class="form-control bg-light" readonly
+                            value="{{ $displayLainValue }}"
+                            aria-label="{{ $displayLainLabel }}" />
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+@push('scripts')
+<script>
+(function() {
+    var FEE_PERCENT = 0.007;
+    var FEE_FLAT = 500;
+
+    function round2(v) { return Math.round(v * 100) / 100; }
+    /** Bulatkan ke atas ke rupiah penuh (Charge to Pelanggan). */
+    function ceilRupiah(v) { return Math.ceil(v); }
+
+    function updateDisplay() {
+        var bebanBiaya = document.getElementById('beban_biaya').value;
+        var biaya, jumlahDibayar, jumlahDiterima;
+        var biayaDisplay = document.getElementById('biaya_display');
+        var displayLain = document.getElementById('display_lain');
+
+        if (bebanBiaya === 'Merchant') {
+            jumlahDibayar = parseFloat(document.getElementById('jumlah_dibayar').value) || 0;
+            biaya = round2(jumlahDibayar * FEE_PERCENT + FEE_FLAT);
+            jumlahDiterima = round2(jumlahDibayar - biaya);
+            if (jumlahDiterima < 0) jumlahDiterima = 0;
+            document.getElementById('label_display_lain').textContent = 'Jumlah Diterima';
+            var fmt = new Intl.NumberFormat('id-ID');
+            biayaDisplay.value = fmt.format(biaya);
+            displayLain.value = fmt.format(jumlahDiterima);
+        } else {
+            jumlahDiterima = parseFloat(document.getElementById('jumlah_diterima').value) || 0;
+            document.getElementById('label_display_lain').textContent = 'Jumlah Dibayar (Pelanggan Bayar)';
+            if (!jumlahDiterima || jumlahDiterima <= 0) {
+                biayaDisplay.value = '';
+                displayLain.value = '';
+            } else {
+                jumlahDibayar = ceilRupiah((jumlahDiterima + FEE_FLAT) / (1 - FEE_PERCENT));
+                biaya = round2(jumlahDibayar * FEE_PERCENT + FEE_FLAT);
+                var fmt = new Intl.NumberFormat('id-ID');
+                biayaDisplay.value = fmt.format(biaya);
+                displayLain.value = fmt.format(jumlahDibayar);
+            }
+        }
+    }
+
+    function toggleInput() {
+        var bebanBiaya = document.getElementById('beban_biaya').value;
+        var wrapDibayar = document.getElementById('wrap_input_dibayar');
+        var wrapDiterima = document.getElementById('wrap_input_diterima');
+        var inputDibayar = document.getElementById('jumlah_dibayar');
+        var inputDiterima = document.getElementById('jumlah_diterima');
+
+        if (bebanBiaya === 'Merchant') {
+            wrapDibayar.style.display = '';
+            wrapDiterima.style.display = 'none';
+            inputDibayar.removeAttribute('disabled');
+            inputDibayar.setAttribute('required', 'required');
+            inputDiterima.setAttribute('disabled', 'disabled');
+            inputDiterima.removeAttribute('required');
+        } else {
+            wrapDibayar.style.display = 'none';
+            wrapDiterima.style.display = '';
+            inputDibayar.setAttribute('disabled', 'disabled');
+            inputDibayar.removeAttribute('required');
+            inputDiterima.removeAttribute('disabled');
+            inputDiterima.setAttribute('required', 'required');
+        }
+        updateDisplay();
+    }
+
+    var sel = document.getElementById('beban_biaya');
+    var inputDibayar = document.getElementById('jumlah_dibayar');
+    var inputDiterima = document.getElementById('jumlah_diterima');
+    if (sel) {
+        sel.addEventListener('change', toggleInput);
+        inputDibayar.addEventListener('input', updateDisplay);
+        inputDiterima.addEventListener('input', updateDisplay);
+        toggleInput();
+    }
+})();
+</script>
+@endpush

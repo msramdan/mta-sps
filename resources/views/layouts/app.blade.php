@@ -37,5 +37,6 @@
 {{-- script --}}
 
 @include('layouts.script')
+@stack('scripts')
 @include('sweetalert::alert')
 </html>
