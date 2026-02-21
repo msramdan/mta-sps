@@ -7,6 +7,7 @@ use App\Http\Requests\Transaksis\UpdateTransaksiRequest;
 use App\Models\Transaksi;
 use App\Models\Merchant;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
@@ -22,7 +23,7 @@ class TransaksiController extends Controller implements HasMiddleware
     public static function middleware(): array
     {
         return [
-            new Middleware(middleware: 'permission:transaksi view', only: ['index', 'show']),
+            new Middleware(middleware: 'permission:transaksi view', only: ['index', 'show', 'summary']),
             new Middleware(middleware: 'permission:transaksi create', only: ['create', 'store']),
             new Middleware(middleware: 'permission:transaksi edit', only: ['edit', 'update']),
             new Middleware(middleware: 'permission:transaksi delete', only: ['destroy']),
@@ -32,7 +33,7 @@ class TransaksiController extends Controller implements HasMiddleware
     /**
      * Display a listing of the resource.
      */
-    public function index(): View|JsonResponse
+    public function index(Request $request): View|JsonResponse
     {
         if (request()->ajax()) {
             $query = Transaksi::with('merchant:id,nama_merchant,kode_merchant');
@@ -43,6 +44,18 @@ class TransaksiController extends Controller implements HasMiddleware
                 $query->where('merchant_id', $merchantId);
             } else {
                 $query->whereRaw('1 = 0'); // Return empty if no merchant session
+            }
+
+            // Filter tanggal
+            if ($request->filled('tanggal_from')) {
+                $query->whereDate('tanggal_transaksi', '>=', $request->tanggal_from);
+            }
+            if ($request->filled('tanggal_to')) {
+                $query->whereDate('tanggal_transaksi', '<=', $request->tanggal_to);
+            }
+            // Filter status
+            if ($request->filled('status') && $request->status !== '') {
+                $query->where('status', $request->status);
             }
 
             $transaksis = $query->latest();
@@ -74,7 +87,79 @@ class TransaksiController extends Controller implements HasMiddleware
                 ->make(true);
         }
 
-        return view('transaksis.index');
+        $summary = null;
+        $filterDefaults = (object) [
+            'tanggal_from' => $request->get('tanggal_from', now()->startOfMonth()->format('Y-m-d')),
+            'tanggal_to' => $request->get('tanggal_to', now()->format('Y-m-d')),
+            'status' => $request->get('status', ''),
+        ];
+        $merchantId = session('sessionMerchant');
+        if ($merchantId) {
+            $merchant = Merchant::find($merchantId);
+            if ($merchant) {
+                $tanggalFrom = $filterDefaults->tanggal_from;
+                $tanggalTo = $filterDefaults->tanggal_to;
+                $statusFilter = $filterDefaults->status;
+
+                $q = Transaksi::where('merchant_id', $merchantId)
+                    ->whereDate('tanggal_transaksi', '>=', $tanggalFrom)
+                    ->whereDate('tanggal_transaksi', '<=', $tanggalTo);
+                if ($statusFilter !== '') {
+                    $q->where('status', $statusFilter);
+                }
+
+                $totalTransaksi = (clone $q)->count();
+                $totalSuccess = (clone $q)->where('status', 'success')->count();
+                $totalDibayar = (float) (clone $q)->where('status', 'success')->sum('jumlah_dibayar');
+                $totalBiaya = (float) (clone $q)->where('status', 'success')->sum('biaya');
+
+                $summary = (object) [
+                    'nama_merchant' => $merchant->nama_merchant,
+                    'tanggal_from' => $tanggalFrom,
+                    'tanggal_to' => $tanggalTo,
+                    'total_transaksi' => $totalTransaksi,
+                    'total_success' => $totalSuccess,
+                    'total_dibayar' => $totalDibayar,
+                    'total_biaya' => $totalBiaya,
+                ];
+            }
+        }
+
+        return view('transaksis.index', compact('summary', 'filterDefaults'));
+    }
+
+    /**
+     * Get summary for filtered transaksi (AJAX).
+     */
+    public function summary(Request $request): JsonResponse
+    {
+        $merchantId = session('sessionMerchant');
+        if (!$merchantId) {
+            return response()->json(['error' => 'Merchant tidak ditemukan'], 404);
+        }
+
+        $tanggalFrom = $request->get('tanggal_from', now()->startOfMonth()->format('Y-m-d'));
+        $tanggalTo = $request->get('tanggal_to', now()->format('Y-m-d'));
+        $statusFilter = $request->get('status', '');
+
+        $q = Transaksi::where('merchant_id', $merchantId)
+            ->whereDate('tanggal_transaksi', '>=', $tanggalFrom)
+            ->whereDate('tanggal_transaksi', '<=', $tanggalTo);
+        if ($statusFilter !== '') {
+            $q->where('status', $statusFilter);
+        }
+
+        $totalTransaksi = (clone $q)->count();
+        $totalSuccess = (clone $q)->where('status', 'success')->count();
+        $totalDibayar = (float) (clone $q)->where('status', 'success')->sum('jumlah_dibayar');
+        $totalBiaya = (float) (clone $q)->where('status', 'success')->sum('biaya');
+
+        return response()->json([
+            'total_transaksi' => $totalTransaksi,
+            'total_success' => $totalSuccess,
+            'total_dibayar' => $totalDibayar,
+            'total_biaya' => $totalBiaya,
+        ]);
     }
 
     /**

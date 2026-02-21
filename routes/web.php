@@ -60,6 +60,7 @@ Route::middleware(['auth', 'web'])->group(function () {
         ->name('switch-merchant');
 
     // Transaksi Management
+    Route::get('/transaksis-summary', [TransaksiController::class, 'summary'])->name('transaksis.summary');
     Route::resource('transaksis', TransaksiController::class);
 
     // Tarik Saldo Management
