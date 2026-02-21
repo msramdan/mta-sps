@@ -168,7 +168,7 @@
                                 <h6 class="section-title">Endpoint</h6>
                                 <div class="d-flex align-items-center gap-2 flex-wrap">
                                     <span class="endpoint-badge post">POST</span>
-                                    <div class="endpoint-url flex-grow-1">/v1.0/generate-qris</div>
+                                    <div class="endpoint-url flex-grow-1">https://qrin.web.id/v1.0/generate-qris</div>
                                 </div>
                             </div>
 
@@ -227,7 +227,7 @@
                                 <h6 class="section-title">Endpoint</h6>
                                 <div class="d-flex align-items-center gap-2 flex-wrap">
                                     <span class="endpoint-badge post">POST</span>
-                                    <div class="endpoint-url flex-grow-1">/v1.0/query-payment-status</div>
+                                    <div class="endpoint-url flex-grow-1">https://qrin.web.id/v1.0/query-payment-status</div>
                                 </div>
                             </div>
 

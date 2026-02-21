@@ -127,7 +127,7 @@
                                         <h6 class="fw-bold mb-2">Endpoint</h6>
                                         <div class="d-flex align-items-center gap-2 mb-2">
                                             <span class="endpoint-badge post">POST</span>
-                                            <div class="endpoint-url bg-body-secondary flex-grow-1">/v1.0/generate-qris</div>
+                                            <div class="endpoint-url bg-body-secondary flex-grow-1">https://qrin.web.id/v1.0/generate-qris</div>
                                         </div>
                                     </div>
 
@@ -171,7 +171,7 @@
                                                         <td><code>request_payload_qris.no_ref_merchant</code></td>
                                                         <td>String</td>
                                                         <td><span class="required-badge">Ya</span></td>
-                                                        <td>Nomor referensi unik dari sistem merchant</td>
+                                                        <td>Nomor referensi unik transaksi</td>
                                                     </tr>
                                                     <tr>
                                                         <td><code>request_payload_qris.amount.value</code></td>
@@ -216,7 +216,7 @@
                                         <h6 class="fw-bold mb-2">Endpoint</h6>
                                         <div class="d-flex align-items-center gap-2 mb-2">
                                             <span class="endpoint-badge post">POST</span>
-                                            <div class="endpoint-url bg-body-secondary flex-grow-1">/v1.0/query-payment-status</div>
+                                            <div class="endpoint-url bg-body-secondary flex-grow-1">https://qrin.web.id/v1.0/query-payment-status</div>
                                         </div>
                                     </div>
 
@@ -256,7 +256,7 @@
                                                         <td><code>request_payload_qris.no_ref_merchant</code></td>
                                                         <td>String</td>
                                                         <td><span class="required-badge">Ya</span></td>
-                                                        <td>Nomor referensi transaksi yang ingin dicek</td>
+                                                        <td>Nomor referensi transaksi yang dicek</td>
                                                     </tr>
                                                 </tbody>
                                             </table>
