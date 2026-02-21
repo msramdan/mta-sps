@@ -155,17 +155,17 @@
                                         <div class="col-12 col-md-6">
                                             <label for="nama-merchant" class="form-label">Nama Merchant <span class="text-danger">*</span></label>
                                             <input type="text" name="nama_merchant" id="nama-merchant" class="form-control form-control-sm @error('nama_merchant') is-invalid @enderror"
-                                                value="{{ $merchant->nama_merchant ?? old('nama_merchant') }}" placeholder="Nama Merchant" {{ $readonly ? 'readonly' : '' }} />
+                                                value="{{ $merchant->nama_merchant ?? old('nama_merchant') }}" placeholder="Nama Merchant" required {{ $readonly ? 'readonly' : '' }} />
                                             @error('nama_merchant') <span class="text-danger small">{{ $message }}</span> @enderror
                                         </div>
                                         <div class="col-12 col-md-6">
-                                            <label for="logo" class="form-label">Logo</label>
+                                            <label for="logo" class="form-label">Logo @if(!$merchant->logo)<span class="text-danger">*</span>@endif</label>
                                             <div class="d-flex align-items-start gap-2">
                                                 <img src="{{ $merchant->logo ?? 'https://placehold.co/100x70?text=Logo' }}" alt="Logo" class="doc-preview flex-shrink-0" id="logo-preview" />
                                                 <div class="flex-grow-1">
-                                                    <input type="file" name="logo" id="logo" class="form-control form-control-sm @error('logo') is-invalid @enderror" accept="image/*" {{ $readonly ? 'disabled' : '' }} />
+                                                    <input type="file" name="logo" id="logo" class="form-control form-control-sm @error('logo') is-invalid @enderror" accept="image/*" @if(!$merchant->logo && !$readonly) required @endif {{ $readonly ? 'disabled' : '' }} />
                                                     @error('logo') <span class="text-danger small">{{ $message }}</span> @enderror
-                                                    <small class="form-text text-muted">Kosongkan jika tidak ubah.</small>
+                                                    @if($merchant->logo)<small class="form-text text-muted">Kosongkan jika tidak ubah.</small>@endif
                                                 </div>
                                             </div>
                                         </div>
@@ -177,25 +177,28 @@
                                     <h5 class="form-section-title"><i class="ti ti-files me-1"></i> Dokumen Merchant</h5>
                                     <div class="row g-2">
                                         <div class="col-6 col-lg-3">
-                                            <label class="form-label">KTP</label>
+                                            <label class="form-label">KTP @if(!$merchant->ktp)<span class="text-danger">*</span>@endif</label>
                                             <img src="{{ $merchant->ktp ? $merchant->ktp : 'https://placehold.co/100x70?text=KTP' }}" alt="KTP" class="doc-preview d-block mb-1" id="ktp-preview" />
-                                            <input type="file" name="ktp" accept="image/*,.pdf" class="form-control form-control-sm @error('ktp') is-invalid @enderror" {{ $readonly ? 'disabled' : '' }} />
+                                            <input type="file" name="ktp" accept="image/*,.pdf" class="form-control form-control-sm @error('ktp') is-invalid @enderror" @if(!$merchant->ktp && !$readonly) required @endif {{ $readonly ? 'disabled' : '' }} />
                                             @error('ktp') <span class="text-danger small">{{ $message }}</span> @enderror
                                         </div>
                                         <div class="col-6 col-lg-3">
-                                            <label class="form-label">KTP Lembar Verifikasi</label>
+                                            <label class="form-label">KTP Lembar Verifikasi @if(!$merchant->ktp_lembar_verifikasi)<span class="text-danger">*</span>@endif</label>
                                             <img src="{{ $merchant->ktp_lembar_verifikasi ? $merchant->ktp_lembar_verifikasi : 'https://placehold.co/100x70?text=Verifikasi' }}" alt="KTP Verifikasi" class="doc-preview d-block mb-1" id="ktp-lembar-preview" />
-                                            <input type="file" name="ktp_lembar_verifikasi" accept="image/*,.pdf" class="form-control form-control-sm" {{ $readonly ? 'disabled' : '' }} />
+                                            <input type="file" name="ktp_lembar_verifikasi" accept="image/*,.pdf" class="form-control form-control-sm @error('ktp_lembar_verifikasi') is-invalid @enderror" @if(!$merchant->ktp_lembar_verifikasi && !$readonly) required @endif {{ $readonly ? 'disabled' : '' }} />
+                                            @error('ktp_lembar_verifikasi') <span class="text-danger small">{{ $message }}</span> @enderror
                                         </div>
                                         <div class="col-6 col-lg-3">
-                                            <label class="form-label">KTP + Photo Selfie</label>
+                                            <label class="form-label">KTP + Photo Selfie @if(!$merchant->ktp_photo_selfie)<span class="text-danger">*</span>@endif</label>
                                             <img src="{{ $merchant->ktp_photo_selfie ? $merchant->ktp_photo_selfie : 'https://placehold.co/100x70?text=Selfie' }}" alt="Selfie" class="doc-preview d-block mb-1" id="ktp-selfie-preview" />
-                                            <input type="file" name="ktp_photo_selfie" accept="image/*" class="form-control form-control-sm" {{ $readonly ? 'disabled' : '' }} />
+                                            <input type="file" name="ktp_photo_selfie" accept="image/*" class="form-control form-control-sm @error('ktp_photo_selfie') is-invalid @enderror" @if(!$merchant->ktp_photo_selfie && !$readonly) required @endif {{ $readonly ? 'disabled' : '' }} />
+                                            @error('ktp_photo_selfie') <span class="text-danger small">{{ $message }}</span> @enderror
                                         </div>
                                         <div class="col-6 col-lg-3">
-                                            <label class="form-label">Photo Toko Tampak Depan</label>
+                                            <label class="form-label">Photo Toko/Rumah Tampak Depan @if(!$merchant->photo_toko_tampak_depan)<span class="text-danger">*</span>@endif</label>
                                             <img src="{{ $merchant->photo_toko_tampak_depan ? $merchant->photo_toko_tampak_depan : 'https://placehold.co/100x70?text=Toko' }}" alt="Toko" class="doc-preview d-block mb-1" id="toko-preview" />
-                                            <input type="file" name="photo_toko_tampak_depan" accept="image/*" class="form-control form-control-sm" {{ $readonly ? 'disabled' : '' }} />
+                                            <input type="file" name="photo_toko_tampak_depan" accept="image/*" class="form-control form-control-sm @error('photo_toko_tampak_depan') is-invalid @enderror" @if(!$merchant->photo_toko_tampak_depan && !$readonly) required @endif {{ $readonly ? 'disabled' : '' }} />
+                                            @error('photo_toko_tampak_depan') <span class="text-danger small">{{ $message }}</span> @enderror
                                         </div>
                                     </div>
                                 </div>

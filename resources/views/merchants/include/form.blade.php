@@ -72,7 +72,7 @@
                 </div>
             </div>
             <div class="col-12 col-sm-6 col-lg-3">
-                <label class="form-label">Photo Toko Tampak Depan</label>
+                <label class="form-label">Photo Toko/Rumah Tampak Depan</label>
                 <div class="d-flex flex-column gap-1">
                     <img src="{{ isset($merchant) && $merchant->photo_toko_tampak_depan ? $merchant->photo_toko_tampak_depan : 'https://placehold.co/120x80?text=Toko' }}" alt="Toko" class="doc-preview align-self-start" id="toko-preview" />
                     <input type="file" name="photo_toko_tampak_depan" accept="image/*" class="form-control form-control-sm @error('photo_toko_tampak_depan') is-invalid @enderror" />

@@ -64,7 +64,6 @@
                                         <div class="mb-3 form-check">
                                             <input type="checkbox" class="form-check-input" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
                                             <label class="form-check-label" for="remember">Ingat saya</label>
-                                            <small class="form-text text-muted d-block">Tetap masuk hingga logout (hingga 1 tahun)</small>
                                         </div>
                                         @if (config('app.show_captcha') === 'Yes')
                                             <div class="mb-3">
