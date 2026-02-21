@@ -127,7 +127,7 @@
                                         <h6 class="fw-bold mb-2">Endpoint</h6>
                                         <div class="d-flex align-items-center gap-2 mb-2">
                                             <span class="endpoint-badge post">POST</span>
-                                            <div class="endpoint-url bg-body-secondary flex-grow-1">https://qrin.web.id/v1.0/generate-qris</div>
+                                            <div class="endpoint-url bg-body-secondary flex-grow-1">https://api.qrin.web.id/v1.0/generate-qris</div>
                                         </div>
                                     </div>
 
@@ -216,7 +216,7 @@
                                         <h6 class="fw-bold mb-2">Endpoint</h6>
                                         <div class="d-flex align-items-center gap-2 mb-2">
                                             <span class="endpoint-badge post">POST</span>
-                                            <div class="endpoint-url bg-body-secondary flex-grow-1">https://qrin.web.id/v1.0/query-payment-status</div>
+                                            <div class="endpoint-url bg-body-secondary flex-grow-1">https://api.qrin.web.id/v1.0/query-payment-status</div>
                                         </div>
                                     </div>
 
