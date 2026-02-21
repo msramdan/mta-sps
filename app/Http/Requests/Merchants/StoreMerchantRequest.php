@@ -29,6 +29,10 @@ class StoreMerchantRequest extends FormRequest
 			'nomor_rekening' => 'required|string|max:50',
 			'status' => 'required|in:pending,approved,rejected,suspended',
             'beban_biaya' => 'required|in:Merchant,Pelanggan',
+            'ktp' => 'required|image|max:2048',
+            'ktp_lembar_verifikasi' => 'nullable|image|max:2048',
+            'ktp_photo_selfie' => 'nullable|image|max:2048',
+            'photo_toko_tampak_depan' => 'nullable|image|max:2048',
         ];
     }
 }

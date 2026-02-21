@@ -18,6 +18,9 @@ class MerchantController extends Controller implements HasMiddleware
         public ImageServiceV2 $imageServiceV2,
         public string $logoPath = 'logos',
         public string $ktpPath = 'ktps',
+        public string $ktpLembarVerifikasiPath = 'ktp-lembar-verifikasi',
+        public string $ktpPhotoSelfiePath = 'ktp-photo-selfie',
+        public string $photoTokoPath = 'photo-toko-tampak-depan',
         public string $disk = 'public'
     ) {
         //
@@ -75,6 +78,9 @@ class MerchantController extends Controller implements HasMiddleware
 
         $validated['logo'] = $this->imageServiceV2->upload(name: 'logo', path: $this->logoPath, disk: $this->disk);
         $validated['ktp'] = $this->imageServiceV2->upload(name: 'ktp', path: $this->ktpPath, disk: $this->disk);
+        $validated['ktp_lembar_verifikasi'] = $this->imageServiceV2->upload(name: 'ktp_lembar_verifikasi', path: $this->ktpLembarVerifikasiPath, disk: $this->disk);
+        $validated['ktp_photo_selfie'] = $this->imageServiceV2->upload(name: 'ktp_photo_selfie', path: $this->ktpPhotoSelfiePath, disk: $this->disk);
+        $validated['photo_toko_tampak_depan'] = $this->imageServiceV2->upload(name: 'photo_toko_tampak_depan', path: $this->photoTokoPath, disk: $this->disk);
 
         Merchant::create(attributes: $validated);
 
@@ -113,7 +119,10 @@ class MerchantController extends Controller implements HasMiddleware
         unset($validated['kode_merchant']);
 
         $validated['logo'] = $this->imageServiceV2->upload(name: 'logo', path: $this->logoPath, defaultImage: $merchant?->logo, disk: $this->disk);
-        $validated['ktp'] = $this->imageServiceV2->upload(name: 'ktp', path: $this->ktpPath, defaultImage: $merchant?->ktp, disk: $this->disk);
+        $validated['ktp'] = $this->imageServiceV2->upload(name: 'ktp', path: $this->ktpPath, defaultImage: $merchant?->getRawOriginal('ktp'), disk: $this->disk);
+        $validated['ktp_lembar_verifikasi'] = $this->imageServiceV2->upload(name: 'ktp_lembar_verifikasi', path: $this->ktpLembarVerifikasiPath, defaultImage: $merchant?->getRawOriginal('ktp_lembar_verifikasi'), disk: $this->disk);
+        $validated['ktp_photo_selfie'] = $this->imageServiceV2->upload(name: 'ktp_photo_selfie', path: $this->ktpPhotoSelfiePath, defaultImage: $merchant?->getRawOriginal('ktp_photo_selfie'), disk: $this->disk);
+        $validated['photo_toko_tampak_depan'] = $this->imageServiceV2->upload(name: 'photo_toko_tampak_depan', path: $this->photoTokoPath, defaultImage: $merchant?->getRawOriginal('photo_toko_tampak_depan'), disk: $this->disk);
 
         $merchant->update(attributes: $validated);
 

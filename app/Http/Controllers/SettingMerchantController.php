@@ -18,6 +18,9 @@ class SettingMerchantController extends Controller implements HasMiddleware
         public ImageServiceV2 $imageServiceV2,
         public string $logoPath = 'logos',
         public string $ktpPath = 'ktps',
+        public string $ktpLembarVerifikasiPath = 'ktp-lembar-verifikasi',
+        public string $ktpPhotoSelfiePath = 'ktp-photo-selfie',
+        public string $photoTokoPath = 'photo-toko-tampak-depan',
         public string $disk = 'public'
     ) {
         //
@@ -42,9 +45,7 @@ class SettingMerchantController extends Controller implements HasMiddleware
             abort(403, 'Merchant tidak ditemukan di session.');
         }
 
-        $merchant = DB::table('merchants')
-            ->where('id', $merchantId)
-            ->first();
+        $merchant = Merchant::find($merchantId);
 
         if (! $merchant) {
             abort(404, 'Data merchant tidak ditemukan.');
@@ -57,17 +58,26 @@ class SettingMerchantController extends Controller implements HasMiddleware
         return view('setting-merchant', compact('merchant', 'banks'));
     }
 
-    public function update(UpdateMerchantRequest $request, Merchant $merchant): RedirectResponse
+    public function update(UpdateMerchantRequest $request): RedirectResponse
     {
+        $merchantId = session('sessionMerchant');
+        if (! $merchantId) {
+            abort(403, 'Merchant tidak ditemukan di session.');
+        }
+        $merchant = Merchant::findOrFail($merchantId);
+
         $validated = $request->validated();
 
-        $validated['logo'] = $this->imageServiceV2->upload(name: 'logo', path: $this->logoPath, defaultImage: $merchant?->logo, disk: $this->disk);
-        $validated['ktp'] = $this->imageServiceV2->upload(name: 'ktp', path: $this->ktpPath, defaultImage: $merchant?->ktp, disk: $this->disk);
+        $validated['logo'] = $this->imageServiceV2->upload(name: 'logo', path: $this->logoPath, defaultImage: $merchant->getRawOriginal('logo'), disk: $this->disk);
+        $validated['ktp'] = $this->imageServiceV2->upload(name: 'ktp', path: $this->ktpPath, defaultImage: $merchant->getRawOriginal('ktp'), disk: $this->disk);
+        $validated['ktp_lembar_verifikasi'] = $this->imageServiceV2->upload(name: 'ktp_lembar_verifikasi', path: $this->ktpLembarVerifikasiPath, defaultImage: $merchant->getRawOriginal('ktp_lembar_verifikasi'), disk: $this->disk);
+        $validated['ktp_photo_selfie'] = $this->imageServiceV2->upload(name: 'ktp_photo_selfie', path: $this->ktpPhotoSelfiePath, defaultImage: $merchant->getRawOriginal('ktp_photo_selfie'), disk: $this->disk);
+        $validated['photo_toko_tampak_depan'] = $this->imageServiceV2->upload(name: 'photo_toko_tampak_depan', path: $this->photoTokoPath, defaultImage: $merchant->getRawOriginal('photo_toko_tampak_depan'), disk: $this->disk);
 
         $merchant->update(attributes: $validated);
 
         Alert::success('Berhasil', 'Merchant berhasil diperbarui.');
-        return redirect()->route('merchants.index');
+        return redirect()->route('setting-merchant.index');
     }
 
     public function switchMerchant(Request $request): JsonResponse

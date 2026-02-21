@@ -51,6 +51,9 @@ class Merchant extends Model
         'pemilik_rekening',
         'nomor_rekening',
         'ktp',
+        'ktp_lembar_verifikasi',
+        'ktp_photo_selfie',
+        'photo_toko_tampak_depan',
         'catatan',
         'status',
         'beban_biaya',
@@ -82,6 +85,9 @@ class Merchant extends Model
             'pemilik_rekening' => 'string',
             'nomor_rekening' => 'string',
             'ktp' => 'string',
+            'ktp_lembar_verifikasi' => 'string',
+            'ktp_photo_selfie' => 'string',
+            'photo_toko_tampak_depan' => 'string',
             'catatan' => 'string',
             'status' => 'string',
             'beban_biaya' => 'string',
@@ -155,6 +161,39 @@ class Merchant extends Model
                     path: $path,
                     disk: $disk
                 )
+        );
+    }
+
+    protected function ktpLembarVerifikasi(): Attribute
+    {
+        $path = 'ktp-lembar-verifikasi';
+        $imageService = new ImageServiceV2();
+        $disk = $imageService->setDiskName(disk: 'public');
+        return Attribute::make(
+            get: fn (?string $value): string =>
+                $imageService->getImageCastUrl(image: $value, path: $path, disk: $disk)
+        );
+    }
+
+    protected function ktpPhotoSelfie(): Attribute
+    {
+        $path = 'ktp-photo-selfie';
+        $imageService = new ImageServiceV2();
+        $disk = $imageService->setDiskName(disk: 'public');
+        return Attribute::make(
+            get: fn (?string $value): string =>
+                $imageService->getImageCastUrl(image: $value, path: $path, disk: $disk)
+        );
+    }
+
+    protected function photoTokoTampakDepan(): Attribute
+    {
+        $path = 'photo-toko-tampak-depan';
+        $imageService = new ImageServiceV2();
+        $disk = $imageService->setDiskName(disk: 'public');
+        return Attribute::make(
+            get: fn (?string $value): string =>
+                $imageService->getImageCastUrl(image: $value, path: $path, disk: $disk)
         );
     }
 }

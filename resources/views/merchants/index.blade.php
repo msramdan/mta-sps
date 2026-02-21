@@ -97,13 +97,6 @@
                                 </button>
                             </div>
                         </div>
-
-                        <div class="detail-row mb-2">
-                            <label class="detail-label text-muted small mb-1">Beban Biaya</label>
-                            <div class="detail-value">
-                                <span class="badge ${d.beban_biaya === 'Pelanggan' ? 'bg-info' : 'bg-primary'}">${d.beban_biaya || 'Merchant'}</span>
-                            </div>
-                        </div>
                     </div>
                 </div>
 

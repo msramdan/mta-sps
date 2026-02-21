@@ -134,270 +134,170 @@
                                 </div>
                             @endif
 
-                            <form action="{{ route(name: 'merchants.update', parameters: $merchant->id) }}" method="POST"
-                                enctype="multipart/form-data">
+                            @php
+                                $readonly = in_array($merchant->status, ['approved', 'rejected', 'suspended']);
+                            @endphp
+                            <form action="{{ route('setting-merchant.update') }}" method="POST" enctype="multipart/form-data">
                                 @csrf
                                 @method('PUT')
+                                <input type="hidden" name="status" value="{{ $merchant->status }}" />
 
-                                <div class="row mb-2">
-                                    <!-- 1. Informasi Merchant -->
-                                    <div class="col-12 mb-4">
-                                        <h5 class="mb-3 border-bottom pb-2">Informasi Merchant</h5>
-                                        <div class="row">
-                                            <div class="col-md-6 mb-3">
-                                                <div class="form-group">
-                                                    <label for="nama-merchant">Nama Merchant <span
-                                                            class="text-danger">*</span></label>
-                                                    <input type="text" name="nama_merchant" id="nama-merchant"
-                                                        class="form-control @error('nama_merchant') is-invalid @enderror"
-                                                        value="{{ isset($merchant) ? $merchant->nama_merchant : old('nama_merchant') }}"
-                                                        placeholder="Nama Merchant"
-                                                        @if(in_array($merchant->status, ['approved', 'rejected', 'suspended'])) readonly @endif />
-                                                    @error('nama_merchant')
-                                                        <span class="text-danger">
-                                                            {{ $message }}
-                                                        </span>
-                                                    @enderror
-                                                </div>
-                                            </div>
+                                <style>
+                                    .form-section { margin-bottom: 1.25rem; }
+                                    .form-section-title { font-size: 1rem; font-weight: 600; border-bottom: 1px solid var(--bs-border-color); padding-bottom: 0.5rem; margin-bottom: 0.75rem; }
+                                    .doc-preview { width: 100%; max-width: 100px; height: 70px; object-fit: cover; border-radius: 8px; border: 1px solid #dee2e6; }
+                                </style>
 
-                                            <div class="col-md-6 mb-3">
-                                                <div class="row g-0">
-                                                    <div class="col-md-5 text-center">
-                                                        <img src="{{ $merchant?->logo ?? 'https://placehold.co/300?text=No+Image+Available' }}"
-                                                            alt="Logo" class="rounded img-fluid mt-1"
-                                                            style="object-fit: cover; width: 100%; height: 100px;" />
-                                                    </div>
-                                                    <div class="col-md-7">
-                                                        <div class="form-group ms-3">
-                                                            <label for="logo">Logo <span
-                                                                    class="text-danger">*</span></label>
-                                                            <input type="file" name="logo"
-                                                                class="form-control @error('logo') is-invalid @enderror"
-                                                                id="logo"
-                                                                {{ !isset($merchant) ? 'required' : '' }}
-                                                                @if(in_array($merchant->status, ['approved', 'rejected', 'suspended'])) disabled @endif>
-                                                            @error('logo')
-                                                                <span class="text-danger">
-                                                                    {{ $message }}
-                                                                </span>
-                                                            @enderror
-                                                            @isset($merchant)
-                                                                <div id="logo-help-block" class="form-text">
-                                                                    @if($merchant->status == 'pending')
-                                                                        <i class="fas fa-info-circle text-warning me-1"></i>
-                                                                        Unggah logo merchant/perusahaan Anda
-                                                                    @else
-                                                                        Biarkan logo kosong jika tidak ingin mengubahnya.
-                                                                    @endif
-                                                                </div>
-                                                            @endisset
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <!-- Tambahan Field KTP -->
-                                            <div class="col-md-6 mb-3">
-                                                <div class="row g-0">
-                                                    <div class="col-md-5 text-center">
-                                                        <img src="{{ isset($merchant) && $merchant->ktp ? $merchant->ktp : 'https://placehold.co/300?text=No+Image+Available' }}"
-                                                            alt="KTP" class="rounded img-fluid mt-1"
-                                                            style="object-fit: cover; width: 100%; height: 100px;" />
-                                                    </div>
-                                                    <div class="col-md-7">
-                                                        <div class="form-group ms-3">
-                                                            <label for="ktp">File KTP <span
-                                                                    class="text-danger">*</span></label>
-                                                            <input type="file" name="ktp" accept="image/*,.pdf"
-                                                                class="form-control @error('ktp') is-invalid @enderror"
-                                                                id="ktp"
-                                                                {{ !isset($merchant) ? 'required' : '' }}
-                                                                @if(in_array($merchant->status, ['approved', 'rejected', 'suspended'])) disabled @endif>
-                                                            @error('ktp')
-                                                                <span class="text-danger">
-                                                                    {{ $message }}
-                                                                </span>
-                                                            @enderror
-                                                            @isset($merchant)
-                                                                <div id="ktp-help-block" class="form-text">
-                                                                    @if($merchant->status == 'pending')
-                                                                        <i class="fas fa-info-circle text-warning me-1"></i>
-                                                                        Unggah foto/scan KTP pemilik yang jelas dan dapat terbaca
-                                                                    @else
-                                                                        Biarkan KTP kosong jika tidak ingin mengubahnya.
-                                                                    @endif
-                                                                </div>
-                                                            @endisset
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                <!-- 1. Informasi Merchant -->
+                                <div class="col-12 form-section">
+                                    <h5 class="form-section-title"><i class="ti ti-building-store me-1"></i> Informasi Merchant</h5>
+                                    <div class="row g-2">
+                                        <div class="col-12 col-md-6">
+                                            <label for="nama-merchant" class="form-label">Nama Merchant <span class="text-danger">*</span></label>
+                                            <input type="text" name="nama_merchant" id="nama-merchant" class="form-control form-control-sm @error('nama_merchant') is-invalid @enderror"
+                                                value="{{ $merchant->nama_merchant ?? old('nama_merchant') }}" placeholder="Nama Merchant" {{ $readonly ? 'readonly' : '' }} />
+                                            @error('nama_merchant') <span class="text-danger small">{{ $message }}</span> @enderror
                                         </div>
-                                    </div>
-
-                                    <!-- 2. Kredensial API -->
-                                    <div class="col-12 mb-4">
-                                        <h5 class="mb-3 border-bottom pb-2">Kredensial API</h5>
-                                        <div class="row">
-                                            <div class="col-md-6 mb-3">
-                                                <div class="form-group">
-                                                    <label for="url-callback">URL Callback <span
-                                                            class="text-danger">*</span></label>
-                                                    <input type="url" name="url_callback" id="url-callback"
-                                                        class="form-control @error('url_callback') is-invalid @enderror"
-                                                        value="{{ isset($merchant) ? $merchant->url_callback : old('url_callback') }}"
-                                                        placeholder="Contoh: https://domain-anda.com/callback"
-                                                        @if(in_array($merchant->status, ['approved', 'rejected', 'suspended'])) readonly @endif />
-                                                    @error('url_callback')
-                                                        <span class="text-danger">
-                                                            {{ $message }}
-                                                        </span>
-                                                    @enderror
-                                                    @if($merchant->status == 'pending')
-                                                        <div class="form-text">
-                                                            <i class="fas fa-info-circle text-warning me-1"></i>
-                                                            URL untuk menerima notifikasi transaksi dari sistem
-                                                        </div>
-                                                    @endif
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6 mb-3">
-                                                <div class="form-group">
-                                                    <label for="token_qrin">Token QRIN <span
-                                                            class="text-danger">*</span></label>
-                                                    <div class="input-group">
-                                                        <input type="text" name="token_qrin" id="token_qrin"
-                                                            class="form-control @error('token_qrin') is-invalid @enderror"
-                                                            value="{{ isset($merchant) ? $merchant->token_qrin : old('token_qrin') }}"
-                                                            placeholder="Token QRIS" required readonly />
-                                                        <button type="button" class="btn btn-outline-secondary"
-                                                            onclick="generateTokenQrin()"
-                                                            @if(in_array($merchant->status, ['approved', 'rejected', 'suspended'])) disabled @endif>
-                                                            <i class="fas fa-key"></i> Generate
-                                                        </button>
-                                                    </div>
-                                                    @error('token_qrin')
-                                                        <span class="text-danger">
-                                                            {{ $message }}
-                                                        </span>
-                                                    @enderror
-                                                    @if($merchant->status == 'pending')
-                                                        <div class="form-text">
-                                                            <i class="fas fa-info-circle text-warning me-1"></i>
-                                                            Klik Generate untuk membuat Token QRIS baru
-                                                        </div>
-                                                    @endif
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <!-- 3. Informasi Bank Penarikan -->
-                                    <div class="col-12 mb-4">
-                                        <h5 class="mb-3 border-bottom pb-2">Informasi Bank Penarikan</h5>
-                                        @if($merchant->status == 'pending')
-                                            <div class="alert alert-info mb-3">
-                                                <i class="fas fa-university me-2"></i>
-                                                <strong>Perhatian:</strong> Pastikan data rekening bank sesuai dengan nama di KTP.
-                                                Penarikan dana hanya dapat dilakukan ke rekening ini.
-                                            </div>
-                                        @endif
-                                        <div class="row">
-                                            <div class="col-md-6 mb-3">
-                                                <div class="form-group">
-                                                    <label for="bank-id">Bank <span class="text-danger">*</span></label>
-                                                    <select class="form-select @error('bank_id') is-invalid @enderror"
-                                                        name="bank_id" id="bank-id" class="form-control"
-                                                        @if(in_array($merchant->status, ['approved', 'rejected', 'suspended'])) disabled @endif>
-                                                        <option value="" selected disabled>-- Pilih Bank --</option>
-                                                        @foreach ($banks as $bank)
-                                                            <option value="{{ $bank?->id }}"
-                                                                {{ isset($merchant) && $merchant?->bank_id == $bank?->id ? 'selected' : (old('bank_id') == $bank?->id ? 'selected' : '') }}>
-                                                                {{ $bank?->nama_bank }}
-                                                            </option>
-                                                        @endforeach
-                                                    </select>
-                                                    @error('bank_id')
-                                                        <span class="text-danger">
-                                                            {{ $message }}
-                                                        </span>
-                                                    @enderror
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6 mb-3">
-                                                <div class="form-group">
-                                                    <label for="pemilik-rekening">Pemilik Rekening <span
-                                                            class="text-danger">*</span></label>
-                                                    <input type="text" name="pemilik_rekening" id="pemilik-rekening"
-                                                        class="form-control @error('pemilik_rekening') is-invalid @enderror"
-                                                        value="{{ isset($merchant) ? $merchant->pemilik_rekening : old('pemilik_rekening') }}"
-                                                        placeholder="Nama pemilik rekening sesuai KTP"
-                                                        @if(in_array($merchant->status, ['approved', 'rejected', 'suspended'])) readonly @endif />
-                                                    @error('pemilik_rekening')
-                                                        <span class="text-danger">
-                                                            {{ $message }}
-                                                        </span>
-                                                    @enderror
-                                                    <div class="form-text text-warning">
-                                                        <i class="fas fa-exclamation-triangle me-1"></i>
-                                                        Pemilik Rekening harus sama dengan nama di KTP atau pengajuan anda
-                                                        akan ditolak.
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6 mb-3">
-                                                <div class="form-group">
-                                                    <label for="nomor-rekening">Nomor Rekening <span
-                                                            class="text-danger">*</span></label>
-                                                    <input type="text" name="nomor_rekening" id="nomor-rekening"
-                                                        class="form-control @error('nomor_rekening') is-invalid @enderror"
-                                                        value="{{ isset($merchant) ? $merchant->nomor_rekening : old('nomor_rekening') }}"
-                                                        placeholder="Nomor rekening bank"
-                                                        @if(in_array($merchant->status, ['approved', 'rejected', 'suspended'])) readonly @endif />
-                                                    @error('nomor_rekening')
-                                                        <span class="text-danger">
-                                                            {{ $message }}
-                                                        </span>
-                                                    @enderror
+                                        <div class="col-12 col-md-6">
+                                            <label for="logo" class="form-label">Logo</label>
+                                            <div class="d-flex align-items-start gap-2">
+                                                <img src="{{ $merchant->logo ?? 'https://placehold.co/100x70?text=Logo' }}" alt="Logo" class="doc-preview flex-shrink-0" id="logo-preview" />
+                                                <div class="flex-grow-1">
+                                                    <input type="file" name="logo" id="logo" class="form-control form-control-sm @error('logo') is-invalid @enderror" accept="image/*" {{ $readonly ? 'disabled' : '' }} />
+                                                    @error('logo') <span class="text-danger small">{{ $message }}</span> @enderror
+                                                    <small class="form-text text-muted">Kosongkan jika tidak ubah.</small>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
+                                <!-- 2. Dokumen Merchant -->
+                                <div class="col-12 form-section">
+                                    <h5 class="form-section-title"><i class="ti ti-files me-1"></i> Dokumen Merchant</h5>
+                                    <div class="row g-2">
+                                        <div class="col-6 col-lg-3">
+                                            <label class="form-label">KTP</label>
+                                            <img src="{{ $merchant->ktp ? $merchant->ktp : 'https://placehold.co/100x70?text=KTP' }}" alt="KTP" class="doc-preview d-block mb-1" id="ktp-preview" />
+                                            <input type="file" name="ktp" accept="image/*,.pdf" class="form-control form-control-sm @error('ktp') is-invalid @enderror" {{ $readonly ? 'disabled' : '' }} />
+                                            @error('ktp') <span class="text-danger small">{{ $message }}</span> @enderror
+                                        </div>
+                                        <div class="col-6 col-lg-3">
+                                            <label class="form-label">KTP Lembar Verifikasi</label>
+                                            <img src="{{ $merchant->ktp_lembar_verifikasi ? $merchant->ktp_lembar_verifikasi : 'https://placehold.co/100x70?text=Verifikasi' }}" alt="KTP Verifikasi" class="doc-preview d-block mb-1" id="ktp-lembar-preview" />
+                                            <input type="file" name="ktp_lembar_verifikasi" accept="image/*,.pdf" class="form-control form-control-sm" {{ $readonly ? 'disabled' : '' }} />
+                                        </div>
+                                        <div class="col-6 col-lg-3">
+                                            <label class="form-label">KTP + Photo Selfie</label>
+                                            <img src="{{ $merchant->ktp_photo_selfie ? $merchant->ktp_photo_selfie : 'https://placehold.co/100x70?text=Selfie' }}" alt="Selfie" class="doc-preview d-block mb-1" id="ktp-selfie-preview" />
+                                            <input type="file" name="ktp_photo_selfie" accept="image/*" class="form-control form-control-sm" {{ $readonly ? 'disabled' : '' }} />
+                                        </div>
+                                        <div class="col-6 col-lg-3">
+                                            <label class="form-label">Photo Toko Tampak Depan</label>
+                                            <img src="{{ $merchant->photo_toko_tampak_depan ? $merchant->photo_toko_tampak_depan : 'https://placehold.co/100x70?text=Toko' }}" alt="Toko" class="doc-preview d-block mb-1" id="toko-preview" />
+                                            <input type="file" name="photo_toko_tampak_depan" accept="image/*" class="form-control form-control-sm" {{ $readonly ? 'disabled' : '' }} />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 3. Beban Biaya & Kredensial API -->
+                                <div class="col-12 form-section">
+                                    <h5 class="form-section-title"><i class="ti ti-currency-dollar me-1"></i> Beban Biaya & Kredensial API</h5>
+                                    <div class="row g-2">
+                                        <div class="col-12 col-md-6">
+                                            <label for="beban-biaya" class="form-label">Beban Biaya <span class="text-danger">*</span></label>
+                                            <select class="form-select form-select-sm @error('beban_biaya') is-invalid @enderror" name="beban_biaya" id="beban-biaya" required {{ $readonly ? 'disabled' : '' }}>
+                                                <option value="Merchant" {{ ($merchant->beban_biaya ?? old('beban_biaya')) === 'Merchant' ? 'selected' : '' }}>Merchant</option>
+                                                <option value="Pelanggan" {{ ($merchant->beban_biaya ?? old('beban_biaya')) === 'Pelanggan' ? 'selected' : '' }}>Pelanggan</option>
+                                            </select>
+                                            @error('beban_biaya') <span class="text-danger small">{{ $message }}</span> @enderror
+                                            <small class="form-text text-muted">Merchant = biaya ditanggung merchant; Pelanggan = ditanggung pelanggan.</small>
+                                        </div>
+                                        <div class="col-12 col-md-6">
+                                            <label for="url-callback" class="form-label">URL Callback <span class="text-danger">*</span></label>
+                                            <input type="url" name="url_callback" id="url-callback" class="form-control form-control-sm @error('url_callback') is-invalid @enderror"
+                                                value="{{ $merchant->url_callback ?? old('url_callback') }}" placeholder="https://..." required {{ $readonly ? 'readonly' : '' }} />
+                                            @error('url_callback') <span class="text-danger small">{{ $message }}</span> @enderror
+                                        </div>
+                                        <div class="col-12 col-md-6">
+                                            <label for="token_qrin" class="form-label">Token QRIN <span class="text-danger">*</span></label>
+                                            <div class="input-group input-group-sm">
+                                                <input type="text" name="token_qrin" id="token_qrin" class="form-control" value="{{ $merchant->token_qrin ?? old('token_qrin') }}" required minlength="1" readonly
+                                                title="Klik tombol Generate untuk membuat Token QRIN" />
+                                                <button type="button" class="btn btn-outline-secondary" onclick="generateTokenQrin()" {{ $readonly ? 'disabled' : '' }}><i class="ti ti-key"></i></button>
+                                            </div>
+                                            @error('token_qrin') <span class="text-danger small">{{ $message }}</span> @enderror
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 4. Informasi Bank Penarikan -->
+                                <div class="col-12 form-section">
+                                    <h5 class="form-section-title"><i class="ti ti-building-bank me-1"></i> Informasi Bank Penarikan</h5>
+                                    @if($merchant->status == 'pending')
+                                        <div class="alert alert-info py-2 px-3 small mb-2">
+                                            <i class="ti ti-info-circle me-1"></i> Pastikan data rekening sesuai nama di KTP.
+                                        </div>
+                                    @endif
+                                    <div class="row g-2">
+                                        <div class="col-12 col-md-6">
+                                            <label for="bank-id" class="form-label">Bank <span class="text-danger">*</span></label>
+                                            <select class="form-select form-select-sm @error('bank_id') is-invalid @enderror" name="bank_id" id="bank-id" required {{ $readonly ? 'disabled' : '' }}>
+                                                <option value="" disabled>-- Pilih Bank --</option>
+                                                @foreach ($banks as $bank)
+                                                    <option value="{{ $bank->id }}" {{ ($merchant->bank_id == $bank->id || old('bank_id') == $bank->id) ? 'selected' : '' }}>{{ $bank->nama_bank }}</option>
+                                                @endforeach
+                                            </select>
+                                            @error('bank_id') <span class="text-danger small">{{ $message }}</span> @enderror
+                                        </div>
+                                        <div class="col-12 col-md-6">
+                                            <label for="pemilik-rekening" class="form-label">Pemilik Rekening <span class="text-danger">*</span></label>
+                                            <input type="text" name="pemilik_rekening" id="pemilik-rekening" class="form-control form-control-sm @error('pemilik_rekening') is-invalid @enderror"
+                                                value="{{ $merchant->pemilik_rekening ?? old('pemilik_rekening') }}" placeholder="Sesuai KTP" required {{ $readonly ? 'readonly' : '' }} />
+                                            @error('pemilik_rekening') <span class="text-danger small">{{ $message }}</span> @enderror
+                                            <small class="form-text text-warning"><i class="ti ti-alert-triangle me-1"></i>Harus sama dengan nama di KTP.</small>
+                                        </div>
+                                        <div class="col-12 col-md-6">
+                                            <label for="nomor-rekening" class="form-label">Nomor Rekening <span class="text-danger">*</span></label>
+                                            <input type="text" name="nomor_rekening" id="nomor-rekening" class="form-control form-control-sm @error('nomor_rekening') is-invalid @enderror"
+                                                value="{{ $merchant->nomor_rekening ?? old('nomor_rekening') }}" placeholder="Nomor rekening" required {{ $readonly ? 'readonly' : '' }} />
+                                            @error('nomor_rekening') <span class="text-danger small">{{ $message }}</span> @enderror
+                                        </div>
+                                    </div>
+                                </div>
+
                                 @push('js')
-                                    <script>
-                                        function generateTokenQrin() {
-                                            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-                                            let result = '';
-                                            const length = 64;
-
-                                            for (let i = 0; i < length; i++) {
-                                                result += characters.charAt(Math.floor(Math.random() * characters.length));
-                                            }
-
-                                            document.getElementById('token_qrin').value = result;
-                                        }
-                                    </script>
+                                <script>
+                                function generateTokenQrin() {
+                                    var c = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789', r = '';
+                                    for (var i = 0; i < 64; i++) r += c.charAt(Math.floor(Math.random() * c.length));
+                                    document.getElementById('token_qrin').value = r;
+                                }
+                                function previewImg(input, imgId) {
+                                    if (!input.files || !input.files[0]) return;
+                                    var r = new FileReader();
+                                    r.onload = function() { document.getElementById(imgId).src = r.result; };
+                                    r.readAsDataURL(input.files[0]);
+                                }
+                                document.getElementById('logo')?.addEventListener('change', function() { previewImg(this, 'logo-preview'); });
+                                document.querySelector('input[name="ktp"]')?.addEventListener('change', function() { previewImg(this, 'ktp-preview'); });
+                                document.querySelector('input[name="ktp_lembar_verifikasi"]')?.addEventListener('change', function() { previewImg(this, 'ktp-lembar-preview'); });
+                                document.querySelector('input[name="ktp_photo_selfie"]')?.addEventListener('change', function() { previewImg(this, 'ktp-selfie-preview'); });
+                                document.querySelector('input[name="photo_toko_tampak_depan"]')?.addEventListener('change', function() { previewImg(this, 'toko-preview'); });
+                                document.getElementById('token_qrin')?.closest('form')?.addEventListener('submit', function(e) {
+                                    var t = document.getElementById('token_qrin');
+                                    if (t && !t.value.trim()) { e.preventDefault(); alert('Klik tombol Generate untuk membuat Token QRIN terlebih dahulu.'); t.focus(); return false; }
+                                });
+                                </script>
                                 @endpush
 
                                 @if($merchant->status == 'pending')
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <div>
-                                            <small class="text-muted">
-                                                <i class="fas fa-lightbulb me-1"></i>
-                                                Pastikan semua data sudah benar sebelum mengirimkan pengajuan
-                                            </small>
-                                        </div>
-                                        <button type="submit" class="btn btn-primary">
-                                            <i class="fas fa-paper-plane me-1"></i> Kirim Pengajuan
-                                        </button>
+                                    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-stretch align-items-sm-center gap-2 mt-3">
+                                        <small class="text-muted"><i class="ti ti-bulb me-1"></i>Pastikan semua data benar sebelum kirim.</small>
+                                        <button type="submit" class="btn btn-primary btn-sm"><i class="ti ti-send me-1"></i> Kirim Pengajuan</button>
                                     </div>
                                 @else
-                                    <button type="submit" class="btn btn-primary" disabled>
-                                        {{ __(key: 'Update') }}
-                                    </button>
+                                    <button type="submit" class="btn btn-primary btn-sm mt-3" disabled>{{ __(key: 'Update') }}</button>
                                 @endif
                             </form>
                         </div>
