@@ -17,6 +17,11 @@ class WebController extends Controller
         return view('frontend.index');
     }
 
+    public function apiDocs()
+    {
+        return view('frontend.api-docs');
+    }
+
     public function registerMerchantForm()
     {
         return view('auth.register-merchant');

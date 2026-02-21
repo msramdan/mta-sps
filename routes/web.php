@@ -19,6 +19,7 @@ use App\Http\Controllers\Frontend\WebController;
 
 Route::controller(WebController::class)->group(function () {
     Route::get('/', 'index')->name('web.landing.page');
+    Route::get('/api-docs', 'apiDocs')->name('web.api-docs');
     Route::post('/register-merchant', 'registerMerchant')->name('web.register.merchant');
 });
 

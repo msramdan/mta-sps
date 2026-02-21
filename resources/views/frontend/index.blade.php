@@ -733,8 +733,8 @@
                         <a class="nav-link" href="#testimonials">Testimoni</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#api-docs">
-                            <i class="fas fa-code me-1"></i> API Docs
+                        <a class="nav-link" href="{{ url('/api-docs') }}">
+                            <i class="fas fa-code me-1"></i> Dokumentasi API
                         </a>
                     </li>
                 </ul>
