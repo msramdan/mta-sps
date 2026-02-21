@@ -64,7 +64,48 @@ class TarikSaldoController extends Controller implements HasMiddleware
                 ->toJson();
         }
 
-        return view(view: 'tarik-saldos.index');
+        $summary = null;
+        $merchantId = session('sessionMerchant');
+        if ($merchantId) {
+            $merchant = DB::table('merchants')
+                ->leftJoin('banks', 'merchants.bank_id', '=', 'banks.id')
+                ->where('merchants.id', $merchantId)
+                ->select(
+                    'merchants.id',
+                    'merchants.nama_merchant',
+                    'merchants.balance',
+                    'merchants.pemilik_rekening',
+                    'merchants.nomor_rekening',
+                    'banks.nama_bank as bank_nama'
+                )
+                ->first();
+            if ($merchant) {
+                $pendingCount = DB::table('tarik_saldos')
+                    ->where('merchant_id', $merchantId)
+                    ->whereIn('status', ['pending', 'process'])
+                    ->count();
+                $successCount = DB::table('tarik_saldos')
+                    ->where('merchant_id', $merchantId)
+                    ->where('status', 'success')
+                    ->count();
+                $totalDitarikan = (float) DB::table('tarik_saldos')
+                    ->where('merchant_id', $merchantId)
+                    ->where('status', 'success')
+                    ->sum('diterima');
+                $summary = (object) [
+                    'nama_merchant' => $merchant->nama_merchant,
+                    'balance' => (float) ($merchant->balance ?? 0),
+                    'bank' => $merchant->bank_nama ?? '-',
+                    'nomor_rekening' => $merchant->nomor_rekening ?? '-',
+                    'pemilik_rekening' => $merchant->pemilik_rekening ?? '-',
+                    'pending_count' => $pendingCount,
+                    'success_count' => $successCount,
+                    'total_ditarikan' => $totalDitarikan,
+                ];
+            }
+        }
+
+        return view(view: 'tarik-saldos.index', data: compact('summary'));
     }
 
     /**

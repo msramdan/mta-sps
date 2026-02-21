@@ -23,6 +23,49 @@
                 </div>
             </div>
 
+            @if(isset($summary) && $summary)
+            <div class="row g-3 mb-4">
+                <div class="col-12">
+                    <h6 class="text-muted mb-2"><i class="ti ti-building-store me-1"></i> {{ $summary->nama_merchant }}</h6>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body py-3">
+                            <small class="text-muted d-block mb-1">Saldo Tersedia</small>
+                            <div class="fw-bold text-primary fs-5">Rp {{ number_format($summary->balance, 0, ',', '.') }}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body py-3">
+                            <small class="text-muted d-block mb-1">Rekening Penarikan</small>
+                            <div class="fw-bold small">{{ $summary->bank }}</div>
+                            <div class="text-muted small">{{ $summary->nomor_rekening }} a.n. {{ $summary->pemilik_rekening }}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body py-3">
+                            <small class="text-muted d-block mb-1">Pengajuan Pending</small>
+                            <div class="fw-bold">{{ $summary->pending_count }}</div>
+                            <small class="text-muted">sedang diproses</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body py-3">
+                            <small class="text-muted d-block mb-1">Total Sudah Ditarik</small>
+                            <div class="fw-bold text-success">Rp {{ number_format($summary->total_ditarikan, 0, ',', '.') }}</div>
+                            <small class="text-muted">{{ $summary->success_count }}x berhasil</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @endif
+
             <div class="d-flex justify-content-end">
                 @can('pengajuan tarik saldo')
                     <button type="button" class="btn btn-primary mb-3 me-3" data-bs-toggle="modal" data-bs-target="#withdrawalModal">
