@@ -115,8 +115,10 @@
                                             <th>{{ __('Tanggal') }}</th>
                                             <th>{{ __('Merchant') }}</th>
                                             <th>{{ __('Pelanggan') }}</th>
+                                            <th>{{ __('Beban Biaya') }}</th>
                                             <th>{{ __('Biaya') }}</th>
                                             <th>{{ __('Dibayar') }}</th>
+                                            <th>{{ __('Diterima') }}</th>
                                             <th>{{ __('Status') }}</th>
                                             <th>{{ __('Action') }}</th>
                                         </tr>
@@ -185,22 +187,30 @@
                     data: 'merchant_id',
                     name: 'merchant.nama_merchant'
                 },
-                {
-                    data: 'nama_pelanggan',
-                    name: 'nama_pelanggan'
-                },
-                {
-                    data: 'biaya',
-                    name: 'biaya'
-                },
-                {
-                    data: 'jumlah_dibayar',
-                    name: 'jumlah_dibayar'
-                },
-                {
-                    data: 'status',
-                    name: 'status'
-                },
+                                {
+                                    data: 'nama_pelanggan',
+                                    name: 'nama_pelanggan'
+                                },
+                                {
+                                    data: 'beban_biaya',
+                                    name: 'beban_biaya'
+                                },
+                                {
+                                    data: 'biaya',
+                                    name: 'biaya'
+                                },
+                                {
+                                    data: 'jumlah_dibayar',
+                                    name: 'jumlah_dibayar'
+                                },
+                                {
+                                    data: 'jumlah_diterima',
+                                    name: 'jumlah_diterima'
+                                },
+                                {
+                                    data: 'status',
+                                    name: 'status'
+                                },
                 {
                     data: 'action',
                     name: 'action',

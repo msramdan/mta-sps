@@ -31,6 +31,22 @@
 
             <div class="col-md-6 mb-3">
                 <div class="form-group">
+                    <label for="beban_biaya">Beban Biaya <span class="text-danger">*</span></label>
+                    <select name="beban_biaya" id="beban_biaya" class="form-control @error('beban_biaya') is-invalid @enderror"
+                        required>
+                        @php $bebanBiaya = old('beban_biaya', isset($transaksi) ? ($transaksi->beban_biaya ?? 'Merchant') : 'Merchant'); @endphp
+                        <option value="Merchant" {{ $bebanBiaya === 'Merchant' ? 'selected' : '' }}>Merchant</option>
+                        <option value="Pelanggan" {{ $bebanBiaya === 'Pelanggan' ? 'selected' : '' }}>Pelanggan</option>
+                    </select>
+                    @error('beban_biaya')
+                        <span class="text-danger">{{ $message }}</span>
+                    @enderror
+                    <div class="form-text">Merchant = biaya ditanggung merchant; Pelanggan = ditanggung pelanggan</div>
+                </div>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <div class="form-group">
                     <label for="status">Status <span class="text-danger">*</span></label>
                     <select name="status" id="status" class="form-control @error('status') is-invalid @enderror"
                         required>
@@ -132,6 +148,22 @@
                             placeholder="0" min="0" step="0.01" required />
                     </div>
                     @error('jumlah_dibayar')
+                        <span class="text-danger">{{ $message }}</span>
+                    @enderror
+                </div>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <div class="form-group">
+                    <label for="jumlah_diterima">Jumlah Diterima</label>
+                    <div class="input-group">
+                        <span class="input-group-text">Rp</span>
+                        <input type="number" name="jumlah_diterima" id="jumlah_diterima"
+                            class="form-control @error('jumlah_diterima') is-invalid @enderror"
+                            value="{{ isset($transaksi) ? $transaksi->jumlah_diterima : old('jumlah_diterima') }}"
+                            placeholder="0" min="0" step="0.01" />
+                    </div>
+                    @error('jumlah_diterima')
                         <span class="text-danger">{{ $message }}</span>
                     @enderror
                 </div>

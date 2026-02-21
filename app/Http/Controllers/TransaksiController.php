@@ -68,11 +68,19 @@ class TransaksiController extends Controller implements HasMiddleware
                 ->editColumn('merchant_id', function ($transaksi) {
                     return $transaksi->merchant?->nama_merchant ?? '-';
                 })
+                ->editColumn('beban_biaya', function ($transaksi) {
+                    $val = $transaksi->beban_biaya ?? 'Merchant';
+                    $badge = $val === 'Pelanggan' ? 'bg-secondary' : 'bg-info';
+                    return '<span class="badge ' . $badge . '">' . e($val) . '</span>';
+                })
                 ->editColumn('biaya', function ($transaksi) {
                     return 'Rp ' . number_format($transaksi->biaya, 0, ',', '.');
                 })
                 ->editColumn('jumlah_dibayar', function ($transaksi) {
                     return 'Rp ' . number_format($transaksi->jumlah_dibayar, 0, ',', '.');
+                })
+                ->editColumn('jumlah_diterima', function ($transaksi) {
+                    return 'Rp ' . number_format($transaksi->jumlah_diterima ?? 0, 0, ',', '.');
                 })
                 ->editColumn('status', function ($transaksi) {
                     $badges = [
@@ -83,7 +91,7 @@ class TransaksiController extends Controller implements HasMiddleware
                     ];
                     return $badges[$transaksi->status] ?? '<span class="badge bg-light text-dark">Unknown</span>';
                 })
-                ->rawColumns(['action', 'status'])
+                ->rawColumns(['action', 'status', 'beban_biaya'])
                 ->make(true);
         }
 

@@ -144,12 +144,26 @@
                                         <div class="card-body p-3">
                                             <table class="table table-sm table-borderless mb-0">
                                                 <tr>
-                                                    <td class="fw-bold" style="width: 40%">Biaya</td>
+                                                    <td class="fw-bold" style="width: 40%">Beban Biaya</td>
+                                                    <td>
+                                                        @if(($transaksi->beban_biaya ?? 'Merchant') === 'Merchant')
+                                                            <span class="badge bg-info">Merchant</span>
+                                                        @else
+                                                            <span class="badge bg-secondary">Pelanggan</span>
+                                                        @endif
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="fw-bold">Biaya</td>
                                                     <td>Rp {{ number_format($transaksi->biaya, 0, ',', '.') }}</td>
                                                 </tr>
                                                 <tr>
                                                     <td class="fw-bold">Jumlah Dibayar</td>
                                                     <td>Rp {{ number_format($transaksi->jumlah_dibayar, 0, ',', '.') }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="fw-bold">Jumlah Diterima</td>
+                                                    <td>Rp {{ number_format($transaksi->jumlah_diterima ?? 0, 0, ',', '.') }}</td>
                                                 </tr>
                                             </table>
                                         </div>

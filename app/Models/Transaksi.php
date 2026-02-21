@@ -36,6 +36,8 @@ class Transaksi extends Model
         'no_telpon_pelanggan',
         'biaya',
         'jumlah_dibayar',
+        'jumlah_diterima',
+        'beban_biaya',
         'status',
     ];
 
@@ -55,6 +57,8 @@ class Transaksi extends Model
             'no_telpon_pelanggan' => 'string',
             'biaya' => 'decimal:2',
             'jumlah_dibayar' => 'decimal:2',
+            'jumlah_diterima' => 'decimal:2',
+            'beban_biaya' => 'string',
             'status' => 'string',
             'created_at' => 'datetime:Y-m-d H:i:s',
             'updated_at' => 'datetime:Y-m-d H:i:s',
