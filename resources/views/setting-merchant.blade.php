@@ -145,7 +145,8 @@
                                 <style>
                                     .form-section { margin-bottom: 1.25rem; }
                                     .form-section-title { font-size: 1rem; font-weight: 600; border-bottom: 1px solid var(--bs-border-color); padding-bottom: 0.5rem; margin-bottom: 0.75rem; }
-                                    .doc-preview { width: 100%; max-width: 100px; height: 70px; object-fit: cover; border-radius: 8px; border: 1px solid #dee2e6; }
+                                    .doc-preview { width: 100%; max-width: 100px; height: 70px; object-fit: cover; border-radius: 8px; border: 1px solid #dee2e6; cursor: pointer; transition: opacity 0.2s; }
+                                    .doc-preview:hover { opacity: 0.85; }
                                 </style>
 
                                 <!-- 1. Informasi Merchant -->
@@ -161,9 +162,9 @@
                                         <div class="col-12 col-md-6">
                                             <label for="logo" class="form-label">Logo @if(!$merchant->logo)<span class="text-danger">*</span>@endif</label>
                                             <div class="d-flex align-items-start gap-2">
-                                                <img src="{{ $merchant->logo ?? 'https://placehold.co/100x70?text=Logo' }}" alt="Logo" class="doc-preview flex-shrink-0" id="logo-preview" />
+                                                <img src="{{ $merchant->logo ?? 'https://placehold.co/100x70?text=Logo' }}" alt="Logo" class="doc-preview flex-shrink-0" id="logo-preview" role="button" tabindex="0" data-preview-title="Logo" data-fallback="https://placehold.co/100x70?text=Logo" />
                                                 <div class="flex-grow-1">
-                                                    <input type="file" name="logo" id="logo" class="form-control form-control-sm @error('logo') is-invalid @enderror" accept="image/*" @if(!$merchant->logo && !$readonly) required @endif {{ $readonly ? 'disabled' : '' }} />
+                                                    <input type="file" name="logo" id="logo" class="form-control form-control-sm @error('logo') is-invalid @enderror" accept=".jpg,.jpeg,.png" @if(!$merchant->logo && !$readonly) required @endif {{ $readonly ? 'disabled' : '' }} />
                                                     @error('logo') <span class="text-danger small">{{ $message }}</span> @enderror
                                                     @if($merchant->logo)<small class="form-text text-muted">Kosongkan jika tidak ubah.</small>@endif
                                                 </div>
@@ -175,29 +176,30 @@
                                 <!-- 2. Dokumen Merchant -->
                                 <div class="col-12 form-section">
                                     <h5 class="form-section-title"><i class="ti ti-files me-1"></i> Dokumen Merchant</h5>
+                                    <small class="text-muted d-block mb-2">Maks. 1 MB, format JPG/JPEG/PNG</small>
                                     <div class="row g-2">
                                         <div class="col-6 col-lg-3">
                                             <label class="form-label">KTP @if(!$merchant->ktp)<span class="text-danger">*</span>@endif</label>
-                                            <img src="{{ $merchant->ktp ? $merchant->ktp : 'https://placehold.co/100x70?text=KTP' }}" alt="KTP" class="doc-preview d-block mb-1" id="ktp-preview" />
-                                            <input type="file" name="ktp" accept="image/*,.pdf" class="form-control form-control-sm @error('ktp') is-invalid @enderror" @if(!$merchant->ktp && !$readonly) required @endif {{ $readonly ? 'disabled' : '' }} />
+                                            <img src="{{ $merchant->ktp ? $merchant->ktp : 'https://placehold.co/100x70?text=KTP' }}" alt="KTP" class="doc-preview d-block mb-1" id="ktp-preview" role="button" tabindex="0" data-preview-title="KTP" data-fallback="https://placehold.co/100x70?text=KTP" />
+                                            <input type="file" name="ktp" accept=".jpg,.jpeg,.png" class="form-control form-control-sm @error('ktp') is-invalid @enderror" @if(!$merchant->ktp && !$readonly) required @endif {{ $readonly ? 'disabled' : '' }} />
                                             @error('ktp') <span class="text-danger small">{{ $message }}</span> @enderror
                                         </div>
                                         <div class="col-6 col-lg-3">
                                             <label class="form-label">KTP Lembar Verifikasi @if(!$merchant->ktp_lembar_verifikasi)<span class="text-danger">*</span>@endif</label>
-                                            <img src="{{ $merchant->ktp_lembar_verifikasi ? $merchant->ktp_lembar_verifikasi : 'https://placehold.co/100x70?text=Verifikasi' }}" alt="KTP Verifikasi" class="doc-preview d-block mb-1" id="ktp-lembar-preview" />
-                                            <input type="file" name="ktp_lembar_verifikasi" accept="image/*,.pdf" class="form-control form-control-sm @error('ktp_lembar_verifikasi') is-invalid @enderror" @if(!$merchant->ktp_lembar_verifikasi && !$readonly) required @endif {{ $readonly ? 'disabled' : '' }} />
+                                            <img src="{{ $merchant->ktp_lembar_verifikasi ? $merchant->ktp_lembar_verifikasi : 'https://placehold.co/100x70?text=Verifikasi' }}" alt="KTP Verifikasi" class="doc-preview d-block mb-1" id="ktp-lembar-preview" role="button" tabindex="0" data-preview-title="KTP Lembar Verifikasi" data-fallback="https://placehold.co/100x70?text=Verifikasi" />
+                                            <input type="file" name="ktp_lembar_verifikasi" accept=".jpg,.jpeg,.png" class="form-control form-control-sm @error('ktp_lembar_verifikasi') is-invalid @enderror" @if(!$merchant->ktp_lembar_verifikasi && !$readonly) required @endif {{ $readonly ? 'disabled' : '' }} />
                                             @error('ktp_lembar_verifikasi') <span class="text-danger small">{{ $message }}</span> @enderror
                                         </div>
                                         <div class="col-6 col-lg-3">
                                             <label class="form-label">KTP + Photo Selfie @if(!$merchant->ktp_photo_selfie)<span class="text-danger">*</span>@endif</label>
-                                            <img src="{{ $merchant->ktp_photo_selfie ? $merchant->ktp_photo_selfie : 'https://placehold.co/100x70?text=Selfie' }}" alt="Selfie" class="doc-preview d-block mb-1" id="ktp-selfie-preview" />
-                                            <input type="file" name="ktp_photo_selfie" accept="image/*" class="form-control form-control-sm @error('ktp_photo_selfie') is-invalid @enderror" @if(!$merchant->ktp_photo_selfie && !$readonly) required @endif {{ $readonly ? 'disabled' : '' }} />
+                                            <img src="{{ $merchant->ktp_photo_selfie ? $merchant->ktp_photo_selfie : 'https://placehold.co/100x70?text=Selfie' }}" alt="Selfie" class="doc-preview d-block mb-1" id="ktp-selfie-preview" role="button" tabindex="0" data-preview-title="KTP + Photo Selfie" data-fallback="https://placehold.co/100x70?text=Selfie" />
+                                            <input type="file" name="ktp_photo_selfie" accept=".jpg,.jpeg,.png" class="form-control form-control-sm @error('ktp_photo_selfie') is-invalid @enderror" @if(!$merchant->ktp_photo_selfie && !$readonly) required @endif {{ $readonly ? 'disabled' : '' }} />
                                             @error('ktp_photo_selfie') <span class="text-danger small">{{ $message }}</span> @enderror
                                         </div>
                                         <div class="col-6 col-lg-3">
                                             <label class="form-label">Photo Toko/Rumah Tampak Depan @if(!$merchant->photo_toko_tampak_depan)<span class="text-danger">*</span>@endif</label>
-                                            <img src="{{ $merchant->photo_toko_tampak_depan ? $merchant->photo_toko_tampak_depan : 'https://placehold.co/100x70?text=Toko' }}" alt="Toko" class="doc-preview d-block mb-1" id="toko-preview" />
-                                            <input type="file" name="photo_toko_tampak_depan" accept="image/*" class="form-control form-control-sm @error('photo_toko_tampak_depan') is-invalid @enderror" @if(!$merchant->photo_toko_tampak_depan && !$readonly) required @endif {{ $readonly ? 'disabled' : '' }} />
+                                            <img src="{{ $merchant->photo_toko_tampak_depan ? $merchant->photo_toko_tampak_depan : 'https://placehold.co/100x70?text=Toko' }}" alt="Toko" class="doc-preview d-block mb-1" id="toko-preview" role="button" tabindex="0" data-preview-title="Photo Toko/Rumah Tampak Depan" data-fallback="https://placehold.co/100x70?text=Toko" />
+                                            <input type="file" name="photo_toko_tampak_depan" accept=".jpg,.jpeg,.png" class="form-control form-control-sm @error('photo_toko_tampak_depan') is-invalid @enderror" @if(!$merchant->photo_toko_tampak_depan && !$readonly) required @endif {{ $readonly ? 'disabled' : '' }} />
                                             @error('photo_toko_tampak_depan') <span class="text-danger small">{{ $message }}</span> @enderror
                                         </div>
                                     </div>
@@ -269,6 +271,20 @@
                                     </div>
                                 </div>
 
+                                <div class="modal fade" id="docPreviewModal" tabindex="-1" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered modal-lg">
+                                        <div class="modal-content">
+                                            <div class="modal-header py-2">
+                                                <h5 class="modal-title" id="docPreviewModalLabel"></h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body p-0 text-center bg-dark">
+                                                <img id="docPreviewImg" src="" alt="" class="img-fluid" style="max-height: 80vh; object-fit: contain;">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
                                 @push('js')
                                 <script>
                                 function generateTokenQrin() {
@@ -276,8 +292,17 @@
                                     for (var i = 0; i < 64; i++) r += c.charAt(Math.floor(Math.random() * c.length));
                                     document.getElementById('token_qrin').value = r;
                                 }
+                                var ALLOWED_TYPES = ['image/jpeg', 'image/jpg', 'image/png'];
+                                var MAX_SIZE_MB = 1;
+                                function validateBerkas(file) {
+                                    if (!file) return null;
+                                    if (!ALLOWED_TYPES.includes(file.type)) { alert('Format berkas harus JPG, JPEG, atau PNG.'); return false; }
+                                    if (file.size > MAX_SIZE_MB * 1024 * 1024) { alert('Ukuran berkas maksimal ' + MAX_SIZE_MB + ' MB.'); return false; }
+                                    return true;
+                                }
                                 function previewImg(input, imgId) {
                                     if (!input.files || !input.files[0]) return;
+                                    if (!validateBerkas(input.files[0])) { input.value = ''; var el = document.getElementById(imgId); if (el && el.dataset.fallback) el.src = el.dataset.fallback; return; }
                                     var r = new FileReader();
                                     r.onload = function() { document.getElementById(imgId).src = r.result; };
                                     r.readAsDataURL(input.files[0]);
@@ -290,6 +315,20 @@
                                 document.getElementById('token_qrin')?.closest('form')?.addEventListener('submit', function(e) {
                                     var t = document.getElementById('token_qrin');
                                     if (t && !t.value.trim()) { e.preventDefault(); alert('Klik tombol Generate untuk membuat Token QRIN terlebih dahulu.'); t.focus(); return false; }
+                                });
+                                document.querySelectorAll('.doc-preview[data-preview-title]').forEach(function(el) {
+                                    el.addEventListener('click', function() {
+                                        var src = this.src || this.currentSrc;
+                                        if (src && src.indexOf('placehold.co') === -1) {
+                                            document.getElementById('docPreviewModalLabel').textContent = this.getAttribute('data-preview-title') || 'Preview';
+                                            document.getElementById('docPreviewImg').src = src;
+                                            document.getElementById('docPreviewImg').alt = this.getAttribute('data-preview-title') || '';
+                                            new bootstrap.Modal(document.getElementById('docPreviewModal')).show();
+                                        }
+                                    });
+                                });
+                                document.querySelectorAll('.doc-preview[data-preview-title]').forEach(function(el) {
+                                    el.addEventListener('keydown', function(e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this.click(); } });
                                 });
                                 </script>
                                 @endpush

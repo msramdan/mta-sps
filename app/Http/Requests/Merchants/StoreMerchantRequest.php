@@ -21,7 +21,7 @@ class StoreMerchantRequest extends FormRequest
     {
         return [
             'nama_merchant' => 'required|string|max:150',
-			'logo' => 'required|image|max:1024',
+			'logo' => 'required|image|mimes:jpeg,jpg,png|max:1024',
 			'url_callback' => 'required|url',
 			'token_qrin' => 'required|string',
 			'bank_id' => 'required|exists:App\Models\Bank,id',
@@ -29,10 +29,10 @@ class StoreMerchantRequest extends FormRequest
 			'nomor_rekening' => 'required|string|max:50',
 			'status' => 'required|in:pending,approved,rejected,suspended',
             'beban_biaya' => 'required|in:Merchant,Pelanggan',
-            'ktp' => 'required|image|max:2048',
-            'ktp_lembar_verifikasi' => 'nullable|image|max:2048',
-            'ktp_photo_selfie' => 'nullable|image|max:2048',
-            'photo_toko_tampak_depan' => 'nullable|image|max:2048',
+            'ktp' => 'required|image|mimes:jpeg,jpg,png|max:1024',
+            'ktp_lembar_verifikasi' => 'nullable|image|mimes:jpeg,jpg,png|max:1024',
+            'ktp_photo_selfie' => 'nullable|image|mimes:jpeg,jpg,png|max:1024',
+            'photo_toko_tampak_depan' => 'nullable|image|mimes:jpeg,jpg,png|max:1024',
         ];
     }
 }
