@@ -178,25 +178,25 @@
                                     <h5 class="form-section-title"><i class="ti ti-files me-1"></i> Dokumen Merchant</h5>
                                     <small class="text-muted d-block mb-2">Maks. 1 MB, format JPG/JPEG/PNG</small>
                                     <div class="row g-2">
-                                        <div class="col-6 col-lg-3">
+                                        <div class="col-12 col-md-6 col-lg-3">
                                             <label class="form-label">KTP @if(!$merchant->ktp)<span class="text-danger">*</span>@endif</label>
                                             <img src="{{ $merchant->ktp ? $merchant->ktp : 'https://placehold.co/100x70?text=KTP' }}" alt="KTP" class="doc-preview d-block mb-1" id="ktp-preview" role="button" tabindex="0" data-preview-title="KTP" data-fallback="https://placehold.co/100x70?text=KTP" />
                                             <input type="file" name="ktp" accept=".jpg,.jpeg,.png" class="form-control form-control-sm @error('ktp') is-invalid @enderror" @if(!$merchant->ktp && !$readonly) required @endif {{ $readonly ? 'disabled' : '' }} />
                                             @error('ktp') <span class="text-danger small">{{ $message }}</span> @enderror
                                         </div>
-                                        <div class="col-6 col-lg-3">
+                                        <div class="col-12 col-md-6 col-lg-3">
                                             <label class="form-label">KTP Lembar Verifikasi @if(!$merchant->ktp_lembar_verifikasi)<span class="text-danger">*</span>@endif</label>
                                             <img src="{{ $merchant->ktp_lembar_verifikasi ? $merchant->ktp_lembar_verifikasi : 'https://placehold.co/100x70?text=Verifikasi' }}" alt="KTP Verifikasi" class="doc-preview d-block mb-1" id="ktp-lembar-preview" role="button" tabindex="0" data-preview-title="KTP Lembar Verifikasi" data-fallback="https://placehold.co/100x70?text=Verifikasi" />
                                             <input type="file" name="ktp_lembar_verifikasi" accept=".jpg,.jpeg,.png" class="form-control form-control-sm @error('ktp_lembar_verifikasi') is-invalid @enderror" @if(!$merchant->ktp_lembar_verifikasi && !$readonly) required @endif {{ $readonly ? 'disabled' : '' }} />
                                             @error('ktp_lembar_verifikasi') <span class="text-danger small">{{ $message }}</span> @enderror
                                         </div>
-                                        <div class="col-6 col-lg-3">
+                                        <div class="col-12 col-md-6 col-lg-3">
                                             <label class="form-label">KTP + Photo Selfie @if(!$merchant->ktp_photo_selfie)<span class="text-danger">*</span>@endif</label>
                                             <img src="{{ $merchant->ktp_photo_selfie ? $merchant->ktp_photo_selfie : 'https://placehold.co/100x70?text=Selfie' }}" alt="Selfie" class="doc-preview d-block mb-1" id="ktp-selfie-preview" role="button" tabindex="0" data-preview-title="KTP + Photo Selfie" data-fallback="https://placehold.co/100x70?text=Selfie" />
                                             <input type="file" name="ktp_photo_selfie" accept=".jpg,.jpeg,.png" class="form-control form-control-sm @error('ktp_photo_selfie') is-invalid @enderror" @if(!$merchant->ktp_photo_selfie && !$readonly) required @endif {{ $readonly ? 'disabled' : '' }} />
                                             @error('ktp_photo_selfie') <span class="text-danger small">{{ $message }}</span> @enderror
                                         </div>
-                                        <div class="col-6 col-lg-3">
+                                        <div class="col-12 col-md-6 col-lg-3">
                                             <label class="form-label">Photo Toko/Rumah Tampak Depan @if(!$merchant->photo_toko_tampak_depan)<span class="text-danger">*</span>@endif</label>
                                             <img src="{{ $merchant->photo_toko_tampak_depan ? $merchant->photo_toko_tampak_depan : 'https://placehold.co/100x70?text=Toko' }}" alt="Toko" class="doc-preview d-block mb-1" id="toko-preview" role="button" tabindex="0" data-preview-title="Photo Toko/Rumah Tampak Depan" data-fallback="https://placehold.co/100x70?text=Toko" />
                                             <input type="file" name="photo_toko_tampak_depan" accept=".jpg,.jpeg,.png" class="form-control form-control-sm @error('photo_toko_tampak_depan') is-invalid @enderror" @if(!$merchant->photo_toko_tampak_depan && !$readonly) required @endif {{ $readonly ? 'disabled' : '' }} />
