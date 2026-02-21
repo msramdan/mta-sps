@@ -14,7 +14,8 @@ return new class extends Migration
             $table->foreign('transaksi_id')->references('id')->on('transaksis')->nullOnDelete();
             $table->uuid('merchant_id')->nullable();
             $table->foreign('merchant_id')->references('id')->on('merchants')->nullOnDelete();
-            $table->text('payload_generate_qr')->nullable();
+            $table->text('payload_merchant_to_qrin')->nullable();
+            $table->text('payload_qrin_to_nobu')->nullable();
             $table->text('response_generate_qr')->nullable();
             $table->boolean('is_success')->nullable()->comment('Untuk filter cepat saat debug: true = sukses, false = gagal');
             $table->timestamps();

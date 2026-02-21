@@ -66,7 +66,18 @@ class TransaksiSeeder extends Seeder
 
             // Create log_generate_qrs
             $logGenerateQrId = (string) Str::uuid();
-            $payloadGenerateQr = json_encode([
+            $payloadMerchantToQrin = json_encode([
+                'token_qrin' => '***',
+                'request_payload_qris' => [
+                    'no_ref_merchant' => $noRefMerchant,
+                    'amount' => [
+                        'value' => number_format($data['jumlah_dibayar'], 2, '.', ''),
+                        'currency' => 'IDR'
+                    ],
+                ],
+            ], JSON_PRETTY_PRINT);
+
+            $payloadQrinToNobu = json_encode([
                 'merchantId' => $merchant->nobu_merchant_id ?? '936005030000048891',
                 'amount' => [
                     'value' => number_format($data['jumlah_dibayar'], 2, '.', ''),
@@ -87,7 +98,8 @@ class TransaksiSeeder extends Seeder
                 'id' => $logGenerateQrId,
                 'transaksi_id' => $transaksiId,
                 'merchant_id' => $merchant->id,
-                'payload_generate_qr' => $payloadGenerateQr,
+                'payload_merchant_to_qrin' => $payloadMerchantToQrin,
+                'payload_qrin_to_nobu' => $payloadQrinToNobu,
                 'response_generate_qr' => $responseGenerateQr,
                 'is_success' => true,
                 'created_at' => $tanggalTransaksi,

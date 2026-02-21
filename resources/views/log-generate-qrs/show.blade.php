@@ -14,7 +14,8 @@
         $d = json_decode($str);
         return $d ? json_encode($d, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) : e($str);
     };
-    $payloadPretty = $prettyJson($logGenerateQr->payload_generate_qr);
+    $payloadMerchantPretty = $prettyJson($logGenerateQr->payload_merchant_to_qrin);
+    $payloadQrinPretty = $prettyJson($logGenerateQr->payload_qrin_to_nobu);
     $responsePretty = $prettyJson($logGenerateQr->response_generate_qr);
 @endphp
 
@@ -93,8 +94,10 @@
                             <h6 class="mb-0 fw-bold"><i class="ti ti-send me-1"></i> Payload & Response Generate QR</h6>
                         </div>
                         <div class="card-body p-3">
-                            <p class="small fw-bold text-muted mb-1">Payload</p>
-                            <pre class="rounded border p-3 mb-3">{{ $payloadPretty ?: '-' }}</pre>
+                            <p class="small fw-bold text-muted mb-1">Payload Merchant → QRIN</p>
+                            <pre class="rounded border p-3 mb-3">{{ $payloadMerchantPretty ?: '-' }}</pre>
+                            <p class="small fw-bold text-muted mb-1">Payload QRIN → Nobu</p>
+                            <pre class="rounded border p-3 mb-3">{{ $payloadQrinPretty ?: '-' }}</pre>
                             <p class="small fw-bold text-muted mb-1">Response</p>
                             <pre class="rounded border p-3 mb-0">{{ $responsePretty ?: '-' }}</pre>
                         </div>

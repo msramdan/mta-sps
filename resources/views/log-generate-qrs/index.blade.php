@@ -76,7 +76,8 @@
                                             <th>{{ __('Transaksi ID') }}</th>
                                             <th>{{ __('Merchant') }}</th>
                                             <th>{{ __('Status') }}</th>
-                                            <th>{{ __('Payload') }}</th>
+                                            <th>{{ __('Payload Merchant → QRIN') }}</th>
+                                            <th>{{ __('Payload QRIN → Nobu') }}</th>
                                             <th>{{ __('Response') }}</th>
                                             <th>{{ __('Action') }}</th>
                                         </tr>
@@ -111,8 +112,17 @@
                 { data: 'merchant_id', name: 'merchant_id' },
                 { data: 'is_success', name: 'is_success', orderable: false, searchable: false },
                 {
-                    data: 'payload_generate_qr',
-                    name: 'payload_generate_qr',
+                    data: 'payload_merchant_to_qrin',
+                    name: 'payload_merchant_to_qrin',
+                    orderable: false,
+                    render: function(data) {
+                        if (!data) return '-';
+                        return data.length > 80 ? data.substring(0, 80) + '...' : data;
+                    }
+                },
+                {
+                    data: 'payload_qrin_to_nobu',
+                    name: 'payload_qrin_to_nobu',
                     orderable: false,
                     render: function(data) {
                         if (!data) return '-';

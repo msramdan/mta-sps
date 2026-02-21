@@ -187,7 +187,8 @@
                                                     @foreach($transaksi->logGenerateQrs as $index => $log)
                                                         @php
                                                             $accId = 'log-qr-' . $log->id;
-                                                            $payloadPretty = $prettyJson($log->payload_generate_qr);
+                                                            $payloadMerchantPretty = $prettyJson($log->payload_merchant_to_qrin);
+                                                            $payloadQrinPretty = $prettyJson($log->payload_qrin_to_nobu);
                                                             $responsePretty = $prettyJson($log->response_generate_qr);
                                                         @endphp
                                                         <div class="accordion-item border-bottom">
@@ -205,15 +206,19 @@
                                                                 </button>
                                                             </h2>
                                                             <div id="{{ $accId }}" class="accordion-collapse collapse" data-bs-parent="#accordionLogGenerateQr">
-                                                                <div class="accordion-body pt-2 pb-2 px-3">
-                                                                    <div class="row g-3">
+<div class="accordion-body pt-2 pb-2 px-3">
+                                                                <div class="row g-3">
                                                                         <div class="col-12">
-                                                                            <span class="small fw-bold text-muted d-block mb-1">Payload Request</span>
-                                                                            <pre class="rounded border mb-0 overflow-auto" >{{ $payloadPretty ?: '-' }}</pre>
+                                                                            <span class="small fw-bold text-muted d-block mb-1">Payload Merchant → QRIN</span>
+                                                                            <pre class="rounded border mb-0 overflow-auto">{{ $payloadMerchantPretty ?: '-' }}</pre>
+                                                                        </div>
+                                                                        <div class="col-12">
+                                                                            <span class="small fw-bold text-muted d-block mb-1">Payload QRIN → Nobu</span>
+                                                                            <pre class="rounded border mb-0 overflow-auto">{{ $payloadQrinPretty ?: '-' }}</pre>
                                                                         </div>
                                                                         <div class="col-12">
                                                                             <span class="small fw-bold text-muted d-block mb-1">Response</span>
-                                                                            <pre class="rounded border mb-0 overflow-auto" >{{ $responsePretty ?: '-' }}</pre>
+                                                                            <pre class="rounded border mb-0 overflow-auto">{{ $responsePretty ?: '-' }}</pre>
                                                                         </div>
                                                                     </div>
                                                                 </div>

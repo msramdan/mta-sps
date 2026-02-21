@@ -18,7 +18,8 @@ class LogGenerateQr extends Model
     protected $fillable = [
         'transaksi_id',
         'merchant_id',
-        'payload_generate_qr',
+        'payload_merchant_to_qrin',
+        'payload_qrin_to_nobu',
         'response_generate_qr',
         'is_success',
     ];
