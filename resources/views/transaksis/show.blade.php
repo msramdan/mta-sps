@@ -297,16 +297,28 @@
                                     </div>
                                 </div>
                             </div>
+                            <!-- Tombol di dalam card -->
+                            <div class="row border-top pt-3 mt-2 mx-0">
+                                <div class="col-12 d-flex flex-wrap gap-2 align-items-center">
+                                    <a href="{{ route('transaksis.index') }}" class="btn btn-secondary">
+                                        <i class="fas fa-arrow-left"></i> Kembali
+                                    </a>
+                                    @can('resend callback')
+                                        @if($transaksi->status !== 'success')
+                                            <button type="button" class="btn btn-outline-primary" id="btn-resend-callback" data-transaksi-id="{{ $transaksi->id }}" title="Resend Callback">
+                                                <i class="fas fa-paper-plane me-1"></i> Resend Callback
+                                            </button>
+                                        @endif
+                                    @endcan
+                                    @can('force resend callback')
+                                        <button type="button" class="btn btn-outline-warning" id="btn-force-resend-callback" data-transaksi-id="{{ $transaksi->id }}" title="Force Resend Callback">
+                                            <i class="fas fa-bolt me-1"></i> Force Resend Callback
+                                        </button>
+                                    @endcan
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
-
-            <div class="row mt-3">
-                <div class="col-12">
-                    <a href="{{ route('transaksis.index') }}" class="btn btn-secondary">
-                        <i class="fas fa-arrow-left"></i> Kembali
-                    </a>
                 </div>
             </div>
         </div>

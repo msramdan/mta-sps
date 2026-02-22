@@ -30,13 +30,14 @@ class RoleAndPermissionSeeder extends Seeder
         $userAdmin->assignRole('admin');
         $superAdmin->givePermissionTo(Permission::all());
 
-        // TAMBAHKAN PERMISSION KHUSUS UNTUK USER MERCHANT
+        // TAMBAHKAN PERMISSION KHUSUS UNTUK USER MERCHANT (tanpa force resend callback)
         $merchantPermissions = [
             'setting merchant',
             'tarik saldo view',
             'pengajuan tarik saldo',
             'batalkan tarik saldo',
-            'transaksi view'
+            'transaksi view',
+            'resend callback',
         ];
 
         // Berikan permission hanya yang diperlukan untuk User Merchant
