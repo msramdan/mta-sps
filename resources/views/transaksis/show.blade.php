@@ -303,18 +303,13 @@
                                     <a href="{{ route('transaksis.index') }}" class="btn btn-secondary">
                                         <i class="fas fa-arrow-left"></i> Kembali
                                     </a>
-                                    @can('resend callback')
-                                        @if($transaksi->status !== 'success')
+                                    @if($transaksi->status === 'success')
+                                        @can('resend callback')
                                             <button type="button" class="btn btn-warning" id="btn-resend-callback" data-transaksi-id="{{ $transaksi->id }}" title="Resend Callback">
                                                 <i class="fas fa-paper-plane me-1"></i> Resend Callback
                                             </button>
-                                        @endif
-                                    @endcan
-                                    @can('force resend callback')
-                                        <button type="button" class="btn btn-danger" id="btn-force-resend-callback" data-transaksi-id="{{ $transaksi->id }}" title="Force Resend Callback">
-                                            <i class="fas fa-bolt me-1"></i> Force Resend Callback
-                                        </button>
-                                    @endcan
+                                        @endcan
+                                    @endif
                                 </div>
                             </div>
                         </div>
