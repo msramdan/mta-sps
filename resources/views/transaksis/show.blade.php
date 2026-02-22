@@ -275,48 +275,7 @@
                                                             </h2>
                                                             <div id="{{ $accId }}" class="accordion-collapse collapse" data-bs-parent="#accordionLogCallback">
                                                                 <div class="accordion-body pt-2 pb-3 px-3">
-                                                                    <!-- Informasi (sama seperti di System Log → Log Callbacks) -->
-                                                                    <h6 class="fw-bold text-muted border-bottom pb-1 mb-2"><i class="fas fa-info-circle me-1"></i> Informasi</h6>
-                                                                    <table class="table table-sm table-borderless mb-3">
-                                                                        <tr>
-                                                                            <td class="fw-bold text-nowrap" style="width: 38%">ID</td>
-                                                                            <td class="text-break small">{{ $log->id }}</td>
-                                                                        </tr>
-                                                                        <tr>
-                                                                            <td class="fw-bold">Tanggal</td>
-                                                                            <td>{{ $log->created_at?->format('d M Y H:i:s') }}</td>
-                                                                        </tr>
-                                                                        <tr>
-                                                                            <td class="fw-bold">Tanggal Callback Nobu→QRIN</td>
-                                                                            <td>{{ $log->tanggal_callback_nobu_to_qrin?->format('d M Y H:i:s') ?? '-' }}</td>
-                                                                        </tr>
-                                                                        <tr>
-                                                                            <td class="fw-bold">Tanggal Callback QRIN→Merchant</td>
-                                                                            <td>{{ $log->tanggal_callback_qrin_to_merchant?->format('d M Y H:i:s') ?? '-' }}</td>
-                                                                        </tr>
-                                                                        <tr>
-                                                                            <td class="fw-bold">Processing Time</td>
-                                                                            <td>{{ $log->processing_time ?? '-' }}</td>
-                                                                        </tr>
-                                                                        <tr>
-                                                                            <td class="fw-bold">Status</td>
-                                                                            <td>
-                                                                                @if($txStatus === '00')
-                                                                                    <span class="badge bg-success">{{ $txStatus }}</span>
-                                                                                @elseif($txStatus === '06')
-                                                                                    <span class="badge bg-danger">{{ $txStatus }}</span>
-                                                                                @else
-                                                                                    <span class="badge bg-secondary">{{ $txStatus ?: '-' }}</span>
-                                                                                @endif
-                                                                                @if($isDescSuccess)
-                                                                                    <span class="badge bg-success">{{ $statusDesc ?: '-' }}</span>
-                                                                                @else
-                                                                                    <span class="badge bg-danger">{{ $statusDesc ?: '-' }}</span>
-                                                                                @endif
-                                                                            </td>
-                                                                        </tr>
-                                                                    </table>
-                                                                    <!-- Data Payload Callback (sama seperti di System Log) -->
+                                                                    <!-- Data Payload Callback saja -->
                                                                     <h6 class="fw-bold text-muted border-bottom pb-1 mb-2"><i class="fas fa-code me-1"></i> Data Payload Callback</h6>
                                                                     <p class="small text-muted mb-1"><i class="fas fa-arrow-right me-1"></i> Nobu → QRIN — Header</p>
                                                                     <pre class="rounded border p-2 mb-2 overflow-auto small">{{ $headerNobuPretty ?: '-' }}</pre>
