@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
             BankSeeder::class,
             MerchantSeeder::class,
             TransaksiSeeder::class,
+            LogTokenB2bSeeder::class,
         ]);
     }
 }

@@ -196,7 +196,8 @@ return [
             'permissions' => [
                 'log generate qr view',
                 'log callback view',
-                'log query payment status view'
+                'log query payment status view',
+                'log token b2b view'
             ],
             'menus' => [
                 [
@@ -206,7 +207,8 @@ return [
                     'permissions' => [
                         'log generate qr view',
                         'log callback view',
-                        'log query payment status view'
+                        'log query payment status view',
+                        'log token b2b view'
                     ],
                     'submenus' => [
                         [
@@ -218,6 +220,11 @@ return [
                             'title' => 'Log Query Payment Status',
                             'route' => 'log-query-payment-status',
                             'permission' => 'log query payment status view'
+                        ],
+                        [
+                            'title' => 'Log Token B2B',
+                            'route' => 'log-token-b2b',
+                            'permission' => 'log token b2b view'
                         ],
                         [
                             'title' => 'Log Callback',

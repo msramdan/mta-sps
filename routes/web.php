@@ -14,7 +14,8 @@ use App\Http\Controllers\{
     ApiDocumentationController,
     LogGenerateQrController,
     LogCallbackController,
-    LogQueryPaymentStatusController
+    LogQueryPaymentStatusController,
+    LogTokenB2bController
 };
 use App\Http\Controllers\Frontend\WebController;
 
@@ -45,6 +46,8 @@ Route::middleware(['auth', 'web'])->group(function () {
     Route::get('/log-callbacks/{logCallback}', [LogCallbackController::class, 'show'])->name('log-callbacks.show');
     Route::get('/log-query-payment-status', [LogQueryPaymentStatusController::class, 'index'])->name('log-query-payment-status.index');
     Route::get('/log-query-payment-status/{logQueryPaymentStatus}', [LogQueryPaymentStatusController::class, 'show'])->name('log-query-payment-status.show');
+    Route::get('/log-token-b2b', [LogTokenB2bController::class, 'index'])->name('log-token-b2b.index');
+    Route::get('/log-token-b2b/{logTokenB2b}', [LogTokenB2bController::class, 'show'])->name('log-token-b2b.show');
 
     // Bank Management
     Route::resource('banks', BankController::class);
