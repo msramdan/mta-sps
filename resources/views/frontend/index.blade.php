@@ -440,6 +440,18 @@
             border: 2px solid var(--primary-color);
         }
 
+        .testimonial-avatar-initials {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--primary-color);
+            color: #fff;
+            font-weight: 700;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+            border: 2px solid var(--primary-dark, var(--primary-color));
+        }
+
         /* CTA */
         .cta-card {
             background: linear-gradient(135deg, var(--primary-dark), var(--primary-color));
@@ -903,8 +915,7 @@
                         <p class="fst-italic mb-3">"QRIS dari QRIN sangat mudah digunakan dan biaya 0.7% sangat masuk
                             akal untuk bisnis kami."</p>
                         <div class="d-flex align-items-center">
-                            <img src="{{asset('frontend')}}/https://ui-avatars.com/api/?name=Joko+D&background=13737D&color=fff&size=100"
-                                alt="Joko D" class="testimonial-avatar me-3">
+                            <div class="testimonial-avatar testimonial-avatar-initials me-3" aria-hidden="true">JD</div>
                             <div>
                                 <h6 class="mb-0 fw-bold">Joko D.</h6>
                                 <small class="text-muted">Pemilik Kedai Kopi</small>
@@ -917,8 +928,7 @@
                     <div class="card testimonial-card fade-in">
                         <p class="fst-italic mb-3">"Integrasi cepat, sistem aman. Cocok untuk toko online kami."</p>
                         <div class="d-flex align-items-center">
-                            <img src="{{asset('frontend')}}/https://ui-avatars.com/api/?name=Siti+S&background=13737D&color=fff&size=100"
-                                alt="Siti S" class="testimonial-avatar me-3">
+                            <div class="testimonial-avatar testimonial-avatar-initials me-3" aria-hidden="true">SS</div>
                             <div>
                                 <h6 class="mb-0 fw-bold">Siti S.</h6>
                                 <small class="text-muted">Pemilik Online Shop</small>
@@ -931,8 +941,7 @@
                     <div class="card testimonial-card fade-in">
                         <p class="fst-italic mb-3">"Pelanggan senang bisa bayar dengan berbagai metode. Rekomendasi untuk UMKM."</p>
                         <div class="d-flex align-items-center">
-                            <img src="{{asset('frontend')}}/https://ui-avatars.com/api/?name=Adi+R&background=13737D&color=fff&size=100"
-                                alt="Adi R" class="testimonial-avatar me-3">
+                            <div class="testimonial-avatar testimonial-avatar-initials me-3" aria-hidden="true">AR</div>
                             <div>
                                 <h6 class="mb-0 fw-bold">Adi R.</h6>
                                 <small class="text-muted">Pemilik Usaha</small>
@@ -950,7 +959,7 @@
             <div class="cta-card fade-in">
                 <h2 class="fw-bold mb-2">Mulai Terima Pembayaran QRIS Sekarang</h2>
                 <p class="mb-3">Bergabung dengan ribuan bisnis yang sudah menggunakan QRIN.</p>
-                <a href="#" class="btn btn-primary">Daftar Gratis</a>
+                <a href="{{ url('/register') }}" class="btn btn-primary">Daftar Gratis</a>
             </div>
         </div>
     </section>
