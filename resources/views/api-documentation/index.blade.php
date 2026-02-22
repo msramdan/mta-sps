@@ -229,14 +229,94 @@
 
                                 <!-- Webhook Tab -->
                                 <div class="tab-pane fade" id="webhook" role="tabpanel">
-                                    <h5 class="mb-3 fw-bold">3. Callback / Webhook</h5>
-                                    <div class="text-center py-5">
-                                        <div class="display-4 text-muted mb-3">
-                                            <i class="ti ti-clock-hour-4"></i>
+                                    <h5 class="mb-3 fw-bold">2. Callback / Webhook</h5>
+                                    <p class="text-muted mb-4">Setelah ada pembayaran atau perubahan status, QRIN mengirim data transaksi ke <strong>URL Callback</strong> yang Anda daftarkan di Setting Merchant.</p>
+
+                                    <div class="row g-3 mb-4">
+                                        <div class="col-12 col-md-6">
+                                            <div class="card border h-100">
+                                                <div class="card-header py-2">
+                                                    <h6 class="mb-0 fw-bold">Cara kerja</h6>
+                                                </div>
+                                                <div class="card-body p-3">
+                                                    <ul class="text-muted mb-0 small">
+                                                        <li class="mb-1">QRIN mengirim <strong>POST</strong> ke URL callback merchant.</li>
+                                                        <li class="mb-1">Body berisi JSON data transaksi (status, nominal, dll).</li>
+                                                        <li class="mb-1">Header <code>X-Callback-Signature</code> = HMAC-SHA256(raw body, <code>token_qrin</code>) untuk validasi.</li>
+                                                        <li>Baca body mentah (<code>php://input</code>) sebelum decode JSON.</li>
+                                                    </ul>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <h4 class="fw-bold mb-2">Coming Soon</h4>
-                                        <p class="text-muted mb-0">Dokumentasi Callback / Webhook akan segera tersedia.</p>
+                                        <div class="col-12 col-md-6">
+                                            <div class="card border h-100">
+                                                <div class="card-header py-2">
+                                                    <h6 class="mb-0 fw-bold">Status transaksi</h6>
+                                                </div>
+                                                <div class="card-body p-3 small">
+                                                    <p class="text-muted mb-2">Nilai field <code>status</code>:</p>
+                                                    <ul class="mb-0 text-muted">
+                                                        <li><code>pending</code> — Menunggu</li>
+                                                        <li><code>success</code> — Berhasil</li>
+                                                        <li><code>failed</code> — Gagal</li>
+                                                        <li><code>expired</code> — Kadaluarsa</li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
+
+                                    <h6 class="fw-bold mb-2">Header yang dikirim QRIN</h6>
+                                    <pre class="code-block mb-2"><code>Content-Type: application/json
+X-Callback-Signature: &lt;hmac_sha256&gt;</code></pre>
+                                    <p class="small text-muted mb-4"><code>X-Callback-Signature</code> = HMAC-SHA256(<em>raw body JSON</em>, <em>token_qrin</em>). Selalu baca body mentah (php://input) sebelum decode JSON.</p>
+
+                                    <h6 class="fw-bold mb-2">Contoh payload (body) yang dikirim QRIN → Merchant</h6>
+                                    <pre class="code-block mb-4"><code>{
+    "id": "ae0e42e0-b759-4cac-98da-9c0752152853",
+    "tanggal_transaksi": "2026-02-22T23:52:00+07:00",
+    "merchant_id": "04c9e242-3639-46bf-952a-e8221ef0cb5c",
+    "no_referensi": "QR000002-260222-773140",
+    "no_ref_merchant": "TRX-0001",
+    "nama_pelanggan": "Muhammad Saeful Ramdan",
+    "email_pelanggan": "saepulramdan244@gmail.com",
+    "no_telpon_pelanggan": "083874731480",
+    "biaya": 531.72,
+    "jumlah_dibayar": 4532,
+    "jumlah_diterima": 4000.28,
+    "status": "success",
+    "beban_biaya": "Pelanggan",
+    "created_at": "2026-02-22T23:53:25+07:00",
+    "updated_at": "2026-02-22T23:53:59+07:00"
+}</code></pre>
+
+                                    <h6 class="fw-bold mb-2">Contoh penanganan callback (PHP)</h6>
+                                    <p class="text-muted small mb-2">Gunakan <strong>token_qrin</strong> dari Setting Merchant untuk validasi signature. Respon dengan JSON.</p>
+                                    <pre class="code-block mb-0"><code>&lt;?php
+$json = file_get_contents('php://input');
+$callbackSignature = $_SERVER['HTTP_X_CALLBACK_SIGNATURE'] ?? '';
+$tokenQrin = 'token_qrin_anda_dari_dashboard';
+$signature = hash_hmac('sha256', $json, $tokenQrin);
+
+if (!hash_equals($signature, $callbackSignature)) {
+    header('Content-Type: application/json');
+    echo json_encode(['success' => false, 'message' => 'Invalid signature']);
+    exit;
+}
+
+$data = json_decode($json);
+if (json_last_error() !== JSON_ERROR_NONE) {
+    header('Content-Type: application/json');
+    echo json_encode(['success' => false, 'message' => 'Invalid JSON']);
+    exit;
+}
+
+$noRefMerchant = $data->no_ref_merchant;
+$status       = $data->status;
+// Update transaksi Anda berdasarkan no_ref_merchant
+
+header('Content-Type: application/json');
+echo json_encode(['success' => true]);</code></pre>
                                 </div>
                             </div>
                         </div>
