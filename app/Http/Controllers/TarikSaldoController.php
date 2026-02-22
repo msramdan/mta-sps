@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\TarikSaldo;
-use App\Http\Requests\TarikSaldos\{StoreTarikSaldoRequest, UpdateTarikSaldoRequest};
+use App\Http\Requests\TarikSaldos\{StoreTarikSaldoRequest, UpdateTarikSaldoRequest, ConfirmTarikSaldoRequest, UpdateStatusTarikSaldoRequest};
 use Illuminate\Contracts\View\View;
 use Yajra\DataTables\Facades\DataTables;
 use RealRashid\SweetAlert\Facades\Alert;
@@ -30,7 +30,7 @@ class TarikSaldoController extends Controller implements HasMiddleware
 
             new Middleware(middleware: 'permission:tarik saldo view', only: ['index', 'show', 'getMerchantData']),
             new Middleware(middleware: 'permission:pengajuan tarik saldo', only: ['store']),
-            new Middleware(middleware: 'permission:konfirmasi tarik saldo', only: ['update']),
+            new Middleware(middleware: 'permission:konfirmasi tarik saldo', only: ['update', 'confirm', 'updateStatus']),
             new Middleware(middleware: 'permission:batalkan tarik saldo', only: ['cancel']),
         ];
     }
@@ -177,34 +177,8 @@ class TarikSaldoController extends Controller implements HasMiddleware
             return redirect()->back();
         }
 
-        // Check if there's already a pending or processing withdrawal
-        $existingWithdrawal = DB::table('tarik_saldos')
-            ->where('merchant_id', $merchantId)
-            ->whereIn('status', ['pending', 'process'])
-            ->exists();
-
-        if ($existingWithdrawal) {
-            if ($request->ajax()) {
-                return response()->json(['message' => 'Anda masih memiliki pengajuan penarikan yang sedang diproses. Tunggu hingga selesai sebelum mengajukan penarikan baru.'], 400);
-            }
-            Alert::error('Gagal', 'Anda masih memiliki pengajuan penarikan yang sedang diproses. Tunggu hingga selesai sebelum mengajukan penarikan baru.');
-            return redirect()->back()->withInput();
-        }
-
-        // Check if merchant has enough balance
-        if ($merchant->balance < $validated['jumlah']) {
-            if ($request->ajax()) {
-                return response()->json(['message' => 'Saldo tidak mencukupi untuk melakukan penarikan.'], 400);
-            }
-            Alert::error('Gagal', 'Saldo tidak mencukupi untuk melakukan penarikan.');
-            return redirect()->back()->withInput();
-        }
-
-        // Calculate biaya and diterima
-        $biaya = 7500; // Fixed admin fee
+        $biaya = 7500;
         $diterima = $validated['jumlah'] - $biaya;
-
-        // Auto-fill data from merchant
         $validated['merchant_id'] = $merchantId;
         $validated['bank_id'] = $merchant->bank_id;
         $validated['biaya'] = $biaya;
@@ -212,17 +186,41 @@ class TarikSaldoController extends Controller implements HasMiddleware
         $validated['pemilik_rekening'] = $merchant->pemilik_rekening;
         $validated['nomor_rekening'] = $merchant->nomor_rekening;
         $validated['status'] = 'pending';
-        $validated['bukti_trf'] = null; // Will be uploaded by admin later
+        $validated['bukti_trf'] = null;
         $validated['id'] = (string) Str::uuid();
         $validated['created_at'] = now();
         $validated['updated_at'] = now();
 
-        DB::table('tarik_saldos')->insert($validated);
+        try {
+            DB::transaction(function () use ($merchantId, $validated, $biaya, $diterima) {
+                $merchant = DB::table('merchants')->where('id', $merchantId)->lockForUpdate()->first();
+                if (!$merchant) {
+                    throw new \RuntimeException('Data merchant tidak ditemukan.');
+                }
+                if ($merchant->balance < $validated['jumlah']) {
+                    throw new \RuntimeException('Saldo tidak mencukupi untuk melakukan penarikan.');
+                }
+                $existingWithdrawal = DB::table('tarik_saldos')
+                    ->where('merchant_id', $merchantId)
+                    ->whereIn('status', ['pending', 'process'])
+                    ->exists();
+                if ($existingWithdrawal) {
+                    throw new \RuntimeException('Anda masih memiliki pengajuan penarikan yang sedang diproses. Tunggu hingga selesai sebelum mengajukan penarikan baru.');
+                }
+                DB::table('tarik_saldos')->insert($validated);
+            });
+        } catch (\Throwable $e) {
+            $message = $e->getMessage();
+            if ($request->ajax()) {
+                return response()->json(['message' => $message], 400);
+            }
+            Alert::error('Gagal', $message);
+            return redirect()->back()->withInput();
+        }
 
         if ($request->ajax()) {
             return response()->json(['message' => 'Pengajuan penarikan saldo berhasil dibuat. Penarikan akan diproses maksimal 1x24 jam.'], 200);
         }
-
         Alert::success('Berhasil', 'Pengajuan penarikan saldo berhasil dibuat. Penarikan akan diproses maksimal 1x24 jam.');
         return redirect()->route('tarik-saldos.index');
     }
@@ -278,31 +276,116 @@ class TarikSaldoController extends Controller implements HasMiddleware
      */
     public function cancel(string $id): JsonResponse
     {
-        $tarikSaldo = DB::table('tarik_saldos')->where('id', $id)->first();
-
-        if (!$tarikSaldo) {
-            return response()->json(['message' => 'Data tarik saldo tidak ditemukan.'], 404);
-        }
-
-        // Check if withdrawal belongs to session merchant
         $merchantId = session('sessionMerchant');
-        if ($tarikSaldo->merchant_id !== $merchantId) {
-            return response()->json(['message' => 'Anda tidak memiliki akses untuk membatalkan pengajuan ini.'], 403);
-        }
 
-        // Check if withdrawal is still pending
-        if ($tarikSaldo->status !== 'pending') {
-            return response()->json(['message' => 'Hanya pengajuan dengan status pending yang dapat dibatalkan.'], 400);
+        try {
+            DB::transaction(function () use ($id, $merchantId) {
+                $tarikSaldo = TarikSaldo::where('id', $id)->lockForUpdate()->first();
+                if (!$tarikSaldo) {
+                    throw new \RuntimeException('Data tarik saldo tidak ditemukan.');
+                }
+                if ($tarikSaldo->merchant_id !== $merchantId) {
+                    throw new \RuntimeException('Anda tidak memiliki akses untuk membatalkan pengajuan ini.');
+                }
+                if ($tarikSaldo->status !== 'pending') {
+                    throw new \RuntimeException('Hanya pengajuan dengan status pending yang dapat dibatalkan.');
+                }
+                $tarikSaldo->update(['status' => 'cancel', 'updated_at' => now()]);
+            });
+        } catch (\Throwable $e) {
+            $code = $e->getMessage() === 'Data tarik saldo tidak ditemukan.' ? 404
+                : (str_contains($e->getMessage(), 'akses') ? 403 : 400);
+            return response()->json(['message' => $e->getMessage()], $code);
         }
-
-        // Update status to cancel instead of deleting
-        DB::table('tarik_saldos')->where('id', $id)->update([
-            'status' => 'cancel',
-            'updated_at' => now()
-        ]);
 
         return response()->json(['message' => 'Pengajuan penarikan berhasil dibatalkan.'], 200);
     }
 
+    /**
+     * Ubah status dari pending ke process atau reject (admin).
+     */
+    public function updateStatus(UpdateStatusTarikSaldoRequest $request, string $id): JsonResponse|RedirectResponse
+    {
+        $status = $request->validated()['status'];
+        $label = $status === 'process' ? 'Diproses' : 'Ditolak';
 
+        try {
+            DB::transaction(function () use ($id, $status) {
+                $tarikSaldo = TarikSaldo::where('id', $id)->lockForUpdate()->first();
+                if (!$tarikSaldo) {
+                    throw new \RuntimeException('Data tarik saldo tidak ditemukan.');
+                }
+                if ($tarikSaldo->status !== 'pending') {
+                    throw new \RuntimeException('Hanya pengajuan dengan status Pending yang dapat diubah ke Diproses/Ditolak.');
+                }
+                $tarikSaldo->update(['status' => $status, 'updated_at' => now()]);
+            });
+        } catch (\Throwable $e) {
+            $message = $e->getMessage();
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json(['message' => $message], $message === 'Data tarik saldo tidak ditemukan.' ? 404 : 400);
+            }
+            Alert::error('Gagal', $message);
+            return redirect()->route('tarik-saldos.index');
+        }
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json(['message' => "Status berhasil diubah menjadi {$label}."], 200);
+        }
+        Alert::success('Berhasil', "Status berhasil diubah menjadi {$label}.");
+        return redirect()->route('tarik-saldos.index');
+    }
+
+    /**
+     * Konfirmasi selesai (admin): hanya untuk status process. Upload bukti + catatan, set success, kurangi saldo merchant.
+     */
+    public function confirm(ConfirmTarikSaldoRequest $request, string $id): JsonResponse|RedirectResponse
+    {
+        $validated = $request->validated();
+
+        try {
+            $tarikSaldo = TarikSaldo::where('id', $id)->first();
+            if (!$tarikSaldo) {
+                throw new \RuntimeException('Data tarik saldo tidak ditemukan.');
+            }
+            if ($tarikSaldo->status !== 'process') {
+                throw new \RuntimeException('Hanya pengajuan dengan status Diproses yang dapat dikonfirmasi selesai (upload bukti + catatan).');
+            }
+
+            $buktiTrf = $this->imageServiceV2->upload(
+                name: 'bukti_trf',
+                path: $this->buktiTrfPath,
+                defaultImage: $tarikSaldo->bukti_trf,
+                disk: $this->disk
+            );
+
+            DB::transaction(function () use ($id, $buktiTrf, $validated) {
+                $row = TarikSaldo::where('id', $id)->lockForUpdate()->first();
+                if (!$row || $row->status !== 'process') {
+                    throw new \RuntimeException('Status pengajuan sudah berubah. Silakan refresh dan coba lagi.');
+                }
+                $row->update([
+                    'status' => 'success',
+                    'bukti_trf' => $buktiTrf,
+                    'catatan' => $validated['catatan'] ?? null,
+                    'updated_at' => now(),
+                ]);
+                DB::table('merchants')->where('id', $row->merchant_id)->lockForUpdate()->first();
+                DB::table('merchants')->where('id', $row->merchant_id)->decrement('balance', (float) $row->jumlah);
+            });
+        } catch (\Throwable $e) {
+            $message = $e->getMessage();
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json(['message' => $message], $message === 'Data tarik saldo tidak ditemukan.' ? 404 : 400);
+            }
+            Alert::error('Gagal', $message);
+            return redirect()->route('tarik-saldos.index');
+        }
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json(['message' => 'Tarik saldo berhasil dikonfirmasi. Saldo merchant telah dikurangi.'], 200);
+        }
+        Alert::success('Berhasil', 'Tarik saldo berhasil dikonfirmasi. Saldo merchant telah dikurangi.');
+        return redirect()->route('tarik-saldos.index');
+    }
 }

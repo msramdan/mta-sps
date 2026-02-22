@@ -183,6 +183,69 @@
             </div>
         </div>
     </div>
+
+    @can('konfirmasi tarik saldo')
+    <div class="modal fade" id="statusWithdrawalModal" tabindex="-1" aria-labelledby="statusWithdrawalModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="statusWithdrawalModalLabel"><i class="ti ti-arrow-right me-2"></i>Ubah Status Penarikan</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="statusWithdrawalForm">
+                    @csrf
+                    <input type="hidden" name="status" id="statusWithdrawalValue" value="">
+                    <div class="modal-body">
+                        <p class="text-muted small mb-3">Pilih status untuk pengajuan penarikan ini:</p>
+                        <div class="d-flex gap-2">
+                            <button type="button" class="btn btn-info flex-grow-1 btn-status-choice" data-status="process">
+                                <i class="ti ti-loader me-1"></i> Diproses
+                            </button>
+                            <button type="button" class="btn btn-danger flex-grow-1 btn-status-choice" data-status="reject">
+                                <i class="ti ti-x me-1"></i> Ditolak
+                            </button>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="ti ti-x me-1"></i>Batal</button>
+                        <button type="submit" class="btn btn-primary" id="statusSubmitBtn" disabled><i class="ti ti-check me-1"></i>Simpan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="confirmWithdrawalModal" tabindex="-1" aria-labelledby="confirmWithdrawalModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmWithdrawalModalLabel"><i class="ti ti-check me-2"></i>Konfirmasi Selesai (Upload Bukti + Catatan)</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="confirmWithdrawalForm">
+                    @csrf
+                    <div class="modal-body">
+                        <p class="text-muted small mb-3">Upload bukti transfer dan isi catatan. Setelah dikonfirmasi, status menjadi <strong>Berhasil</strong> dan saldo merchant akan dikurangi.</p>
+                        <div class="mb-3">
+                            <label for="confirm_bukti_trf" class="form-label">Bukti Transfer <span class="text-danger">*</span></label>
+                            <input type="file" name="bukti_trf" id="confirm_bukti_trf" class="form-control" accept="image/*" required>
+                            <small class="form-text text-muted">JPG, PNG maks. 2MB</small>
+                        </div>
+                        <div class="mb-3">
+                            <label for="confirm_catatan" class="form-label">Catatan <span class="text-danger">*</span></label>
+                            <textarea name="catatan" id="confirm_catatan" class="form-control" rows="3" maxlength="1000" placeholder="Catatan konfirmasi penarikan..." required></textarea>
+                            <small class="form-text text-muted">Maks. 1000 karakter</small>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="ti ti-x me-1"></i>Batal</button>
+                        <button type="submit" class="btn btn-primary" id="confirmSubmitBtn"><i class="ti ti-check me-1"></i>Konfirmasi & Selesai</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    @endcan
 @endsection
 
 @push('js')
@@ -370,6 +433,95 @@
             $('#withdrawalForm')[0].reset();
             $('#jumlah-error').hide().text('');
             $('#jumlah').removeClass('is-invalid');
+        });
+
+        let statusWithdrawalId = null;
+        $('#statusWithdrawalModal').on('hidden.bs.modal', function() {
+            statusWithdrawalId = null;
+            $('#statusWithdrawalValue').val('');
+            $('#statusSubmitBtn').prop('disabled', true);
+        });
+        $(document).on('click', '.btn-status-withdrawal', function() {
+            statusWithdrawalId = $(this).data('id');
+            $('#statusWithdrawalModal').modal('show');
+        });
+        $(document).on('click', '.btn-status-choice', function() {
+            var status = $(this).data('status');
+            $('#statusWithdrawalValue').val(status);
+            $('#statusSubmitBtn').prop('disabled', false);
+        });
+        $('#statusWithdrawalForm').on('submit', function(e) {
+            e.preventDefault();
+            if (!statusWithdrawalId) return;
+            var submitBtn = $('#statusSubmitBtn');
+            var originalText = submitBtn.html();
+            submitBtn.prop('disabled', true).html('<i class="spinner-border spinner-border-sm me-1"></i>Memproses...');
+            $.ajax({
+                url: "{{ route('tarik-saldos.index') }}/" + statusWithdrawalId + "/status",
+                type: 'POST',
+                data: $(this).serialize(),
+                dataType: 'json',
+                headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                success: function(response) {
+                    $('#statusWithdrawalModal').modal('hide');
+                    dataTable.ajax.reload();
+                    Swal.fire({ icon: 'success', title: 'Berhasil', text: response.message || 'Status berhasil diubah.', confirmButtonColor: '#3085d6' });
+                },
+                error: function(xhr) {
+                    Swal.fire({ icon: 'error', title: 'Gagal', text: xhr.responseJSON?.message || 'Terjadi kesalahan.', confirmButtonColor: '#d33' });
+                },
+                complete: function() {
+                    submitBtn.prop('disabled', false).html(originalText);
+                }
+            });
+        });
+
+        let confirmWithdrawalId = null;
+        $('#confirmWithdrawalModal').on('hidden.bs.modal', function() {
+            confirmWithdrawalId = null;
+            $('#confirmWithdrawalForm')[0].reset();
+        });
+        $(document).on('click', '.btn-confirm-withdrawal', function() {
+            confirmWithdrawalId = $(this).data('id');
+            $('#confirmWithdrawalModal').modal('show');
+        });
+        $('#confirmWithdrawalForm').on('submit', function(e) {
+            e.preventDefault();
+            if (!confirmWithdrawalId) return;
+            const form = this;
+            const formData = new FormData(form);
+            const submitBtn = $('#confirmSubmitBtn');
+            const originalText = submitBtn.html();
+            submitBtn.prop('disabled', true).html('<i class="spinner-border spinner-border-sm me-1"></i>Memproses...');
+            $.ajax({
+                url: "{{ route('tarik-saldos.index') }}/" + confirmWithdrawalId + "/confirm",
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                success: function(response) {
+                    $('#confirmWithdrawalModal').modal('hide');
+                    dataTable.ajax.reload();
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil',
+                        text: response.message || 'Tarik saldo berhasil dikonfirmasi.',
+                        confirmButtonColor: '#3085d6'
+                    });
+                },
+                error: function(xhr) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal',
+                        text: xhr.responseJSON?.message || 'Terjadi kesalahan saat konfirmasi.',
+                        confirmButtonColor: '#d33'
+                    });
+                },
+                complete: function() {
+                    submitBtn.prop('disabled', false).html(originalText);
+                }
+            });
         });
 
         // Handle cancel withdrawal button

@@ -28,6 +28,7 @@ class TarikSaldo extends Model
         'nomor_rekening',
         'status',
         'bukti_trf',
+        'catatan',
     ];
 
     protected function casts(): array
