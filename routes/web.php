@@ -13,7 +13,8 @@ use App\Http\Controllers\{
     TransaksiController,
     ApiDocumentationController,
     LogGenerateQrController,
-    LogCallbackController
+    LogCallbackController,
+    LogQueryPaymentStatusController
 };
 use App\Http\Controllers\Frontend\WebController;
 
@@ -42,6 +43,8 @@ Route::middleware(['auth', 'web'])->group(function () {
     Route::get('/log-generate-qrs/{logGenerateQr}', [LogGenerateQrController::class, 'show'])->name('log-generate-qrs.show');
     Route::get('/log-callbacks', [LogCallbackController::class, 'index'])->name('log-callbacks.index');
     Route::get('/log-callbacks/{logCallback}', [LogCallbackController::class, 'show'])->name('log-callbacks.show');
+    Route::get('/log-query-payment-status', [LogQueryPaymentStatusController::class, 'index'])->name('log-query-payment-status.index');
+    Route::get('/log-query-payment-status/{logQueryPaymentStatus}', [LogQueryPaymentStatusController::class, 'show'])->name('log-query-payment-status.show');
 
     // Bank Management
     Route::resource('banks', BankController::class);

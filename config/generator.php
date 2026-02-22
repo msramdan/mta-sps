@@ -195,7 +195,8 @@ return [
             'header' => 'System Log',
             'permissions' => [
                 'log generate qr view',
-                'log callback view'
+                'log callback view',
+                'log query payment status view'
             ],
             'menus' => [
                 [
@@ -204,13 +205,19 @@ return [
                     'route' => null,
                     'permissions' => [
                         'log generate qr view',
-                        'log callback view'
+                        'log callback view',
+                        'log query payment status view'
                     ],
                     'submenus' => [
                         [
                             'title' => 'Log Generate QR',
                             'route' => 'log-generate-qrs',
                             'permission' => 'log generate qr view'
+                        ],
+                        [
+                            'title' => 'Log Query Payment Status',
+                            'route' => 'log-query-payment-status',
+                            'permission' => 'log query payment status view'
                         ],
                         [
                             'title' => 'Log Callback',

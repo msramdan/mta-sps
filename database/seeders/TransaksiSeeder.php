@@ -106,6 +106,38 @@ class TransaksiSeeder extends Seeder
                 'updated_at' => $tanggalTransaksi,
             ]);
 
+            // Create log_query_payment_status (dummy)
+            $logQueryPaymentStatusId = (string) Str::uuid();
+            $payloadQueryStatus = json_encode([
+                'referenceNo' => $noReferensi,
+                'partnerReferenceNo' => $noRefMerchant,
+                'merchantId' => $merchant->nobu_merchant_id ?? '936005030000048891',
+            ], JSON_PRETTY_PRINT);
+            $responseQueryStatus = json_encode([
+                'responseCode' => '00',
+                'responseMessage' => 'Success',
+                'referenceNo' => $noReferensi,
+                'transactionStatus' => '00',
+                'transactionStatusDesc' => 'Success',
+                'amount' => [
+                    'value' => number_format($data['jumlah_dibayar'], 2, '.', ''),
+                    'currency' => 'IDR'
+                ],
+                'paymentDate' => $tanggalTransaksi->format('Y-m-d H:i:s'),
+            ], JSON_PRETTY_PRINT);
+
+            DB::table('log_query_payment_status')->insert([
+                'id' => $logQueryPaymentStatusId,
+                'transaksi_id' => $transaksiId,
+                'merchant_id' => $merchant->id,
+                'payload_merchant_to_qrin' => $payloadQueryStatus,
+                'payload_qrin_to_nobu' => $payloadQrinToNobu,
+                'response_generate_qr' => $responseQueryStatus,
+                'is_success' => $i === 0,
+                'created_at' => $tanggalTransaksi,
+                'updated_at' => $tanggalTransaksi,
+            ]);
+
             // Create log_callbacks - 1. Gagal (06 - Failed)
             $callbackGagalId = (string) Str::uuid();
             $tanggalCallbackGagal = \Carbon\Carbon::parse($tanggalTransaksi)->addMinutes(5);
