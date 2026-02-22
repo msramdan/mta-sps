@@ -85,9 +85,10 @@
                                             <th>{{ __('Tanggal') }}</th>
                                             <th>{{ __('Transaksi ID') }}</th>
                                             <th>{{ __('Merchant') }}</th>
-                                            <th>{{ __('Tanggal Callback') }}</th>
+                                            <th>{{ __('Tanggal Callback Nobu→QRIN') }}</th>
+                                            <th>{{ __('Tanggal Callback QRIN→Merchant') }}</th>
+                                            <th>{{ __('Processing Time') }}</th>
                                             <th>{{ __('Status') }}</th>
-                                            <th>{{ __('Payload') }}</th>
                                             <th>{{ __('Action') }}</th>
                                         </tr>
                                     </thead>
@@ -121,17 +122,10 @@
                 { data: 'created_at', name: 'created_at' },
                 { data: 'transaksi_id', name: 'transaksi_id' },
                 { data: 'merchant_id', name: 'merchant_id' },
-                { data: 'tanggal_callback', name: 'tanggal_callback' },
+                { data: 'tanggal_callback_nobu_to_qrin', name: 'tanggal_callback_nobu_to_qrin' },
+                { data: 'tanggal_callback_qrin_to_merchant', name: 'tanggal_callback_qrin_to_merchant' },
+                { data: 'processing_time', name: 'processing_time' },
                 { data: 'status_info', name: 'status_info', orderable: false, searchable: false },
-                {
-                    data: 'payload_callback',
-                    name: 'payload_callback',
-                    orderable: false,
-                    render: function(data) {
-                        if (!data) return '-';
-                        return data.length > 80 ? data.substring(0, 80) + '...' : data;
-                    }
-                },
                 { data: 'action', name: 'action', orderable: false, searchable: false }
             ],
             order: [[1, 'desc']]

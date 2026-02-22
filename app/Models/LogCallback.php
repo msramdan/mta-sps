@@ -18,8 +18,14 @@ class LogCallback extends Model
     protected $fillable = [
         'transaksi_id',
         'merchant_id',
-        'payload_callback',
-        'tanggal_callback',
+        'header_callback_nobu_to_qrin',
+        'payload_callback_nobu_to_qrin',
+        'response_callback_nobu_to_qrin',
+        'tanggal_callback_nobu_to_qrin',
+        'payload_callback_qrin_to_merchant',
+        'response_callback_qrin_to_merchant',
+        'tanggal_callback_qrin_to_merchant',
+        'processing_time',
         'transaction_status',
         'status_desc',
     ];
@@ -30,7 +36,8 @@ class LogCallback extends Model
             'id' => 'string',
             'transaksi_id' => 'string',
             'merchant_id' => 'string',
-            'tanggal_callback' => 'datetime',
+            'tanggal_callback_nobu_to_qrin' => 'datetime',
+            'tanggal_callback_qrin_to_merchant' => 'datetime',
             'created_at' => 'datetime',
             'updated_at' => 'datetime',
         ];

@@ -83,12 +83,10 @@
                                                 <input type="checkbox" id="log-select-all" class="form-check-input" title="{{ __('Pilih semua') }}">
                                             </th>
                                             <th>{{ __('Tanggal') }}</th>
+                                            <th>{{ __('Processing Time') }}</th>
                                             <th>{{ __('Transaksi ID') }}</th>
                                             <th>{{ __('Merchant') }}</th>
                                             <th>{{ __('Status') }}</th>
-                                            <th>{{ __('Payload Merchant → QRIN') }}</th>
-                                            <th>{{ __('Payload QRIN → Nobu') }}</th>
-                                            <th>{{ __('Response') }}</th>
                                             <th>{{ __('Action') }}</th>
                                         </tr>
                                     </thead>
@@ -120,36 +118,10 @@
             columns: [
                 { data: 'checkbox', name: 'checkbox', orderable: false, searchable: false, className: 'text-center' },
                 { data: 'created_at', name: 'created_at' },
+                { data: 'processing_time', name: 'processing_time' },
                 { data: 'transaksi_id', name: 'transaksi_id' },
                 { data: 'merchant_id', name: 'merchant_id' },
                 { data: 'is_success', name: 'is_success', orderable: false, searchable: false },
-                {
-                    data: 'payload_merchant_to_qrin',
-                    name: 'payload_merchant_to_qrin',
-                    orderable: false,
-                    render: function(data) {
-                        if (!data) return '-';
-                        return data.length > 80 ? data.substring(0, 80) + '...' : data;
-                    }
-                },
-                {
-                    data: 'payload_qrin_to_nobu',
-                    name: 'payload_qrin_to_nobu',
-                    orderable: false,
-                    render: function(data) {
-                        if (!data) return '-';
-                        return data.length > 80 ? data.substring(0, 80) + '...' : data;
-                    }
-                },
-                {
-                    data: 'response_generate_qr',
-                    name: 'response_generate_qr',
-                    orderable: false,
-                    render: function(data) {
-                        if (!data) return '-';
-                        return data.length > 80 ? data.substring(0, 80) + '...' : data;
-                    }
-                },
                 { data: 'action', name: 'action', orderable: false, searchable: false }
             ],
             order: [[1, 'desc']]

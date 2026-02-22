@@ -20,7 +20,10 @@ return new class extends Migration
             $table->string('no_telpon_pelanggan', 20)->nullable();
             $table->decimal('biaya', 15, 2)->default(0);
             $table->decimal('jumlah_dibayar', 15, 2)->default(0);
+            $table->decimal('jumlah_diterima', 15, 2)->default(0);
             $table->enum('status', ['pending', 'success', 'failed', 'expired'])->default('pending');
+            $table->string('beban_biaya', 20)->default('Merchant')
+                ->comment('Merchant = biaya ditanggung merchant, Pelanggan = biaya ditanggung pelanggan');
             $table->timestamps();
         });
     }

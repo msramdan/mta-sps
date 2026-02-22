@@ -63,6 +63,9 @@ class LogGenerateQrController extends Controller implements HasMiddleware
                 ->editColumn('created_at', function ($log) {
                     return $log->created_at?->format('d/m/Y H:i');
                 })
+                ->editColumn('processing_time', function ($log) {
+                    return $log->processing_time ?? '-';
+                })
                 ->rawColumns(['checkbox', 'is_success', 'action'])
                 ->make(true);
         }

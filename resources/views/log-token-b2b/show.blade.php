@@ -57,6 +57,22 @@
                                     <td class="fw-bold">Tanggal</td>
                                     <td>{{ $logTokenB2b->created_at?->format('d M Y H:i:s') }}</td>
                                 </tr>
+                                <tr>
+                                    <td class="fw-bold">Processing Time</td>
+                                    <td>{{ $logTokenB2b->processing_time ?? '-' }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-bold">Status</td>
+                                    <td>
+                                        @if($logTokenB2b->is_success === true)
+                                            <span class="badge bg-success">Sukses</span>
+                                        @elseif($logTokenB2b->is_success === false)
+                                            <span class="badge bg-danger">Gagal</span>
+                                        @else
+                                            <span class="badge bg-secondary">-</span>
+                                        @endif
+                                    </td>
+                                </tr>
                             </table>
                         </div>
                     </div>

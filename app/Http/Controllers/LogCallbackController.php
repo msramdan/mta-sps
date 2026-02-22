@@ -29,7 +29,14 @@ class LogCallbackController extends Controller implements HasMiddleware
             $dateFrom = request('date_from', now()->startOfMonth()->format('Y-m-d'));
             $dateTo = request('date_to', now()->format('Y-m-d'));
 
-            $query = LogCallback::with('merchant:id,nama_merchant,kode_merchant')
+            $query = LogCallback::query()
+                ->select([
+                    'id', 'transaksi_id', 'merchant_id',
+                    'tanggal_callback_nobu_to_qrin', 'tanggal_callback_qrin_to_merchant',
+                    'processing_time', 'transaction_status', 'status_desc',
+                    'created_at', 'updated_at',
+                ])
+                ->with('merchant:id,nama_merchant,kode_merchant')
                 ->where(function ($q) use ($dateFrom, $dateTo) {
                     $q->whereDate('created_at', '>=', $dateFrom)
                         ->whereDate('created_at', '<=', $dateTo);
@@ -67,8 +74,14 @@ class LogCallbackController extends Controller implements HasMiddleware
                         : '<span class="badge bg-danger">' . e($desc) . '</span>';
                     return $statusBadge . ' ' . $descBadge;
                 })
-                ->editColumn('tanggal_callback', function ($log) {
-                    return $log->tanggal_callback?->format('d/m/Y H:i') ?? '-';
+                ->editColumn('tanggal_callback_nobu_to_qrin', function ($log) {
+                    return $log->tanggal_callback_nobu_to_qrin?->format('d/m/Y H:i') ?? '-';
+                })
+                ->editColumn('tanggal_callback_qrin_to_merchant', function ($log) {
+                    return $log->tanggal_callback_qrin_to_merchant?->format('d/m/Y H:i') ?? '-';
+                })
+                ->editColumn('processing_time', function ($log) {
+                    return $log->processing_time ?? '-';
                 })
                 ->editColumn('created_at', function ($log) {
                     return $log->created_at?->format('d/m/Y H:i');

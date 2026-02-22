@@ -37,6 +37,14 @@
                                 value="{{ request('date_to', $defaultDateTo) }}">
                         </div>
                         <div class="col-md-2">
+                            <label class="form-label">{{ __('Status') }}</label>
+                            <select name="status" id="status" class="form-select">
+                                <option value="">{{ __('Semua') }}</option>
+                                <option value="1" {{ request('status') === '1' ? 'selected' : '' }}>{{ __('Sukses') }}</option>
+                                <option value="0" {{ request('status') === '0' ? 'selected' : '' }}>{{ __('Gagal') }}</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
                             <button type="submit" class="btn btn-primary">
                                 <i class="ti ti-filter"></i> {{ __('Filter') }}
                             </button>
@@ -64,6 +72,8 @@
                                                 <input type="checkbox" id="log-select-all" class="form-check-input" title="{{ __('Pilih semua') }}">
                                             </th>
                                             <th>{{ __('Tanggal') }}</th>
+                                            <th>{{ __('Processing Time') }}</th>
+                                            <th>{{ __('Status') }}</th>
                                             <th>{{ __('Header') }}</th>
                                             <th>{{ __('Payload') }}</th>
                                             <th>{{ __('Response') }}</th>
@@ -91,11 +101,14 @@
                 data: function(d) {
                     d.date_from = $('#date_from').val();
                     d.date_to = $('#date_to').val();
+                    d.status = $('#status').val();
                 }
             },
             columns: [
                 { data: 'checkbox', name: 'checkbox', orderable: false, searchable: false, className: 'text-center' },
                 { data: 'created_at', name: 'created_at' },
+                { data: 'processing_time', name: 'processing_time' },
+                { data: 'is_success', name: 'is_success', orderable: false, searchable: false },
                 { data: 'header', name: 'header', orderable: false, searchable: true },
                 { data: 'payload', name: 'payload', orderable: false, searchable: true },
                 { data: 'response', name: 'response', orderable: false, searchable: true },

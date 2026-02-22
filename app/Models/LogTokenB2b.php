@@ -18,12 +18,15 @@ class LogTokenB2b extends Model
         'header',
         'payload',
         'response',
+        'processing_time',
+        'is_success',
     ];
 
     protected function casts(): array
     {
         return [
             'id' => 'string',
+            'is_success' => 'boolean',
             'created_at' => 'datetime',
             'updated_at' => 'datetime',
         ];

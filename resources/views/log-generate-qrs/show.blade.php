@@ -58,6 +58,10 @@
                                     <td>{{ $logGenerateQr->created_at?->format('d M Y H:i:s') }}</td>
                                 </tr>
                                 <tr>
+                                    <td class="fw-bold">Processing Time</td>
+                                    <td>{{ $logGenerateQr->processing_time ?? '-' }}</td>
+                                </tr>
+                                <tr>
                                     <td class="fw-bold">Transaksi ID</td>
                                     <td class="text-break">{{ $logGenerateQr->transaksi_id ?? '-' }}</td>
                                 </tr>

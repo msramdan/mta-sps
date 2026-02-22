@@ -18,6 +18,7 @@ return new class extends Migration
             $table->text('payload_qrin_to_nobu')->nullable();
             $table->text('response_generate_qr')->nullable();
             $table->boolean('is_success')->nullable()->comment('Untuk filter cepat saat debug: true = sukses, false = gagal');
+            $table->string('processing_time', 50)->nullable();
             $table->timestamps();
         });
     }

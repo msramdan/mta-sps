@@ -22,6 +22,7 @@ class LogGenerateQr extends Model
         'payload_qrin_to_nobu',
         'response_generate_qr',
         'is_success',
+        'processing_time',
     ];
 
     protected function casts(): array

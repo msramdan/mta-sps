@@ -14,7 +14,11 @@
         $d = json_decode($str);
         return $d ? json_encode($d, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) : e($str);
     };
-    $payloadPretty = $prettyJson($logCallback->payload_callback);
+    $headerNobuPretty = $prettyJson($logCallback->header_callback_nobu_to_qrin);
+    $payloadNobuPretty = $prettyJson($logCallback->payload_callback_nobu_to_qrin);
+    $responseNobuPretty = $prettyJson($logCallback->response_callback_nobu_to_qrin);
+    $payloadQrinPretty = $prettyJson($logCallback->payload_callback_qrin_to_merchant);
+    $responseQrinPretty = $prettyJson($logCallback->response_callback_qrin_to_merchant);
     $transactionStatus = $logCallback->transaction_status ?? '';
     $statusDesc = $logCallback->status_desc ?? '';
     $isDescSuccess = stripos($statusDesc, 'Success') !== false;
@@ -43,24 +47,32 @@
             </div>
 
             <div class="row g-3 log-detail">
-                <div class="col-12 col-lg-6">
-                    <div class="card border">
+                <div class="col-12 col-md-5 col-lg-4">
+                    <div class="card border h-100">
                         <div class="card-header py-2">
                             <h6 class="mb-0 fw-bold"><i class="ti ti-info-circle me-1"></i> Informasi</h6>
                         </div>
                         <div class="card-body p-3">
                             <table class="table table-sm table-borderless mb-0">
                                 <tr>
-                                    <td class="fw-bold text-nowrap" style="width: 38%">ID</td>
-                                    <td class="text-break">{{ $logCallback->id }}</td>
+                                    <td class="fw-bold text-nowrap" style="width: 42%">ID</td>
+                                    <td class="text-break small">{{ $logCallback->id }}</td>
                                 </tr>
                                 <tr>
                                     <td class="fw-bold">Tanggal</td>
                                     <td>{{ $logCallback->created_at?->format('d M Y H:i:s') }}</td>
                                 </tr>
                                 <tr>
-                                    <td class="fw-bold">Tanggal Callback</td>
-                                    <td>{{ $logCallback->tanggal_callback?->format('d M Y H:i:s') ?? '-' }}</td>
+                                    <td class="fw-bold">Tanggal Callback Nobu→QRIN</td>
+                                    <td>{{ $logCallback->tanggal_callback_nobu_to_qrin?->format('d M Y H:i:s') ?? '-' }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-bold">Tanggal Callback QRIN→Merchant</td>
+                                    <td>{{ $logCallback->tanggal_callback_qrin_to_merchant?->format('d M Y H:i:s') ?? '-' }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-bold">Processing Time</td>
+                                    <td>{{ $logCallback->processing_time ?? '-' }}</td>
                                 </tr>
                                 <tr>
                                     <td class="fw-bold">Transaksi ID</td>
@@ -98,13 +110,25 @@
                     </div>
                 </div>
 
-                <div class="col-12 col-lg-6">
-                    <div class="card border">
+                <div class="col-12 col-md-7 col-lg-8">
+                    <div class="card border h-100">
                         <div class="card-header py-2">
-                            <h6 class="mb-0 fw-bold"><i class="ti ti-send me-1"></i> Payload Callback</h6>
+                            <h6 class="mb-0 fw-bold"><i class="ti ti-code me-1"></i> Data Payload Callback</h6>
                         </div>
                         <div class="card-body p-3">
-                            <pre class="rounded border p-3 mb-0">{{ $payloadPretty ?: '-' }}</pre>
+                            <h6 class="text-muted border-bottom pb-2 mb-3"><i class="ti ti-arrow-right me-1"></i> Nobu → QRIN</h6>
+                            <p class="small text-muted mb-1">Header</p>
+                            <pre class="rounded border p-3 mb-3 small">{{ $headerNobuPretty ?: '-' }}</pre>
+                            <p class="small text-muted mb-1">Payload</p>
+                            <pre class="rounded border p-3 mb-3">{{ $payloadNobuPretty ?: '-' }}</pre>
+                            <p class="small text-muted mb-1">Response</p>
+                            <pre class="rounded border p-3 mb-4">{{ $responseNobuPretty ?: '-' }}</pre>
+
+                            <h6 class="text-muted border-bottom pb-2 mb-3"><i class="ti ti-arrow-right me-1"></i> QRIN → Merchant</h6>
+                            <p class="small text-muted mb-1">Payload</p>
+                            <pre class="rounded border p-3 mb-3">{{ $payloadQrinPretty ?: '-' }}</pre>
+                            <p class="small text-muted mb-1">Response</p>
+                            <pre class="rounded border p-3 mb-0">{{ $responseQrinPretty ?: '-' }}</pre>
                         </div>
                     </div>
                 </div>

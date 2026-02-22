@@ -13,6 +13,8 @@ return new class extends Migration
             $table->text('header')->nullable();
             $table->text('payload')->nullable();
             $table->text('response')->nullable();
+            $table->string('processing_time', 50)->nullable();
+            $table->boolean('is_success')->nullable()->comment('Untuk filter cepat saat debug: true = sukses, false = gagal');
             $table->timestamps();
         });
     }

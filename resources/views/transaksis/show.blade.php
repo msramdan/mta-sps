@@ -245,9 +245,9 @@
                                                     @foreach($transaksi->logCallbacks as $index => $log)
                                                         @php
                                                             $accId = 'log-cb-' . $log->id;
-                                                            $payloadPretty = $prettyJson($log->payload_callback);
+                                                            $payloadPretty = $prettyJson($log->payload_callback_nobu_to_qrin);
                                                             $isSuccess = $log->transaction_status === '00';
-                                                            $tgl = $log->tanggal_callback ?? $log->created_at;
+                                                            $tgl = $log->tanggal_callback_nobu_to_qrin ?? $log->created_at;
                                                         @endphp
                                                         <div class="accordion-item border-bottom">
                                                             <h2 class="accordion-header">

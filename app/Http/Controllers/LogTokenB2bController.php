@@ -30,8 +30,17 @@ class LogTokenB2bController extends Controller implements HasMiddleware
 
             $query = LogTokenB2b::query()
                 ->whereDate('created_at', '>=', $dateFrom)
-                ->whereDate('created_at', '<=', $dateTo)
-                ->latest();
+                ->whereDate('created_at', '<=', $dateTo);
+
+            if (request()->filled('status')) {
+                if (request('status') === '1') {
+                    $query->where('is_success', true);
+                } elseif (request('status') === '0') {
+                    $query->where('is_success', false);
+                }
+            }
+
+            $query->latest();
 
             return DataTables::of($query)
                 ->addColumn('checkbox', function ($log) {
@@ -40,6 +49,16 @@ class LogTokenB2bController extends Controller implements HasMiddleware
                 ->addColumn('action', 'log-token-b2b.include.action')
                 ->editColumn('created_at', function ($log) {
                     return $log->created_at?->format('d/m/Y H:i');
+                })
+                ->editColumn('processing_time', function ($log) {
+                    return $log->processing_time ?? '-';
+                })
+                ->editColumn('is_success', function ($log) {
+                    return $log->is_success === true
+                        ? '<span class="badge bg-success">Sukses</span>'
+                        : ($log->is_success === false
+                            ? '<span class="badge bg-danger">Gagal</span>'
+                            : '<span class="badge bg-secondary">-</span>');
                 })
                 ->editColumn('header', function ($log) {
                     if (!$log->header) return '-';
@@ -53,7 +72,7 @@ class LogTokenB2bController extends Controller implements HasMiddleware
                     if (!$log->response) return '-';
                     return strlen($log->response) > 80 ? substr($log->response, 0, 80) . '...' : $log->response;
                 })
-                ->rawColumns(['checkbox', 'action'])
+                ->rawColumns(['checkbox', 'is_success', 'action'])
                 ->make(true);
         }
 
