@@ -212,8 +212,8 @@ class TransaksiController extends Controller implements HasMiddleware
     {
         $transaksi->load([
             'merchant:id,nama_merchant,kode_merchant',
-            'logGenerateQrs' => fn ($q) => $q->orderBy('created_at'),
-            'logCallbacks' => fn ($q) => $q->orderBy('tanggal_callback_nobu_to_qrin')->orderBy('created_at'),
+            'logGenerateQrs' => fn ($q) => $q->orderByDesc('created_at'),
+            'logCallbacks' => fn ($q) => $q->orderByDesc('tanggal_callback_nobu_to_qrin')->orderByDesc('created_at'),
         ]);
 
         return view('transaksis.show', compact('transaksi'));

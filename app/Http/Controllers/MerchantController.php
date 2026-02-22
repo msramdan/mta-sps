@@ -47,7 +47,7 @@ class MerchantController extends Controller implements HasMiddleware
     public function index(): View|JsonResponse
     {
         if (request()->ajax()) {
-            $merchants = Merchant::with(relations: ['bank:id,nama_bank']);
+            $merchants = Merchant::with(relations: ['bank:id,nama_bank'])->orderByDesc('created_at');
 
             return Datatables::of(source: $merchants)
                 ->editColumn('beban_biaya', fn ($row) => $row->beban_biaya === 'Pelanggan'

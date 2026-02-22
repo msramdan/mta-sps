@@ -36,7 +36,7 @@ class RoleAndPermissionController extends Controller implements HasMiddleware
     public function index(): View|JsonResponse
     {
         if (request()->ajax()) {
-            $users = Role::query();
+            $users = Role::query()->orderByDesc('created_at');
 
             return DataTables::of(source: $users)
                 ->addColumn(name: 'created_at', content: fn ($row) => $row->created_at->format('Y-m-d H:i:s'))

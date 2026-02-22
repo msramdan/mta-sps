@@ -59,6 +59,8 @@ class TarikSaldoController extends Controller implements HasMiddleware
                 $query->whereRaw('1 = 0'); // Return empty if no merchant session
             }
 
+            $query->orderByDesc('tarik_saldos.created_at');
+
             $imageService = app(ImageServiceV2::class);
             return Datatables::of($query)
                 ->editColumn('bukti_trf', function ($row) use ($imageService) {

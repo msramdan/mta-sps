@@ -34,7 +34,7 @@ class BankController extends Controller implements HasMiddleware
     public function index(): View|JsonResponse
     {
         if (request()->ajax()) {
-            $banks = Bank::query();
+            $banks = Bank::query()->orderByDesc('created_at');
 
             return DataTables::of(source: $banks)
                 ->addColumn(name: 'action', content: 'banks.include.action')

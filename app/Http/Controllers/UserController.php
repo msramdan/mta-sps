@@ -41,7 +41,7 @@ class UserController extends Controller implements HasMiddleware
     public function index(): View|JsonResponse
     {
         if (request()->ajax()) {
-            $users = User::with(relations: ['roles:id,name', 'assignedMerchants']);
+            $users = User::with(relations: ['roles:id,name', 'assignedMerchants'])->orderByDesc('created_at');
 
             return Datatables::of(source: $users)
                 ->addColumn(name: 'action', content: 'users.include.action')
