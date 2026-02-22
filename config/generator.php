@@ -195,9 +195,13 @@ return [
             'header' => 'System Log',
             'permissions' => [
                 'log generate qr view',
+                'log generate qr delete',
                 'log callback view',
+                'log callback delete',
                 'log query payment status view',
-                'log token b2b view'
+                'log query payment status delete',
+                'log token b2b view',
+                'log token b2b delete'
             ],
             'menus' => [
                 [
@@ -206,9 +210,13 @@ return [
                     'route' => null,
                     'permissions' => [
                         'log generate qr view',
+                        'log generate qr delete',
                         'log callback view',
+                        'log callback delete',
                         'log query payment status view',
-                        'log token b2b view'
+                        'log query payment status delete',
+                        'log token b2b view',
+                        'log token b2b delete'
                     ],
                     'submenus' => [
                         [

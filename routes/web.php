@@ -42,12 +42,16 @@ Route::middleware(['auth', 'web'])->group(function () {
     // System Log
     Route::get('/log-generate-qrs', [LogGenerateQrController::class, 'index'])->name('log-generate-qrs.index');
     Route::get('/log-generate-qrs/{logGenerateQr}', [LogGenerateQrController::class, 'show'])->name('log-generate-qrs.show');
+    Route::delete('/log-generate-qrs/{logGenerateQr}', [LogGenerateQrController::class, 'destroy'])->name('log-generate-qrs.destroy');
     Route::get('/log-callbacks', [LogCallbackController::class, 'index'])->name('log-callbacks.index');
     Route::get('/log-callbacks/{logCallback}', [LogCallbackController::class, 'show'])->name('log-callbacks.show');
+    Route::delete('/log-callbacks/{logCallback}', [LogCallbackController::class, 'destroy'])->name('log-callbacks.destroy');
     Route::get('/log-query-payment-status', [LogQueryPaymentStatusController::class, 'index'])->name('log-query-payment-status.index');
     Route::get('/log-query-payment-status/{logQueryPaymentStatus}', [LogQueryPaymentStatusController::class, 'show'])->name('log-query-payment-status.show');
+    Route::delete('/log-query-payment-status/{logQueryPaymentStatus}', [LogQueryPaymentStatusController::class, 'destroy'])->name('log-query-payment-status.destroy');
     Route::get('/log-token-b2b', [LogTokenB2bController::class, 'index'])->name('log-token-b2b.index');
     Route::get('/log-token-b2b/{logTokenB2b}', [LogTokenB2bController::class, 'show'])->name('log-token-b2b.show');
+    Route::delete('/log-token-b2b/{logTokenB2b}', [LogTokenB2bController::class, 'destroy'])->name('log-token-b2b.destroy');
 
     // Bank Management
     Route::resource('banks', BankController::class);

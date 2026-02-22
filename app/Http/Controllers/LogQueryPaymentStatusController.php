@@ -6,8 +6,10 @@ use App\Models\LogQueryPaymentStatus;
 use App\Models\Merchant;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
+use RealRashid\SweetAlert\Facades\Alert;
 use Yajra\DataTables\Facades\DataTables;
 
 class LogQueryPaymentStatusController extends Controller implements HasMiddleware
@@ -16,6 +18,7 @@ class LogQueryPaymentStatusController extends Controller implements HasMiddlewar
     {
         return [
             new Middleware(middleware: 'permission:log query payment status view', only: ['index', 'show']),
+            new Middleware(middleware: 'permission:log query payment status delete', only: ['destroy']),
         ];
     }
 
@@ -71,5 +74,12 @@ class LogQueryPaymentStatusController extends Controller implements HasMiddlewar
     {
         $logQueryPaymentStatus->load('merchant:id,nama_merchant,kode_merchant');
         return view('log-query-payment-status.show', compact('logQueryPaymentStatus'));
+    }
+
+    public function destroy(LogQueryPaymentStatus $logQueryPaymentStatus): RedirectResponse
+    {
+        $logQueryPaymentStatus->delete();
+        Alert::success('Berhasil', 'Log Query Payment Status berhasil dihapus.');
+        return redirect()->route('log-query-payment-status.index');
     }
 }

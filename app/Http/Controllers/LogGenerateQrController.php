@@ -6,8 +6,10 @@ use App\Models\LogGenerateQr;
 use App\Models\Merchant;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
+use RealRashid\SweetAlert\Facades\Alert;
 use Yajra\DataTables\Facades\DataTables;
 
 class LogGenerateQrController extends Controller implements HasMiddleware
@@ -16,6 +18,7 @@ class LogGenerateQrController extends Controller implements HasMiddleware
     {
         return [
             new Middleware(middleware: 'permission:log generate qr view', only: ['index', 'show']),
+            new Middleware(middleware: 'permission:log generate qr delete', only: ['destroy']),
         ];
     }
 
@@ -71,5 +74,12 @@ class LogGenerateQrController extends Controller implements HasMiddleware
     {
         $logGenerateQr->load('merchant:id,nama_merchant,kode_merchant');
         return view('log-generate-qrs.show', compact('logGenerateQr'));
+    }
+
+    public function destroy(LogGenerateQr $logGenerateQr): RedirectResponse
+    {
+        $logGenerateQr->delete();
+        Alert::success('Berhasil', 'Log Generate QR berhasil dihapus.');
+        return redirect()->route('log-generate-qrs.index');
     }
 }

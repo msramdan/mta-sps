@@ -6,8 +6,10 @@ use App\Models\LogCallback;
 use App\Models\Merchant;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
+use RealRashid\SweetAlert\Facades\Alert;
 use Yajra\DataTables\Facades\DataTables;
 
 class LogCallbackController extends Controller implements HasMiddleware
@@ -16,6 +18,7 @@ class LogCallbackController extends Controller implements HasMiddleware
     {
         return [
             new Middleware(middleware: 'permission:log callback view', only: ['index', 'show']),
+            new Middleware(middleware: 'permission:log callback delete', only: ['destroy']),
         ];
     }
 
@@ -81,5 +84,12 @@ class LogCallbackController extends Controller implements HasMiddleware
     {
         $logCallback->load('merchant:id,nama_merchant,kode_merchant');
         return view('log-callbacks.show', compact('logCallback'));
+    }
+
+    public function destroy(LogCallback $logCallback): RedirectResponse
+    {
+        $logCallback->delete();
+        Alert::success('Berhasil', 'Log Callback berhasil dihapus.');
+        return redirect()->route('log-callbacks.index');
     }
 }

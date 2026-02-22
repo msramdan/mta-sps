@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\LogTokenB2b;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
+use RealRashid\SweetAlert\Facades\Alert;
 use Yajra\DataTables\Facades\DataTables;
 
 class LogTokenB2bController extends Controller implements HasMiddleware
@@ -15,6 +17,7 @@ class LogTokenB2bController extends Controller implements HasMiddleware
     {
         return [
             new Middleware(middleware: 'permission:log token b2b view', only: ['index', 'show']),
+            new Middleware(middleware: 'permission:log token b2b delete', only: ['destroy']),
         ];
     }
 
@@ -59,5 +62,12 @@ class LogTokenB2bController extends Controller implements HasMiddleware
     public function show(LogTokenB2b $logTokenB2b): View
     {
         return view('log-token-b2b.show', compact('logTokenB2b'));
+    }
+
+    public function destroy(LogTokenB2b $logTokenB2b): RedirectResponse
+    {
+        $logTokenB2b->delete();
+        Alert::success('Berhasil', 'Log Token B2B berhasil dihapus.');
+        return redirect()->route('log-token-b2b.index');
     }
 }
