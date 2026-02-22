@@ -70,6 +70,55 @@
     .response-error {
         border-left: 4px solid #ef4444 !important;
     }
+    /* Tab card: kontras warna, compact di HP */
+    #apiTabs {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.25rem;
+        border-bottom: 1px solid var(--bs-border-color);
+    }
+    #apiTabs .nav-item {
+        flex: 1;
+        min-width: 0;
+    }
+    #apiTabs .nav-link {
+        width: 100%;
+        text-align: center;
+        padding: 0.5rem 0.75rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: var(--bs-secondary-color);
+        background: var(--bs-tertiary-bg);
+        border: 1px solid var(--bs-border-color);
+        border-radius: 6px;
+        margin-bottom: -1px;
+    }
+    #apiTabs .nav-link:hover {
+        color: var(--bs-emphasis-color);
+        background: var(--bs-secondary-bg);
+        border-color: var(--bs-border-color);
+    }
+    #apiTabs .nav-link.active {
+        color: #fff;
+        background: var(--bs-primary);
+        border-color: var(--bs-primary);
+    }
+    #apiTabs .nav-link .ti {
+        font-size: 1rem;
+        vertical-align: middle;
+    }
+    @media (max-width: 576px) {
+        #apiTabs {
+            gap: 0.375rem;
+        }
+        #apiTabs .nav-link {
+            padding: 0.4rem 0.5rem;
+            font-size: 0.8125rem;
+        }
+        #apiTabs .nav-link .ti {
+            font-size: 0.9rem;
+        }
+    }
 </style>
 @endpush
 
@@ -99,17 +148,17 @@
                 <div class="col-12">
                     <div class="card">
                         <div class="card-body p-0">
-                            <ul class="nav nav-tabs px-3 pt-3" id="apiTabs" role="tablist">
+                            <ul class="nav nav-tabs px-3 pt-3 pb-2" id="apiTabs" role="tablist">
                                 <li class="nav-item" role="presentation">
                                     <button class="nav-link active" id="generate-qris-tab" data-bs-toggle="tab"
                                             data-bs-target="#generate-qris" type="button" role="tab">
-                                        <i class="ti ti-qrcode me-1"></i> Generate QRIS
+                                        <i class="ti ti-qrcode me-1"></i><span class="d-none d-sm-inline">Generate QRIS</span><span class="d-inline d-sm-none">QRIS</span>
                                     </button>
                                 </li>
                                 <li class="nav-item" role="presentation">
                                     <button class="nav-link" id="webhook-tab" data-bs-toggle="tab"
                                             data-bs-target="#webhook" type="button" role="tab">
-                                        <i class="ti ti-webhook me-1"></i> Callback / Webhook
+                                        <i class="ti ti-webhook me-1"></i><span class="d-none d-sm-inline">Callback / Webhook</span><span class="d-inline d-sm-none">Webhook</span>
                                     </button>
                                 </li>
                             </ul>
