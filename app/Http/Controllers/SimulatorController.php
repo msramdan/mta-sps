@@ -32,14 +32,35 @@ class SimulatorController extends Controller implements HasMiddleware
     {
         $request->validate([
             'merchant_id' => 'required|exists:merchants,id',
-            'amount' => 'required|numeric|min:1',
+            'request_payload_qris' => 'required|array',
+            'request_payload_qris.no_ref_merchant' => 'required|string',
+            'request_payload_qris.amount' => 'required|array',
+            'request_payload_qris.amount.value' => 'required|string|regex:/^\d+(\.\d{1,2})?$/',
+            'request_payload_qris.amount.currency' => 'required|string|in:IDR',
+            'request_payload_qris.additional_info' => 'nullable|array',
+            'request_payload_qris.additional_info.customer_name' => 'nullable|string|min:5|max:100',
+            'request_payload_qris.additional_info.customer_email' => 'nullable|email',
+            'request_payload_qris.additional_info.customer_phone' => ['nullable', 'string', 'regex:/^(08[0-9]{6,10}|62[0-9]{6,11})$/'],
+        ], [
+            'request_payload_qris.amount.value.regex' => 'Nominal harus format desimal (minimal 1000.00).',
+            'request_payload_qris.additional_info.customer_name.min' => 'Nama pelanggan minimal 5 karakter.',
+            'request_payload_qris.additional_info.customer_name.max' => 'Nama pelanggan maksimal 100 karakter.',
+            'request_payload_qris.additional_info.customer_phone.regex' => 'Nomor telepon 8-13 karakter, diawali 08 atau 62.',
         ]);
 
+        // Validasi minimal amount 1000.00
+        $amountValue = (float) $request->input('request_payload_qris.amount.value');
+        if ($amountValue < 1000) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Nominal minimal 1000.00',
+                'data' => null
+            ], 422);
+        }
+
         try {
-            // Get merchant
             $merchant = Merchant::findOrFail($request->merchant_id);
 
-            // Check if merchant has token_qrin
             if (empty($merchant->token_qrin)) {
                 return response()->json([
                     'success' => false,
@@ -48,35 +69,39 @@ class SimulatorController extends Controller implements HasMiddleware
                 ], 400);
             }
 
-            // Generate random 12-digit partner reference number
-            $partnerReferenceNo = $this->generatePartnerReferenceNo();
+            $value = $request->input('request_payload_qris.amount.value');
+            $formattedAmount = number_format((float) $value, 2, '.', '');
 
-            // Format amount to 2 decimal places
-            $formattedAmount = number_format($request->amount, 2, '.', '');
-
-            // Prepare payload
-            $payload = [
-                'token_qrin' => $merchant->token_qrin,
-                'request_payload_qris' => [
-                    'partnerReferenceNo' => $partnerReferenceNo,
-                    'amount' => [
-                        'value' => $formattedAmount,
-                        'currency' => 'IDR'
-                    ]
-                ]
+            $requestPayloadQris = [
+                'no_ref_merchant' => $request->input('request_payload_qris.no_ref_merchant'),
+                'amount' => [
+                    'value' => $formattedAmount,
+                    'currency' => 'IDR',
+                ],
             ];
 
-            // Get QRIN URL from config
+            $additionalInfo = $request->input('request_payload_qris.additional_info');
+            if (! empty($additionalInfo)) {
+                $filtered = array_filter([
+                    'customer_name' => $additionalInfo['customer_name'] ?? null,
+                    'customer_email' => $additionalInfo['customer_email'] ?? null,
+                    'customer_phone' => $additionalInfo['customer_phone'] ?? null,
+                ]);
+                if (! empty($filtered)) {
+                    $requestPayloadQris['additional_info'] = $filtered;
+                }
+            }
+
+            $payload = [
+                'token_qrin' => $merchant->token_qrin,
+                'request_payload_qris' => $requestPayloadQris,
+            ];
+
             $qrinUrl = config('services.qrin.url');
-
-            // Make request to QRIN API
             $response = Http::timeout(30)->post($qrinUrl, $payload);
-
             $result = $response->json();
 
-            // Return the response from QRIN API
             return response()->json($result);
-
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
@@ -84,14 +109,6 @@ class SimulatorController extends Controller implements HasMiddleware
                 'data' => null
             ], 500);
         }
-    }
-
-    /**
-     * Generate random 12-digit partner reference number
-     */
-    private function generatePartnerReferenceNo(): string
-    {
-        return str_pad(rand(0, 999999999999), 12, '0', STR_PAD_LEFT);
     }
 
 }

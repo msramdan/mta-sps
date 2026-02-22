@@ -237,9 +237,42 @@
                                 </div>
 
                                 <div class="mb-3">
-                                    <label for="amount" class="form-label">{{ __('Nominal') }}</label>
-                                    <input type="number" class="form-control" id="amount" name="amount"
-                                        placeholder="Masukkan nominal" min="1" step="0.01" required>
+                                    <label for="no_ref_merchant" class="form-label">{{ __('No. Ref Merchant') }} <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="no_ref_merchant" name="no_ref_merchant"
+                                        placeholder="Contoh: TRX-123456789" required>
+                                    <small class="text-muted">{{ __('Nomor referensi unik transaksi') }}</small>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="amount" class="form-label">{{ __('Nominal') }} <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="amount" name="amount"
+                                        placeholder="10000.00" pattern="\d+(\.\d{1,2})?" minlength="6" required>
+                                    <small class="text-muted">{{ __('Format: 10000.00, minimal 1000.00, mata uang IDR') }}</small>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">{{ __('Info Tambahan (Opsional)') }}</label>
+                                    <div class="card border">
+                                        <div class="card-body py-2">
+                                            <div class="mb-2">
+                                                <label for="customer_name" class="form-label small mb-1">{{ __('Nama Pelanggan') }}</label>
+                                                <input type="text" class="form-control form-control-sm" id="customer_name" name="customer_name"
+                                                    placeholder="Nama Pelanggan" minlength="5" maxlength="100">
+                                                <small class="text-muted">5–100 karakter</small>
+                                            </div>
+                                            <div class="mb-2">
+                                                <label for="customer_email" class="form-label small mb-1">{{ __('Email Pelanggan') }}</label>
+                                                <input type="email" class="form-control form-control-sm" id="customer_email" name="customer_email"
+                                                    placeholder="email@domain.com">
+                                            </div>
+                                            <div class="mb-0">
+                                                <label for="customer_phone" class="form-label small mb-1">{{ __('No. Telepon Pelanggan') }}</label>
+                                                <input type="text" class="form-control form-control-sm" id="customer_phone" name="customer_phone"
+                                                    placeholder="081234567890 atau 6281234567890" pattern="(08|62)[0-9]{6,11}" minlength="8" maxlength="13">
+                                                <small class="text-muted">8–13 karakter, diawali 08 atau 62</small>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <button type="submit" class="btn btn-primary" id="generateBtn">
@@ -358,15 +391,65 @@
             });
         });
 
+        function validateAmount(val) {
+            const num = parseFloat(val);
+            return /^\d+(\.\d{1,2})?$/.test(val) && num >= 1000;
+        }
+        function validatePhone(val) {
+            if (!val) return true;
+            return /^(08[0-9]{6,10}|62[0-9]{6,11})$/.test(val) && val.length >= 8 && val.length <= 13;
+        }
+        function validateCustomerName(val) {
+            if (!val) return true;
+            return val.length >= 5 && val.length <= 100;
+        }
+
         document.getElementById('qrisForm').addEventListener('submit', async function(e) {
             e.preventDefault();
 
             const formData = new FormData(this);
             const merchantId = formData.get('merchant_id');
-            const amount = formData.get('amount');
+            const noRefMerchant = formData.get('no_ref_merchant');
+            const amountRaw = formData.get('amount');
+            const customerName = (formData.get('customer_name') || '').trim();
+            const customerEmail = (formData.get('customer_email') || '').trim();
+            const customerPhone = (formData.get('customer_phone') || '').trim();
             const generateBtn = document.getElementById('generateBtn');
 
-            // Disable button
+            // Validasi client
+            if (!noRefMerchant) {
+                Swal.fire({ icon: 'error', title: 'Validasi', text: 'No. Ref Merchant wajib diisi.' });
+                return;
+            }
+            if (!validateAmount(amountRaw)) {
+                Swal.fire({ icon: 'error', title: 'Validasi', text: 'Nominal wajib format desimal (minimal 1000.00).' });
+                return;
+            }
+            if (customerName && !validateCustomerName(customerName)) {
+                Swal.fire({ icon: 'error', title: 'Validasi', text: 'Nama pelanggan 5–100 karakter.' });
+                return;
+            }
+            if (customerEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(customerEmail)) {
+                Swal.fire({ icon: 'error', title: 'Validasi', text: 'Email pelanggan tidak valid.' });
+                return;
+            }
+            if (customerPhone && !validatePhone(customerPhone)) {
+                Swal.fire({ icon: 'error', title: 'Validasi', text: 'Nomor telepon 8–13 karakter, diawali 08 atau 62.' });
+                return;
+            }
+
+            const amountValue = parseFloat(amountRaw).toFixed(2);
+            const requestPayloadQris = {
+                no_ref_merchant: noRefMerchant,
+                amount: { value: amountValue, currency: 'IDR' }
+            };
+            if (customerName || customerEmail || customerPhone) {
+                requestPayloadQris.additional_info = {};
+                if (customerName) requestPayloadQris.additional_info.customer_name = customerName;
+                if (customerEmail) requestPayloadQris.additional_info.customer_email = customerEmail;
+                if (customerPhone) requestPayloadQris.additional_info.customer_phone = customerPhone;
+            }
+
             generateBtn.disabled = true;
             generateBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Generating...';
 
@@ -379,11 +462,19 @@
                     },
                     body: JSON.stringify({
                         merchant_id: merchantId,
-                        amount: amount
+                        request_payload_qris: requestPayloadQris
                     })
                 });
 
                 const result = await response.json();
+
+                if (response.status === 422) {
+                    const msg = result.message || (result.errors && Object.values(result.errors).flat().join(' ')) || 'Data tidak valid.';
+                    Swal.fire({ icon: 'error', title: 'Validasi', text: msg });
+                    generateBtn.disabled = false;
+                    generateBtn.innerHTML = '<i class="ph-duotone ph-qr-code"></i> {{ __('Generate QRIS') }}';
+                    return;
+                }
 
                 if (result.success) {
                     // Hide no result message
