@@ -237,39 +237,35 @@
                                 </div>
 
                                 <div class="mb-3">
-                                    <label for="no_ref_merchant" class="form-label">{{ __('No. Ref Merchant') }} <span class="text-danger">*</span></label>
+                                    <label for="no_ref_merchant" class="form-label">{{ __('No. Ref Merchant') }}</label>
                                     <input type="text" class="form-control" id="no_ref_merchant" name="no_ref_merchant"
-                                        placeholder="Contoh: TRX-123456789" required>
-                                    <small class="text-muted">{{ __('Nomor referensi unik transaksi') }}</small>
+                                        placeholder="TRX-123456789" required>
                                 </div>
 
                                 <div class="mb-3">
-                                    <label for="amount" class="form-label">{{ __('Nominal') }} <span class="text-danger">*</span></label>
+                                    <label for="amount" class="form-label">{{ __('Nominal') }}</label>
                                     <input type="text" class="form-control" id="amount" name="amount"
                                         placeholder="10000.00" pattern="\d+(\.\d{1,2})?" minlength="6" required>
-                                    <small class="text-muted">{{ __('Format: 10000.00, minimal 1000.00, mata uang IDR') }}</small>
                                 </div>
 
                                 <div class="mb-3">
-                                    <label class="form-label">{{ __('Info Tambahan (Opsional)') }}</label>
+                                    <label class="form-label">{{ __('Info Tambahan') }}</label>
                                     <div class="card border">
                                         <div class="card-body py-2">
                                             <div class="mb-2">
-                                                <label for="customer_name" class="form-label small mb-1">{{ __('Nama Pelanggan') }}</label>
+                                                <label for="customer_name" class="form-label small mb-1">{{ __('Nama') }}</label>
                                                 <input type="text" class="form-control form-control-sm" id="customer_name" name="customer_name"
-                                                    placeholder="Nama Pelanggan" minlength="5" maxlength="100">
-                                                <small class="text-muted">5–100 karakter</small>
+                                                    placeholder="Nama" minlength="5" maxlength="100">
                                             </div>
                                             <div class="mb-2">
-                                                <label for="customer_email" class="form-label small mb-1">{{ __('Email Pelanggan') }}</label>
+                                                <label for="customer_email" class="form-label small mb-1">{{ __('Email') }}</label>
                                                 <input type="email" class="form-control form-control-sm" id="customer_email" name="customer_email"
                                                     placeholder="email@domain.com">
                                             </div>
                                             <div class="mb-0">
-                                                <label for="customer_phone" class="form-label small mb-1">{{ __('No. Telepon Pelanggan') }}</label>
+                                                <label for="customer_phone" class="form-label small mb-1">{{ __('Telepon') }}</label>
                                                 <input type="text" class="form-control form-control-sm" id="customer_phone" name="customer_phone"
-                                                    placeholder="081234567890 atau 6281234567890" pattern="(08|62)[0-9]{6,11}" minlength="8" maxlength="13">
-                                                <small class="text-muted">8–13 karakter, diawali 08 atau 62</small>
+                                                    placeholder="081234567890" pattern="(08|62)[0-9]{6,11}" minlength="8" maxlength="13">
                                             </div>
                                         </div>
                                     </div>
