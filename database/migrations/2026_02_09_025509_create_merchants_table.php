@@ -32,8 +32,13 @@ return new class extends Migration
             $table->string('pemilik_rekening', 100)->nullable();
             $table->string('nomor_rekening', 50)->nullable();
             $table->string('ktp')->nullable();
+            $table->string('ktp_lembar_verifikasi')->nullable();
+            $table->string('ktp_photo_selfie')->nullable();
+            $table->string('photo_toko_tampak_depan')->nullable();
             $table->text('catatan')->nullable();
             $table->enum('status', ['pending', 'approved', 'rejected', 'suspended'])->default('pending');
+            $table->string('beban_biaya', 20)->default('Merchant')
+                ->comment('Merchant = biaya ditanggung merchant, Pelanggan = biaya ditanggung pelanggan');
             $table->timestamps();
         });
     }
