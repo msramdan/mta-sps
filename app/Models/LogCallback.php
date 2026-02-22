@@ -22,6 +22,7 @@ class LogCallback extends Model
         'payload_callback_nobu_to_qrin',
         'response_callback_nobu_to_qrin',
         'tanggal_callback_nobu_to_qrin',
+        'header_callback_qrin_to_merchant',
         'payload_callback_qrin_to_merchant',
         'response_callback_qrin_to_merchant',
         'tanggal_callback_qrin_to_merchant',

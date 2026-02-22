@@ -17,6 +17,7 @@
     $headerNobuPretty = $prettyJson($logCallback->header_callback_nobu_to_qrin);
     $payloadNobuPretty = $prettyJson($logCallback->payload_callback_nobu_to_qrin);
     $responseNobuPretty = $prettyJson($logCallback->response_callback_nobu_to_qrin);
+    $headerQrinPretty = $prettyJson($logCallback->header_callback_qrin_to_merchant);
     $payloadQrinPretty = $prettyJson($logCallback->payload_callback_qrin_to_merchant);
     $responseQrinPretty = $prettyJson($logCallback->response_callback_qrin_to_merchant);
     $transactionStatus = $logCallback->transaction_status ?? '';
@@ -125,6 +126,8 @@
                             <pre class="rounded border p-3 mb-4">{{ $responseNobuPretty ?: '-' }}</pre>
 
                             <h6 class="text-muted border-bottom pb-2 mb-3"><i class="ti ti-arrow-right me-1"></i> QRIN → Merchant</h6>
+                            <p class="small text-muted mb-1">Header</p>
+                            <pre class="rounded border p-3 mb-3 small">{{ $headerQrinPretty ?: '-' }}</pre>
                             <p class="small text-muted mb-1">Payload</p>
                             <pre class="rounded border p-3 mb-3">{{ $payloadQrinPretty ?: '-' }}</pre>
                             <p class="small text-muted mb-1">Response</p>

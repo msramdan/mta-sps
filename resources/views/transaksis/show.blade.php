@@ -248,6 +248,7 @@
                                                             $headerNobuPretty = $prettyJson($log->header_callback_nobu_to_qrin);
                                                             $payloadNobuPretty = $prettyJson($log->payload_callback_nobu_to_qrin);
                                                             $responseNobuPretty = $prettyJson($log->response_callback_nobu_to_qrin);
+                                                            $headerQrinPretty = $prettyJson($log->header_callback_qrin_to_merchant);
                                                             $payloadQrinPretty = $prettyJson($log->payload_callback_qrin_to_merchant);
                                                             $responseQrinPretty = $prettyJson($log->response_callback_qrin_to_merchant);
                                                             $txStatus = $log->transaction_status ?? '';
@@ -283,7 +284,9 @@
                                                                     <pre class="rounded border p-2 mb-2 overflow-auto">{{ $payloadNobuPretty ?: '-' }}</pre>
                                                                     <p class="small text-muted mb-1">Response</p>
                                                                     <pre class="rounded border p-2 mb-3 overflow-auto">{{ $responseNobuPretty ?: '-' }}</pre>
-                                                                    <p class="small text-muted mb-1"><i class="fas fa-arrow-right me-1"></i> QRIN → Merchant — Payload</p>
+                                                                    <p class="small text-muted mb-1"><i class="fas fa-arrow-right me-1"></i> QRIN → Merchant — Header</p>
+                                                                    <pre class="rounded border p-2 mb-2 overflow-auto small">{{ $headerQrinPretty ?: '-' }}</pre>
+                                                                    <p class="small text-muted mb-1">Payload</p>
                                                                     <pre class="rounded border p-2 mb-2 overflow-auto">{{ $payloadQrinPretty ?: '-' }}</pre>
                                                                     <p class="small text-muted mb-1">Response</p>
                                                                     <pre class="rounded border p-2 mb-0 overflow-auto">{{ $responseQrinPretty ?: '-' }}</pre>

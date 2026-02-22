@@ -18,6 +18,7 @@ return new class extends Migration
             $table->text('payload_callback_nobu_to_qrin')->nullable();
             $table->text('response_callback_nobu_to_qrin')->nullable();
             $table->dateTime('tanggal_callback_nobu_to_qrin')->nullable();
+            $table->text('header_callback_qrin_to_merchant')->nullable();
             $table->text('payload_callback_qrin_to_merchant')->nullable();
             $table->text('response_callback_qrin_to_merchant')->nullable();
             $table->dateTime('tanggal_callback_qrin_to_merchant')->nullable();
