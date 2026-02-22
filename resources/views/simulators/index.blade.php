@@ -230,26 +230,26 @@
                                 @csrf
 
                                 <div class="mb-3">
-                                    <label for="merchant_id" class="form-label">{{ __('Merchant') }}</label>
+                                    <label for="merchant_id" class="form-label">{{ __('Merchant') }} <span class="text-danger">*</span></label>
                                     <select class="form-select" id="merchant_id" name="merchant_id" required>
                                         <option value="">{{ __('Pilih Merchant') }}</option>
                                     </select>
                                 </div>
 
                                 <div class="mb-3">
-                                    <label for="no_ref_merchant" class="form-label">{{ __('No. Ref Merchant') }}</label>
+                                    <label for="no_ref_merchant" class="form-label">{{ __('No. Ref Merchant') }} <span class="text-danger">*</span></label>
                                     <input type="text" class="form-control" id="no_ref_merchant" name="no_ref_merchant"
                                         placeholder="TRX-123456789" required>
                                 </div>
 
                                 <div class="mb-3">
-                                    <label for="amount" class="form-label">{{ __('Nominal') }}</label>
-                                    <input type="text" class="form-control" id="amount" name="amount"
-                                        placeholder="10000.00" pattern="\d+(\.\d{1,2})?" minlength="6" required>
+                                    <label for="amount" class="form-label">{{ __('Nominal') }} <span class="text-danger">*</span></label>
+                                    <input type="number" class="form-control" id="amount" name="amount"
+                                        placeholder="10000" min="1000" required>
                                 </div>
 
                                 <div class="mb-3">
-                                    <label class="form-label">{{ __('Info Tambahan') }}</label>
+                                    <label class="form-label">{{ __('Info Tambahan') }} <span class="text-muted">(optional)</span></label>
                                     <div class="card border">
                                         <div class="card-body py-2">
                                             <div class="mb-2">
@@ -389,7 +389,7 @@
 
         function validateAmount(val) {
             const num = parseFloat(val);
-            return /^\d+(\.\d{1,2})?$/.test(val) && num >= 1000;
+            return !isNaN(num) && num >= 1000;
         }
         function validatePhone(val) {
             if (!val) return true;
@@ -418,7 +418,7 @@
                 return;
             }
             if (!validateAmount(amountRaw)) {
-                Swal.fire({ icon: 'error', title: 'Validasi', text: 'Nominal wajib format desimal (minimal 1000.00).' });
+                Swal.fire({ icon: 'error', title: 'Validasi', text: 'Nominal minimal 1000.' });
                 return;
             }
             if (customerName && !validateCustomerName(customerName)) {

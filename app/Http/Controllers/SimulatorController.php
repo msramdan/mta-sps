@@ -35,28 +35,18 @@ class SimulatorController extends Controller implements HasMiddleware
             'request_payload_qris' => 'required|array',
             'request_payload_qris.no_ref_merchant' => 'required|string',
             'request_payload_qris.amount' => 'required|array',
-            'request_payload_qris.amount.value' => 'required|string|regex:/^\d+(\.\d{1,2})?$/',
+            'request_payload_qris.amount.value' => 'required|numeric|min:1000',
             'request_payload_qris.amount.currency' => 'required|string|in:IDR',
             'request_payload_qris.additional_info' => 'nullable|array',
             'request_payload_qris.additional_info.customer_name' => 'nullable|string|min:5|max:100',
             'request_payload_qris.additional_info.customer_email' => 'nullable|email',
             'request_payload_qris.additional_info.customer_phone' => ['nullable', 'string', 'regex:/^(08[0-9]{6,10}|62[0-9]{6,11})$/'],
         ], [
-            'request_payload_qris.amount.value.regex' => 'Nominal harus format desimal (minimal 1000.00).',
+            'request_payload_qris.amount.value.min' => 'Nominal minimal 1000.',
             'request_payload_qris.additional_info.customer_name.min' => 'Nama pelanggan minimal 5 karakter.',
             'request_payload_qris.additional_info.customer_name.max' => 'Nama pelanggan maksimal 100 karakter.',
             'request_payload_qris.additional_info.customer_phone.regex' => 'Nomor telepon 8-13 karakter, diawali 08 atau 62.',
         ]);
-
-        // Validasi minimal amount 1000.00
-        $amountValue = (float) $request->input('request_payload_qris.amount.value');
-        if ($amountValue < 1000) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Nominal minimal 1000.00',
-                'data' => null
-            ], 422);
-        }
 
         try {
             $merchant = Merchant::findOrFail($request->merchant_id);
