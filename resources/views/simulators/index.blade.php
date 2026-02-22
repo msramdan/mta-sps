@@ -238,8 +238,13 @@
 
                                 <div class="mb-3">
                                     <label for="no_ref_merchant" class="form-label">{{ __('No. Ref Merchant') }} <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" id="no_ref_merchant" name="no_ref_merchant"
-                                        placeholder="TRX-123456789" required>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="no_ref_merchant" name="no_ref_merchant"
+                                            placeholder="TRX-123456789" required>
+                                        <button type="button" class="btn btn-outline-secondary" id="genRefBtn" title="{{ __('Generate random') }}">
+                                            <i class="ph-duotone ph-dice-five"></i>
+                                        </button>
+                                    </div>
                                 </div>
 
                                 <div class="mb-3">
@@ -384,6 +389,11 @@
                     cache: true
                 },
                 minimumInputLength: 0
+            });
+
+            $('#genRefBtn').on('click', function() {
+                const ref = 'TRX-' + Date.now() + '-' + Math.random().toString(36).substring(2, 10);
+                $('#no_ref_merchant').val(ref);
             });
         });
 
