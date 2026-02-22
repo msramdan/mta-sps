@@ -242,7 +242,7 @@
                                         <input type="text" class="form-control" id="no_ref_merchant" name="no_ref_merchant"
                                             placeholder="TRX-123456789" required>
                                         <button type="button" class="btn btn-outline-secondary" id="genRefBtn" title="{{ __('Generate random') }}">
-                                            <i class="ti ti-dice"></i>
+                                            <i class="ti ti-refresh" style="font-size: 1.1rem;"></i>
                                         </button>
                                     </div>
                                 </div>
