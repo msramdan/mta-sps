@@ -230,7 +230,7 @@
                                         </div>
                                     </div>
 
-                                    <!-- Log Callback -->
+                                    <!-- Log Callback (lengkap seperti System Log → Log Callbacks) -->
                                     <div class="card border">
                                         <div class="card-header py-2">
                                             <h6 class="mb-0 fw-bold">
@@ -245,8 +245,14 @@
                                                     @foreach($transaksi->logCallbacks as $index => $log)
                                                         @php
                                                             $accId = 'log-cb-' . $log->id;
-                                                            $payloadPretty = $prettyJson($log->payload_callback_nobu_to_qrin);
-                                                            $isSuccess = $log->transaction_status === '00';
+                                                            $headerNobuPretty = $prettyJson($log->header_callback_nobu_to_qrin);
+                                                            $payloadNobuPretty = $prettyJson($log->payload_callback_nobu_to_qrin);
+                                                            $responseNobuPretty = $prettyJson($log->response_callback_nobu_to_qrin);
+                                                            $payloadQrinPretty = $prettyJson($log->payload_callback_qrin_to_merchant);
+                                                            $responseQrinPretty = $prettyJson($log->response_callback_qrin_to_merchant);
+                                                            $txStatus = $log->transaction_status ?? '';
+                                                            $statusDesc = $log->status_desc ?? '';
+                                                            $isDescSuccess = stripos($statusDesc, 'Success') !== false;
                                                             $tgl = $log->tanggal_callback_nobu_to_qrin ?? $log->created_at;
                                                         @endphp
                                                         <div class="accordion-item border-bottom">
@@ -254,17 +260,74 @@
                                                                 <button class="accordion-button collapsed py-2" type="button" data-bs-toggle="collapse" data-bs-target="#{{ $accId }}" aria-expanded="false" aria-controls="{{ $accId }}">
                                                                     <span class="me-2 fw-bold">#{{ $index + 1 }}</span>
                                                                     <span class="me-2">{{ $tgl->format('d M Y H:i') }}</span>
-                                                                    @if($isSuccess)
-                                                                        <span class="badge bg-success">Success</span>
+                                                                    @if($txStatus === '00')
+                                                                        <span class="badge bg-success">{{ $txStatus }}</span>
+                                                                    @elseif($txStatus === '06')
+                                                                        <span class="badge bg-danger">{{ $txStatus }}</span>
                                                                     @else
-                                                                        <span class="badge bg-danger">Failed</span>
+                                                                        <span class="badge bg-secondary">{{ $txStatus ?: '-' }}</span>
                                                                     @endif
+                                                                    @if($statusDesc)
+                                                                        <span class="badge {{ $isDescSuccess ? 'bg-success' : 'bg-danger' }} ms-1">{{ $statusDesc }}</span>
+                                                                    @endif
+                                                                    <span class="text-muted small ms-1">{{ $log->processing_time ?? '' }}</span>
                                                                 </button>
                                                             </h2>
                                                             <div id="{{ $accId }}" class="accordion-collapse collapse" data-bs-parent="#accordionLogCallback">
-                                                                <div class="accordion-body pt-2 pb-2 px-3">
-                                                                    <span class="small fw-bold text-muted d-block mb-1">Payload Callback</span>
-                                                                    <pre class="rounded border mb-0 overflow-auto" >{{ $payloadPretty ?: '-' }}</pre>
+                                                                <div class="accordion-body pt-2 pb-3 px-3">
+                                                                    <!-- Informasi (sama seperti di System Log → Log Callbacks) -->
+                                                                    <h6 class="fw-bold text-muted border-bottom pb-1 mb-2"><i class="fas fa-info-circle me-1"></i> Informasi</h6>
+                                                                    <table class="table table-sm table-borderless mb-3">
+                                                                        <tr>
+                                                                            <td class="fw-bold text-nowrap" style="width: 38%">ID</td>
+                                                                            <td class="text-break small">{{ $log->id }}</td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td class="fw-bold">Tanggal</td>
+                                                                            <td>{{ $log->created_at?->format('d M Y H:i:s') }}</td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td class="fw-bold">Tanggal Callback Nobu→QRIN</td>
+                                                                            <td>{{ $log->tanggal_callback_nobu_to_qrin?->format('d M Y H:i:s') ?? '-' }}</td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td class="fw-bold">Tanggal Callback QRIN→Merchant</td>
+                                                                            <td>{{ $log->tanggal_callback_qrin_to_merchant?->format('d M Y H:i:s') ?? '-' }}</td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td class="fw-bold">Processing Time</td>
+                                                                            <td>{{ $log->processing_time ?? '-' }}</td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td class="fw-bold">Status</td>
+                                                                            <td>
+                                                                                @if($txStatus === '00')
+                                                                                    <span class="badge bg-success">{{ $txStatus }}</span>
+                                                                                @elseif($txStatus === '06')
+                                                                                    <span class="badge bg-danger">{{ $txStatus }}</span>
+                                                                                @else
+                                                                                    <span class="badge bg-secondary">{{ $txStatus ?: '-' }}</span>
+                                                                                @endif
+                                                                                @if($isDescSuccess)
+                                                                                    <span class="badge bg-success">{{ $statusDesc ?: '-' }}</span>
+                                                                                @else
+                                                                                    <span class="badge bg-danger">{{ $statusDesc ?: '-' }}</span>
+                                                                                @endif
+                                                                            </td>
+                                                                        </tr>
+                                                                    </table>
+                                                                    <!-- Data Payload Callback (sama seperti di System Log) -->
+                                                                    <h6 class="fw-bold text-muted border-bottom pb-1 mb-2"><i class="fas fa-code me-1"></i> Data Payload Callback</h6>
+                                                                    <p class="small text-muted mb-1"><i class="fas fa-arrow-right me-1"></i> Nobu → QRIN — Header</p>
+                                                                    <pre class="rounded border p-2 mb-2 overflow-auto small">{{ $headerNobuPretty ?: '-' }}</pre>
+                                                                    <p class="small text-muted mb-1">Payload</p>
+                                                                    <pre class="rounded border p-2 mb-2 overflow-auto">{{ $payloadNobuPretty ?: '-' }}</pre>
+                                                                    <p class="small text-muted mb-1">Response</p>
+                                                                    <pre class="rounded border p-2 mb-3 overflow-auto">{{ $responseNobuPretty ?: '-' }}</pre>
+                                                                    <p class="small text-muted mb-1"><i class="fas fa-arrow-right me-1"></i> QRIN → Merchant — Payload</p>
+                                                                    <pre class="rounded border p-2 mb-2 overflow-auto">{{ $payloadQrinPretty ?: '-' }}</pre>
+                                                                    <p class="small text-muted mb-1">Response</p>
+                                                                    <pre class="rounded border p-2 mb-0 overflow-auto">{{ $responseQrinPretty ?: '-' }}</pre>
                                                                 </div>
                                                             </div>
                                                         </div>

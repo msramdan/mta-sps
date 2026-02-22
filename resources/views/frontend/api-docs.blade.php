@@ -133,7 +133,7 @@
     <section class="doc-hero">
         <div class="container">
             <h1><i class="fas fa-book me-2"></i>Dokumentasi API</h1>
-            <p class="text-muted">Panduan teknis integrasi QRIS — Generate QRIS, cek status pembayaran, dan webhook. Mudah dibaca dan dipahami.</p>
+            <p class="text-muted">Panduan teknis integrasi QRIS — Generate QRIS dan webhook. Mudah dibaca dan dipahami.</p>
         </div>
     </section>
 
@@ -145,11 +145,6 @@
                         <li class="nav-item" role="presentation">
                             <button class="nav-link active" id="tab-generate-qris" data-bs-toggle="tab" data-bs-target="#panel-generate-qris" type="button" role="tab">
                                 <i class="fas fa-qrcode me-2"></i>Generate QRIS
-                            </button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="tab-payment-status" data-bs-toggle="tab" data-bs-target="#panel-payment-status" type="button" role="tab">
-                                <i class="fas fa-search-dollar me-2"></i>Status Pembayaran
                             </button>
                         </li>
                         <li class="nav-item" role="presentation">
@@ -231,66 +226,9 @@
                             </div>
                         </div>
 
-                        <!-- Tab 2: Status Pembayaran -->
-                        <div class="tab-pane fade" id="panel-payment-status" role="tabpanel">
-                            <h5 class="fw-bold mb-2">2. Status Pembayaran</h5>
-                            <p class="text-muted mb-4">Cek status transaksi berdasarkan nomor referensi merchant.</p>
-
-                            <div class="mb-4">
-                                <h6 class="section-title">Endpoint</h6>
-                                <div class="d-flex align-items-center gap-2 flex-wrap">
-                                    <span class="endpoint-badge post">POST</span>
-                                    <div class="endpoint-url flex-grow-1">https://api.qrin.web.id/v1.0/query-payment-status</div>
-                                </div>
-                            </div>
-
-                            <div class="mb-4">
-                                <h6 class="section-title">Request Body</h6>
-                                <p class="text-muted small mb-2">Kirim JSON dengan <code>Content-Type: application/json</code></p>
-                                <pre class="code-block"><code>{
-    "token_qrin": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-    "request_payload_qris": {
-        "no_ref_merchant": "TRX-123456789"
-    }
-}</code></pre>
-                            </div>
-
-                            <div class="mb-4">
-                                <h6 class="section-title">Parameter</h6>
-                                <div class="table-responsive">
-                                    <table class="table table-bordered param-table">
-                                        <thead>
-                                            <tr>
-                                                <th>Parameter</th>
-                                                <th>Type</th>
-                                                <th>Required</th>
-                                                <th>Keterangan</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr><td><code>token_qrin</code></td><td>String</td><td><span class="required-badge">Ya</span></td><td>Token QRIN dari Setting Merchant</td></tr>
-                                            <tr><td><code>request_payload_qris.no_ref_merchant</code></td><td>String</td><td><span class="required-badge">Ya</span></td><td>Nomor referensi transaksi yang dicek</td></tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-
-                            <div class="mb-0">
-                                <h6 class="section-title">Response</h6>
-                                <p class="mb-2"><strong class="text-success">Success (200 OK)</strong></p>
-                                <pre class="code-block response-success"><code class="text-muted">{ }</code></pre>
-                                <p class="mb-2 mt-3"><strong class="text-danger">Failed / Error (400 Bad Request)</strong></p>
-                                <pre class="code-block response-error"><code>{
-    "success": false,
-    "message": "token_qrin is required",
-    "data": null
-}</code></pre>
-                            </div>
-                        </div>
-
-                        <!-- Tab 3: Callback / Webhook - Coming Soon -->
+                        <!-- Tab 2: Callback / Webhook - Coming Soon -->
                         <div class="tab-pane fade" id="panel-webhook" role="tabpanel">
-                            <h5 class="fw-bold mb-2">3. Callback / Webhook</h5>
+                            <h5 class="fw-bold mb-2">2. Callback / Webhook</h5>
                             <div class="coming-soon-block">
                                 <div class="icon text-muted"><i class="fas fa-clock"></i></div>
                                 <h4>Coming Soon</h4>
