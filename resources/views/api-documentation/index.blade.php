@@ -25,7 +25,7 @@
         word-break: break-all;
     }
     pre.code-block {
-        background: #fff;
+        /* background: #fff; */
         color: #1e293b;
         padding: 16px;
         border-radius: 6px;
@@ -39,6 +39,8 @@
         line-height: 1.6;
         color: inherit;
     }
+    /* Sama seperti detail log (log-callbacks/show, log-generate-qrs/show) */
+    .log-detail pre { font-size: 0.8rem; max-height: 400px; overflow: auto; white-space: pre-wrap; word-break: break-all; }
     .param-table th {
         font-weight: 600;
         font-size: 13px;
@@ -63,10 +65,10 @@
         font-weight: 600;
     }
     .response-success {
-        border-left: 4px solid #10b981;
+        border-left: 4px solid #10b981 !important;
     }
     .response-error {
-        border-left: 4px solid #ef4444;
+        border-left: 4px solid #ef4444 !important;
     }
 </style>
 @endpush
@@ -116,22 +118,31 @@
                                 <!-- Generate QRIS Tab -->
                                 <div class="tab-pane fade show active" id="generate-qris" role="tabpanel">
                                     <h5 class="mb-3 fw-bold">1. Generate QRIS</h5>
-                                    <p class="text-muted">Endpoint untuk menghasilkan kode QRIS dinamis untuk transaksi pembayaran.</p>
+                                    <p class="text-muted mb-4">Endpoint untuk menghasilkan kode QRIS dinamis untuk transaksi pembayaran.</p>
 
-                                    <!-- Endpoint Info -->
-                                    <div class="mb-4">
-                                        <h6 class="fw-bold mb-2">Endpoint</h6>
-                                        <div class="d-flex align-items-center gap-2 mb-2">
-                                            <span class="endpoint-badge post">POST</span>
-                                            <div class="endpoint-url bg-body-secondary flex-grow-1">https://api.qrin.web.id/v1.0/generate-qris</div>
+                                    <div class="row g-3 log-detail">
+                                        <!-- Endpoint -->
+                                        <div class="col-12">
+                                            <div class="card border h-100">
+                                                <div class="card-header py-2">
+                                                    <h6 class="mb-0 fw-bold">Endpoint</h6>
+                                                </div>
+                                                <div class="card-body p-3">
+                                                    <p class="small text-muted mb-1">Method & URL</p>
+                                                    <pre class="rounded border p-3 mb-0 response-success">POST https://api.qrin.web.id/v1.0/generate-qris</pre>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
 
-                                    <!-- Request Body -->
-                                    <div class="mb-4">
-                                        <h6 class="fw-bold mb-2">Request Body</h6>
-                                        <p class="text-muted small mb-2">Kirim JSON dengan <code>Content-Type: application/json</code></p>
-                                        <pre class="code-block"><code>{
+                                        <!-- Request Body -->
+                                        <div class="col-12">
+                                            <div class="card border h-100">
+                                                <div class="card-header py-2">
+                                                    <h6 class="mb-0 fw-bold">Request Body</h6>
+                                                </div>
+                                                <div class="card-body p-3">
+                                                    <p class="small text-muted mb-2">Kirim JSON dengan <code>Content-Type: application/json</code></p>
+                                                    <pre class="rounded border p-3 mb-0">{
     "token_qrin": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
     "request_payload_qris": {
         "no_ref_merchant": "TRX-123456789",
@@ -145,86 +156,95 @@
             "customer_phone": "081234567890"
         }
     }
-}</code></pre>
-                                    </div>
-
-                                    <!-- Request Parameters -->
-                                    <div class="mb-4">
-                                        <h6 class="fw-bold mb-2">Parameter</h6>
-                                        <div class="table-responsive">
-                                            <table class="table table-bordered param-table">
-                                                <thead>
-                                                    <tr>
-                                                        <th style="width: 220px;">Parameter</th>
-                                                        <th style="width: 90px;">Type</th>
-                                                        <th style="width: 90px;">Required</th>
-                                                        <th>Keterangan</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr>
-                                                        <td><code>token_qrin</code></td>
-                                                        <td>String</td>
-                                                        <td><span class="required-badge">Ya</span></td>
-                                                        <td>Token QRIN dari Setting Merchant</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td><code>request_payload_qris.no_ref_merchant</code></td>
-                                                        <td>String</td>
-                                                        <td><span class="required-badge">Ya</span></td>
-                                                        <td>Nomor referensi unik transaksi</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td><code>request_payload_qris.amount.value</code></td>
-                                                        <td>String</td>
-                                                        <td><span class="required-badge">Ya</span></td>
-                                                        <td>Nominal transaksi (format: "10000.00", minimal 1000.00)</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td><code>request_payload_qris.amount.currency</code></td>
-                                                        <td>String</td>
-                                                        <td><span class="required-badge">Ya</span></td>
-                                                        <td>Mata uang (wajib "IDR")</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td><code>request_payload_qris.additional_info.customer_name</code></td>
-                                                        <td>String</td>
-                                                        <td><span class="optional-badge">Opsional</span></td>
-                                                        <td>Nama pelanggan. Jika diisi, panjang 5–100 karakter.</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td><code>request_payload_qris.additional_info.customer_email</code></td>
-                                                        <td>String</td>
-                                                        <td><span class="optional-badge">Opsional</span></td>
-                                                        <td>Email pelanggan. Jika diisi, harus format email yang valid.</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td><code>request_payload_qris.additional_info.customer_phone</code></td>
-                                                        <td>String</td>
-                                                        <td><span class="optional-badge">Opsional</span></td>
-                                                        <td>Nomor telepon pelanggan. Jika diisi, 8–13 karakter, diawali 08 atau 62.</td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-
-                                    <!-- Response Examples -->
-                                    <div class="mb-4">
-                                        <h6 class="fw-bold mb-3">Response</h6>
-
-                                        <div class="mb-3">
-                                            <p class="mb-2"><strong class="text-success">Success Response (200 OK)</strong></p>
-                                            <pre class="code-block response-success"><code class="text-muted">{ }</code></pre>
+}</pre>
+                                                </div>
+                                            </div>
                                         </div>
 
-                                        <div>
-                                            <p class="mb-2"><strong class="text-danger">Failed / Error Response (400 Bad Request)</strong></p>
-                                            <pre class="code-block response-error"><code>{
+                                        <!-- Parameter -->
+                                        <div class="col-12">
+                                            <div class="card border h-100">
+                                                <div class="card-header py-2">
+                                                    <h6 class="mb-0 fw-bold">Parameter</h6>
+                                                </div>
+                                                <div class="card-body p-3">
+                                                    <div class="table-responsive">
+                                                        <table class="table table-bordered param-table mb-0">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th style="width: 220px;">Parameter</th>
+                                                                    <th style="width: 90px;">Type</th>
+                                                                    <th style="width: 90px;">Required</th>
+                                                                    <th>Keterangan</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td><code>token_qrin</code></td>
+                                                                    <td>String</td>
+                                                                    <td><span class="required-badge">Ya</span></td>
+                                                                    <td>Token QRIN dari Setting Merchant</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td><code>request_payload_qris.no_ref_merchant</code></td>
+                                                                    <td>String</td>
+                                                                    <td><span class="required-badge">Ya</span></td>
+                                                                    <td>Nomor referensi unik transaksi</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td><code>request_payload_qris.amount.value</code></td>
+                                                                    <td>String</td>
+                                                                    <td><span class="required-badge">Ya</span></td>
+                                                                    <td>Nominal transaksi (format: "10000.00", minimal 1000.00)</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td><code>request_payload_qris.amount.currency</code></td>
+                                                                    <td>String</td>
+                                                                    <td><span class="required-badge">Ya</span></td>
+                                                                    <td>Mata uang (wajib "IDR")</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td><code>request_payload_qris.additional_info.customer_name</code></td>
+                                                                    <td>String</td>
+                                                                    <td><span class="optional-badge">Opsional</span></td>
+                                                                    <td>Nama pelanggan. Jika diisi, panjang 5–100 karakter.</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td><code>request_payload_qris.additional_info.customer_email</code></td>
+                                                                    <td>String</td>
+                                                                    <td><span class="optional-badge">Opsional</span></td>
+                                                                    <td>Email pelanggan. Jika diisi, harus format email yang valid.</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td><code>request_payload_qris.additional_info.customer_phone</code></td>
+                                                                    <td>String</td>
+                                                                    <td><span class="optional-badge">Opsional</span></td>
+                                                                    <td>Nomor telepon pelanggan. Jika diisi, 8–13 karakter, diawali 08 atau 62.</td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Response -->
+                                        <div class="col-12">
+                                            <div class="card border h-100">
+                                                <div class="card-header py-2">
+                                                    <h6 class="mb-0 fw-bold">Response</h6>
+                                                </div>
+                                                <div class="card-body p-3">
+                                                    <p class="small fw-bold text-muted mb-1">Success Response (200 OK)</p>
+                                                    <pre class="rounded border p-3 mb-3 response-success">{ }</pre>
+                                                    <p class="small fw-bold text-muted mb-1">Failed / Error Response (400 Bad Request)</p>
+                                                    <pre class="rounded border p-3 mb-0 response-error">{
     "success": false,
     "message": "token_qrin is required",
     "data": null
-}</code></pre>
+}</pre>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -244,8 +264,7 @@
                                                     <ul class="text-muted mb-0 small">
                                                         <li class="mb-1">QRIN mengirim <strong>POST</strong> ke URL callback merchant.</li>
                                                         <li class="mb-1">Body berisi JSON data transaksi (status, nominal, dll).</li>
-                                                        <li class="mb-1">Header <code>X-Callback-Signature</code> = HMAC-SHA256(raw body, <code>token_qrin</code>) untuk validasi.</li>
-                                                        <li>Baca body mentah (<code>php://input</code>) sebelum decode JSON.</li>
+                                                        <li class="mb-0">Header <code>X-Callback-Signature</code> = HMAC-SHA256(raw body, <code>token_qrin</code>) untuk validasi.</li>
                                                     </ul>
                                                 </div>
                                             </div>
@@ -268,13 +287,28 @@
                                         </div>
                                     </div>
 
-                                    <h6 class="fw-bold mb-2">Header yang dikirim QRIN</h6>
-                                    <pre class="code-block mb-2"><code>Content-Type: application/json
-X-Callback-Signature: &lt;hmac_sha256&gt;</code></pre>
-                                    <p class="small text-muted mb-4"><code>X-Callback-Signature</code> = HMAC-SHA256(<em>raw body JSON</em>, <em>token_qrin</em>). Selalu baca body mentah (php://input) sebelum decode JSON.</p>
-
-                                    <h6 class="fw-bold mb-2">Contoh payload (body) yang dikirim QRIN → Merchant</h6>
-                                    <pre class="code-block mb-4"><code>{
+                                    <div class="row g-3 mb-4 log-detail">
+                                        <div class="col-12">
+                                            <div class="card border h-100">
+                                                <div class="card-header py-2">
+                                                    <h6 class="mb-0 fw-bold">Header yang dikirim QRIN</h6>
+                                                </div>
+                                                <div class="card-body p-3">
+                                                    <p class="small text-muted mb-1">Contoh header</p>
+                                                    <pre class="rounded border p-3 mb-3">Content-Type: application/json
+X-Callback-Signature: &lt;hmac_sha256&gt;</pre>
+                                                    <p class="small text-muted mb-0"><code>X-Callback-Signature</code> = HMAC-SHA256(<em>raw body JSON</em>, <em>token_qrin</em>).</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="card border h-100">
+                                                <div class="card-header py-2">
+                                                    <h6 class="mb-0 fw-bold">Contoh payload (body) yang dikirim QRIN → Merchant</h6>
+                                                </div>
+                                                <div class="card-body p-3">
+                                                    <p class="small text-muted mb-1">Contoh payload</p>
+                                                    <pre class="rounded border p-3 mb-0">{
     "id": "ae0e42e0-b759-4cac-98da-9c0752152853",
     "tanggal_transaksi": "2026-02-22T23:52:00+07:00",
     "merchant_id": "04c9e242-3639-46bf-952a-e8221ef0cb5c",
@@ -290,11 +324,20 @@ X-Callback-Signature: &lt;hmac_sha256&gt;</code></pre>
     "beban_biaya": "Pelanggan",
     "created_at": "2026-02-22T23:53:25+07:00",
     "updated_at": "2026-02-22T23:53:59+07:00"
-}</code></pre>
+}</pre>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
 
-                                    <h6 class="fw-bold mb-2">Contoh penanganan callback (PHP)</h6>
-                                    <p class="text-muted small mb-2">Gunakan <strong>token_qrin</strong> dari Setting Merchant untuk validasi signature. Respon dengan JSON.</p>
-                                    <pre class="code-block mb-0"><code>&lt;?php
+                                    <div class="log-detail">
+                                        <div class="card border">
+                                            <div class="card-header py-2">
+                                                <h6 class="mb-0 fw-bold">Contoh penanganan callback (PHP)</h6>
+                                            </div>
+                                            <div class="card-body p-3">
+                                                <p class="small text-muted mb-2">Gunakan <strong>token_qrin</strong> dari Setting Merchant untuk validasi signature. Respon dengan JSON.</p>
+                                                <pre class="rounded border p-3 mb-0">&lt;?php
 $json = file_get_contents('php://input');
 $callbackSignature = $_SERVER['HTTP_X_CALLBACK_SIGNATURE'] ?? '';
 $tokenQrin = 'token_qrin_anda_dari_dashboard';
@@ -318,7 +361,10 @@ $status       = $data->status;
 // Update transaksi Anda berdasarkan no_ref_merchant
 
 header('Content-Type: application/json');
-echo json_encode(['success' => true]);</code></pre>
+echo json_encode(['success' => true]);</pre>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                     </div>
                 </div>
