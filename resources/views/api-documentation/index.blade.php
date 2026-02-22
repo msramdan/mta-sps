@@ -389,7 +389,7 @@ X-Callback-Signature: &lt;hmac_sha256&gt;</pre>
                                                 <pre class="rounded border p-3 mb-0">&lt;?php
 $json = file_get_contents('php://input');
 $callbackSignature = $_SERVER['HTTP_X_CALLBACK_SIGNATURE'] ?? '';
-$tokenQrin = 'token_qrin_anda_dari_dashboard';
+$tokenQrin = 'token_qrin_anda_dari_setting_merchant';
 $signature = hash_hmac('sha256', $json, $tokenQrin);
 
 if (!hash_equals($signature, $callbackSignature)) {
