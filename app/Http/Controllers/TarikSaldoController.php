@@ -306,11 +306,12 @@ class TarikSaldoController extends Controller implements HasMiddleware
      */
     public function updateStatus(UpdateStatusTarikSaldoRequest $request, string $id): JsonResponse|RedirectResponse
     {
-        $status = $request->validated()['status'];
+        $validated = $request->validated();
+        $status = $validated['status'];
         $label = $status === 'process' ? 'Diproses' : 'Ditolak';
 
         try {
-            DB::transaction(function () use ($id, $status) {
+            DB::transaction(function () use ($id, $status, $validated) {
                 $tarikSaldo = TarikSaldo::where('id', $id)->lockForUpdate()->first();
                 if (!$tarikSaldo) {
                     throw new \RuntimeException('Data tarik saldo tidak ditemukan.');
@@ -318,7 +319,11 @@ class TarikSaldoController extends Controller implements HasMiddleware
                 if ($tarikSaldo->status !== 'pending') {
                     throw new \RuntimeException('Hanya pengajuan dengan status Pending yang dapat diubah ke Diproses/Ditolak.');
                 }
-                $tarikSaldo->update(['status' => $status, 'updated_at' => now()]);
+                $payload = ['status' => $status, 'updated_at' => now()];
+                if (array_key_exists('catatan', $validated)) {
+                    $payload['catatan'] = $validated['catatan'];
+                }
+                $tarikSaldo->update($payload);
             });
         } catch (\Throwable $e) {
             $message = $e->getMessage();

@@ -194,17 +194,28 @@
                 </div>
                 <form id="statusWithdrawalForm">
                     @csrf
-                    <input type="hidden" name="status" id="statusWithdrawalValue" value="">
                     <div class="modal-body">
                         <p class="text-muted small mb-3">Pilih status untuk pengajuan penarikan ini:</p>
-                        <div class="d-flex gap-2">
-                            <button type="button" class="btn btn-info flex-grow-1 btn-status-choice" data-status="process">
-                                <i class="ti ti-loader me-1"></i> Diproses
-                            </button>
-                            <button type="button" class="btn btn-danger flex-grow-1 btn-status-choice" data-status="reject">
-                                <i class="ti ti-x me-1"></i> Ditolak
-                            </button>
+                        <div class="d-flex gap-3">
+                            <label class="status-option flex-grow-1 mb-0 rounded border border-2 border-secondary p-3 text-center d-flex flex-column align-items-center justify-content-center gap-2 position-relative" style="min-height: 90px; cursor: pointer;">
+                                <input type="radio" name="status" value="process" class="status-radio d-none">
+                                <span class="status-check position-absolute top-0 end-0 m-2 text-success opacity-0"><i class="ti ti-circle-check-filled fs-3"></i></span>
+                                <i class="ti ti-loader text-info fs-3"></i>
+                                <span class="fw-semibold">Diproses</span>
+                            </label>
+                            <label class="status-option flex-grow-1 mb-0 rounded border border-2 border-secondary p-3 text-center d-flex flex-column align-items-center justify-content-center gap-2 position-relative" style="min-height: 90px; cursor: pointer;">
+                                <input type="radio" name="status" value="reject" class="status-radio d-none">
+                                <span class="status-check position-absolute top-0 end-0 m-2 text-danger opacity-0"><i class="ti ti-circle-check-filled fs-3"></i></span>
+                                <i class="ti ti-x text-danger fs-3"></i>
+                                <span class="fw-semibold">Ditolak</span>
+                            </label>
                         </div>
+                        <div class="mt-3" id="statusCatatanWrap">
+                            <label for="status_catatan" class="form-label">Catatan <span id="statusCatatanRequired" class="text-danger d-none">*</span></label>
+                            <textarea name="catatan" id="status_catatan" class="form-control" rows="3" maxlength="1000" placeholder="Wajib diisi jika memilih Ditolak."></textarea>
+                            <small class="form-text text-muted">Maks. 1000 karakter. Wajib diisi jika status Ditolak.</small>
+                        </div>
+                        <small class="text-muted d-block mt-2"><i class="ti ti-info-circle me-1"></i> Klik salah satu opsi di atas, lalu Simpan.</small>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="ti ti-x me-1"></i>Batal</button>
@@ -225,15 +236,15 @@
                 <form id="confirmWithdrawalForm">
                     @csrf
                     <div class="modal-body">
-                        <p class="text-muted small mb-3">Upload bukti transfer dan isi catatan. Setelah dikonfirmasi, status menjadi <strong>Berhasil</strong> dan saldo merchant akan dikurangi.</p>
+                        <p class="text-muted small mb-3">Upload bukti transfer. Setelah dikonfirmasi, status menjadi <strong>Berhasil</strong> dan saldo merchant akan dikurangi.</p>
                         <div class="mb-3">
                             <label for="confirm_bukti_trf" class="form-label">Bukti Transfer <span class="text-danger">*</span></label>
                             <input type="file" name="bukti_trf" id="confirm_bukti_trf" class="form-control" accept="image/*" required>
                             <small class="form-text text-muted">JPG, PNG maks. 2MB</small>
                         </div>
                         <div class="mb-3">
-                            <label for="confirm_catatan" class="form-label">Catatan <span class="text-danger">*</span></label>
-                            <textarea name="catatan" id="confirm_catatan" class="form-control" rows="3" maxlength="1000" placeholder="Catatan konfirmasi penarikan..." required></textarea>
+                            <label for="confirm_catatan" class="form-label">Catatan (opsional)</label>
+                            <textarea name="catatan" id="confirm_catatan" class="form-control" rows="3" maxlength="1000" placeholder="Catatan konfirmasi penarikan..."></textarea>
                             <small class="form-text text-muted">Maks. 1000 karakter</small>
                         </div>
                     </div>
@@ -436,19 +447,45 @@
         });
 
         let statusWithdrawalId = null;
+        function resetStatusModalSelection() {
+            $('#statusWithdrawalForm .status-radio').prop('checked', false);
+            $('#statusWithdrawalForm .status-option').removeClass('border-primary border-danger border-opacity-100').addClass('border-secondary');
+            $('#statusWithdrawalForm .status-check').addClass('opacity-0').removeClass('opacity-100');
+            $('#status_catatan').val('').removeAttr('required');
+            $('#statusCatatanRequired').addClass('d-none');
+            $('#statusSubmitBtn').prop('disabled', true);
+        }
+        function updateStatusCatatanRequired() {
+            var isReject = $('#statusWithdrawalForm input[name="status"]:checked').val() === 'reject';
+            if (isReject) {
+                $('#status_catatan').attr('required', true);
+                $('#statusCatatanRequired').removeClass('d-none');
+            } else {
+                $('#status_catatan').removeAttr('required');
+                $('#statusCatatanRequired').addClass('d-none');
+            }
+        }
+        $('#statusWithdrawalModal').on('show.bs.modal', function() {
+            resetStatusModalSelection();
+        });
         $('#statusWithdrawalModal').on('hidden.bs.modal', function() {
             statusWithdrawalId = null;
-            $('#statusWithdrawalValue').val('');
-            $('#statusSubmitBtn').prop('disabled', true);
+            resetStatusModalSelection();
         });
         $(document).on('click', '.btn-status-withdrawal', function() {
             statusWithdrawalId = $(this).data('id');
             $('#statusWithdrawalModal').modal('show');
         });
-        $(document).on('click', '.btn-status-choice', function() {
-            var status = $(this).data('status');
-            $('#statusWithdrawalValue').val(status);
+        $(document).on('change', '#statusWithdrawalForm .status-radio', function() {
+            var val = $(this).val();
+            $('#statusWithdrawalForm .status-option').removeClass('border-primary border-danger border-opacity-100').addClass('border-secondary');
+            $('#statusWithdrawalForm .status-check').addClass('opacity-0').removeClass('opacity-100');
+            $(this).closest('.status-option').removeClass('border-secondary').addClass(val === 'process' ? 'border-primary' : 'border-danger').find('.status-check').removeClass('opacity-0').addClass('opacity-100');
+            updateStatusCatatanRequired();
             $('#statusSubmitBtn').prop('disabled', false);
+        });
+        $(document).on('click', '.status-option', function() {
+            $(this).find('.status-radio').prop('checked', true).trigger('change');
         });
         $('#statusWithdrawalForm').on('submit', function(e) {
             e.preventDefault();

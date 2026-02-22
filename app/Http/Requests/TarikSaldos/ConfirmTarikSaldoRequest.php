@@ -15,7 +15,7 @@ class ConfirmTarikSaldoRequest extends FormRequest
     {
         return [
             'bukti_trf' => 'required|image|max:2048',
-            'catatan' => 'required|string|max:1000',
+            'catatan' => 'nullable|string|max:1000',
         ];
     }
 }

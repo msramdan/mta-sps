@@ -15,6 +15,7 @@ class UpdateStatusTarikSaldoRequest extends FormRequest
     {
         return [
             'status' => 'required|in:process,reject',
+            'catatan' => 'required_if:status,reject|nullable|string|max:1000',
         ];
     }
 }
