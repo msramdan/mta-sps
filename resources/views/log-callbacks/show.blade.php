@@ -5,6 +5,9 @@
 @push('css')
 <style>
     .log-detail pre { font-size: 0.8rem; max-height: 400px; overflow: auto; white-space: pre-wrap; word-break: break-all; }
+    .log-callback-card .card-header { cursor: pointer; user-select: none; }
+    .log-callback-card .card-header .accordion-icon { transition: transform 0.2s; }
+    .log-callback-card .card-header[aria-expanded="true"] .accordion-icon { transform: rotate(180deg); }
 </style>
 @endpush
 
@@ -48,27 +51,28 @@
             </div>
 
             <div class="row g-3 log-detail">
-                <div class="col-12 col-md-5 col-lg-4">
-                    <div class="card border h-100">
+                <!-- Informasi -->
+                <div class="col-12 col-md-6">
+                    <div class="card border">
                         <div class="card-header py-2">
                             <h6 class="mb-0 fw-bold"><i class="ti ti-info-circle me-1"></i> Informasi</h6>
                         </div>
                         <div class="card-body p-3">
                             <table class="table table-sm table-borderless mb-0">
                                 <tr>
-                                    <td class="fw-bold text-nowrap" style="width: 42%">ID</td>
-                                    <td class="text-break small">{{ $logCallback->id }}</td>
+                                    <td class="fw-bold text-nowrap" style="width: 38%">ID</td>
+                                    <td class="text-break">{{ $logCallback->id }}</td>
                                 </tr>
                                 <tr>
                                     <td class="fw-bold">Tanggal</td>
                                     <td>{{ $logCallback->created_at?->format('d M Y H:i:s') }}</td>
                                 </tr>
                                 <tr>
-                                    <td class="fw-bold">Tanggal Callback Nobu→QRIN</td>
+                                    <td class="fw-bold">Tanggal Nobu→QRIN</td>
                                     <td>{{ $logCallback->tanggal_callback_nobu_to_qrin?->format('d M Y H:i:s') ?? '-' }}</td>
                                 </tr>
                                 <tr>
-                                    <td class="fw-bold">Tanggal Callback QRIN→Merchant</td>
+                                    <td class="fw-bold">Tanggal QRIN→Merchant</td>
                                     <td>{{ $logCallback->tanggal_callback_qrin_to_merchant?->format('d M Y H:i:s') ?? '-' }}</td>
                                 </tr>
                                 <tr>
@@ -91,7 +95,7 @@
                                 </tr>
                                 <tr>
                                     <td class="fw-bold">Status</td>
-                                    <td class="text-break">
+                                    <td>
                                         @if($transactionStatus === '00')
                                             <span class="badge bg-success">{{ $transactionStatus }}</span>
                                         @elseif($transactionStatus === '06')
@@ -99,49 +103,64 @@
                                         @else
                                             <span class="badge bg-secondary">{{ $transactionStatus ?: '-' }}</span>
                                         @endif
-                                        @if($isDescSuccess)
-                                            <span class="badge bg-success">{{ $statusDesc ?: '-' }}</span>
-                                        @else
-                                            <span class="badge bg-danger">{{ $statusDesc ?: '-' }}</span>
+                                        @if($statusDesc)
+                                            <span class="badge {{ $isDescSuccess ? 'bg-success' : 'bg-danger' }} ms-1">{{ $statusDesc }}</span>
                                         @endif
                                     </td>
                                 </tr>
                             </table>
                         </div>
                     </div>
-                </div>
-
-                <div class="col-12 col-md-7 col-lg-8">
-                    <div class="card border h-100">
-                        <div class="card-header py-2">
-                            <h6 class="mb-0 fw-bold"><i class="ti ti-code me-1"></i> Data Payload Callback</h6>
-                        </div>
-                        <div class="card-body p-3">
-                            <h6 class="text-muted border-bottom pb-2 mb-3"><i class="ti ti-arrow-right me-1"></i> Nobu → QRIN</h6>
-                            <p class="small text-muted mb-1">Header</p>
-                            <pre class="rounded border p-3 mb-3 small">{{ $headerNobuPretty ?: '-' }}</pre>
-                            <p class="small text-muted mb-1">Payload</p>
-                            <pre class="rounded border p-3 mb-3">{{ $payloadNobuPretty ?: '-' }}</pre>
-                            <p class="small text-muted mb-1">Response</p>
-                            <pre class="rounded border p-3 mb-4">{{ $responseNobuPretty ?: '-' }}</pre>
-
-                            <h6 class="text-muted border-bottom pb-2 mb-3"><i class="ti ti-arrow-right me-1"></i> QRIN → Merchant</h6>
-                            <p class="small text-muted mb-1">Header</p>
-                            <pre class="rounded border p-3 mb-3 small">{{ $headerQrinPretty ?: '-' }}</pre>
-                            <p class="small text-muted mb-1">Payload</p>
-                            <pre class="rounded border p-3 mb-3">{{ $payloadQrinPretty ?: '-' }}</pre>
-                            <p class="small text-muted mb-1">Response</p>
-                            <pre class="rounded border p-3 mb-0">{{ $responseQrinPretty ?: '-' }}</pre>
-                        </div>
+                    <div class="mt-3">
+                        <a href="{{ route('log-callbacks.index') }}" class="btn btn-secondary btn-sm">
+                            <i class="ti ti-arrow-left"></i> {{ __('Kembali') }}
+                        </a>
                     </div>
                 </div>
-            </div>
 
-            <div class="row mt-3">
-                <div class="col-12">
-                    <a href="{{ route('log-callbacks.index') }}" class="btn btn-secondary">
-                        <i class="ti ti-arrow-left"></i> {{ __('Kembali') }}
-                    </a>
+                <!-- Log Callbacks: accordion expand/collapse -->
+                <div class="col-12 col-md-6">
+                    <div class="accordion" id="accordionLogCallback">
+                        <!-- Log Callback Nobu → QRIN -->
+                        <div class="card border log-callback-card mb-2">
+                            <div class="card-header py-2 d-flex align-items-center justify-content-between" id="headingNobu" data-bs-toggle="collapse" data-bs-target="#collapseNobu" aria-expanded="true" aria-controls="collapseNobu">
+                                <h6 class="mb-0 fw-bold">
+                                    <i class="ti ti-arrow-right me-1"></i> Log Callback Nobu → QRIN
+                                </h6>
+                                <i class="ti ti-chevron-down accordion-icon text-muted"></i>
+                            </div>
+                            <div id="collapseNobu" class="collapse show" aria-labelledby="headingNobu">
+                                <div class="card-body p-3">
+                                    <p class="small text-muted mb-1">Header</p>
+                                    <pre class="rounded border p-3 mb-3 small">{{ $headerNobuPretty ?: '-' }}</pre>
+                                    <p class="small text-muted mb-1">Payload</p>
+                                    <pre class="rounded border p-3 mb-3">{{ $payloadNobuPretty ?: '-' }}</pre>
+                                    <p class="small text-muted mb-1">Response</p>
+                                    <pre class="rounded border p-3 mb-0">{{ $responseNobuPretty ?: '-' }}</pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Log Callback QRIN → Merchant -->
+                        <div class="card border log-callback-card">
+                            <div class="card-header py-2 d-flex align-items-center justify-content-between" id="headingQrin" data-bs-toggle="collapse" data-bs-target="#collapseQrin" aria-expanded="false" aria-controls="collapseQrin">
+                                <h6 class="mb-0 fw-bold">
+                                    <i class="ti ti-arrow-right me-1"></i> Log Callback QRIN → Merchant
+                                </h6>
+                                <i class="ti ti-chevron-down accordion-icon text-muted"></i>
+                            </div>
+                            <div id="collapseQrin" class="collapse" aria-labelledby="headingQrin">
+                                <div class="card-body p-3">
+                                    <p class="small text-muted mb-1">Header</p>
+                                    <pre class="rounded border p-3 mb-3 small">{{ $headerQrinPretty ?: '-' }}</pre>
+                                    <p class="small text-muted mb-1">Payload</p>
+                                    <pre class="rounded border p-3 mb-3">{{ $payloadQrinPretty ?: '-' }}</pre>
+                                    <p class="small text-muted mb-1">Response</p>
+                                    <pre class="rounded border p-3 mb-0">{{ $responseQrinPretty ?: '-' }}</pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

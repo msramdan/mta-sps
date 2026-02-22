@@ -230,27 +230,24 @@
                                         </div>
                                     </div>
 
-                                    <!-- Log Callback (lengkap seperti System Log → Log Callbacks) -->
+                                    <!-- Log Callback Nobu → QRIN -->
                                     <div class="card border">
                                         <div class="card-header py-2">
                                             <h6 class="mb-0 fw-bold">
-                                                <i class="fas fa-exchange-alt me-1"></i> Log Callback
+                                                <i class="fas fa-arrow-right me-1"></i> Log Callback Nobu → QRIN
                                             </h6>
                                         </div>
                                         <div class="card-body p-0">
                                             @if($transaksi->logCallbacks->isEmpty())
                                                 <p class="text-muted fst-italic p-3 mb-0">Belum ada log callback.</p>
                                             @else
-                                                <div class="accordion accordion-flush" id="accordionLogCallback">
+                                                <div class="accordion accordion-flush" id="accordionLogCallbackNobu">
                                                     @foreach($transaksi->logCallbacks as $index => $log)
                                                         @php
-                                                            $accId = 'log-cb-' . $log->id;
+                                                            $accId = 'log-cb-nobu-' . $log->id;
                                                             $headerNobuPretty = $prettyJson($log->header_callback_nobu_to_qrin);
                                                             $payloadNobuPretty = $prettyJson($log->payload_callback_nobu_to_qrin);
                                                             $responseNobuPretty = $prettyJson($log->response_callback_nobu_to_qrin);
-                                                            $headerQrinPretty = $prettyJson($log->header_callback_qrin_to_merchant);
-                                                            $payloadQrinPretty = $prettyJson($log->payload_callback_qrin_to_merchant);
-                                                            $responseQrinPretty = $prettyJson($log->response_callback_qrin_to_merchant);
                                                             $txStatus = $log->transaction_status ?? '';
                                                             $statusDesc = $log->status_desc ?? '';
                                                             $isDescSuccess = stripos($statusDesc, 'Success') !== false;
@@ -274,17 +271,53 @@
                                                                     <span class="text-muted small ms-1">{{ $log->processing_time ?? '' }}</span>
                                                                 </button>
                                                             </h2>
-                                                            <div id="{{ $accId }}" class="accordion-collapse collapse" data-bs-parent="#accordionLogCallback">
-                                                                <div class="accordion-body pt-2 pb-3 px-3">
-                                                                    <!-- Data Payload Callback saja -->
-                                                                    <h6 class="fw-bold text-muted border-bottom pb-1 mb-2"><i class="fas fa-code me-1"></i> Data Payload Callback</h6>
-                                                                    <p class="small text-muted mb-1"><i class="fas fa-arrow-right me-1"></i> Nobu → QRIN — Header</p>
+                                                            <div id="{{ $accId }}" class="accordion-collapse collapse" data-bs-parent="#accordionLogCallbackNobu">
+                                                                <div class="accordion-body pt-2 pb-2 px-3">
+                                                                    <p class="small text-muted mb-1">Header</p>
                                                                     <pre class="rounded border p-2 mb-2 overflow-auto small">{{ $headerNobuPretty ?: '-' }}</pre>
                                                                     <p class="small text-muted mb-1">Payload</p>
                                                                     <pre class="rounded border p-2 mb-2 overflow-auto">{{ $payloadNobuPretty ?: '-' }}</pre>
                                                                     <p class="small text-muted mb-1">Response</p>
-                                                                    <pre class="rounded border p-2 mb-3 overflow-auto">{{ $responseNobuPretty ?: '-' }}</pre>
-                                                                    <p class="small text-muted mb-1"><i class="fas fa-arrow-right me-1"></i> QRIN → Merchant — Header</p>
+                                                                    <pre class="rounded border p-2 mb-0 overflow-auto">{{ $responseNobuPretty ?: '-' }}</pre>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    @endforeach
+                                                </div>
+                                            @endif
+                                        </div>
+                                    </div>
+
+                                    <!-- Log Callback QRIN → Merchant -->
+                                    <div class="card border">
+                                        <div class="card-header py-2">
+                                            <h6 class="mb-0 fw-bold">
+                                                <i class="fas fa-arrow-right me-1"></i> Log Callback QRIN → Merchant
+                                            </h6>
+                                        </div>
+                                        <div class="card-body p-0">
+                                            @if($transaksi->logCallbacks->isEmpty())
+                                                <p class="text-muted fst-italic p-3 mb-0">Belum ada log callback.</p>
+                                            @else
+                                                <div class="accordion accordion-flush" id="accordionLogCallbackQrin">
+                                                    @foreach($transaksi->logCallbacks as $index => $log)
+                                                        @php
+                                                            $accId = 'log-cb-qrin-' . $log->id;
+                                                            $headerQrinPretty = $prettyJson($log->header_callback_qrin_to_merchant);
+                                                            $payloadQrinPretty = $prettyJson($log->payload_callback_qrin_to_merchant);
+                                                            $responseQrinPretty = $prettyJson($log->response_callback_qrin_to_merchant);
+                                                            $tgl = $log->tanggal_callback_qrin_to_merchant ?? $log->created_at;
+                                                        @endphp
+                                                        <div class="accordion-item border-bottom">
+                                                            <h2 class="accordion-header">
+                                                                <button class="accordion-button collapsed py-2" type="button" data-bs-toggle="collapse" data-bs-target="#{{ $accId }}" aria-expanded="false" aria-controls="{{ $accId }}">
+                                                                    <span class="me-2 fw-bold">#{{ $index + 1 }}</span>
+                                                                    <span>{{ $tgl->format('d M Y H:i') }}</span>
+                                                                </button>
+                                                            </h2>
+                                                            <div id="{{ $accId }}" class="accordion-collapse collapse" data-bs-parent="#accordionLogCallbackQrin">
+                                                                <div class="accordion-body pt-2 pb-2 px-3">
+                                                                    <p class="small text-muted mb-1">Header</p>
                                                                     <pre class="rounded border p-2 mb-2 overflow-auto small">{{ $headerQrinPretty ?: '-' }}</pre>
                                                                     <p class="small text-muted mb-1">Payload</p>
                                                                     <pre class="rounded border p-2 mb-2 overflow-auto">{{ $payloadQrinPretty ?: '-' }}</pre>
