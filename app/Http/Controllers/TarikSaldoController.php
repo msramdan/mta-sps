@@ -15,7 +15,7 @@ use Illuminate\Support\Str;
 
 class TarikSaldoController extends Controller implements HasMiddleware
 {
-    public function __construct(public ImageServiceV2 $imageServiceV2, public string $buktiTrfPath = 'bukti-trves', public string $disk = 'public')
+    public function __construct(public ImageServiceV2 $imageServiceV2, public string $buktiTrfPath = 'bukti-trves', public string $disk = 'storage.public')
     {
         //
     }
@@ -28,7 +28,7 @@ class TarikSaldoController extends Controller implements HasMiddleware
         return [
             'auth',
 
-            new Middleware(middleware: 'permission:tarik saldo view', only: ['index', 'show', 'getMerchantData']),
+            new Middleware(middleware: 'permission:tarik saldo view', only: ['index', 'show', 'getMerchantData', 'summary']),
             new Middleware(middleware: 'permission:pengajuan tarik saldo', only: ['store']),
             new Middleware(middleware: 'permission:konfirmasi tarik saldo', only: ['update', 'confirm', 'updateStatus']),
             new Middleware(middleware: 'permission:batalkan tarik saldo', only: ['cancel']),
@@ -59,7 +59,14 @@ class TarikSaldoController extends Controller implements HasMiddleware
                 $query->whereRaw('1 = 0'); // Return empty if no merchant session
             }
 
+            $imageService = app(ImageServiceV2::class);
             return Datatables::of($query)
+                ->editColumn('bukti_trf', function ($row) use ($imageService) {
+                    if (empty($row->bukti_trf)) {
+                        return null;
+                    }
+                    return $imageService->getImageCastUrl($row->bukti_trf, 'bukti-trves', 'storage.public');
+                })
                 ->addColumn(name: 'action', content: 'tarik-saldos.include.action')
                 ->toJson();
         }
@@ -106,6 +113,56 @@ class TarikSaldoController extends Controller implements HasMiddleware
         }
 
         return view(view: 'tarik-saldos.index', data: compact('summary'));
+    }
+
+    /**
+     * Get summary (balance, pending_count, etc.) for current session merchant - untuk update card setelah konfirmasi.
+     */
+    public function summary(): JsonResponse
+    {
+        $merchantId = session('sessionMerchant');
+        if (!$merchantId) {
+            return response()->json(['error' => 'Merchant tidak ditemukan di session'], 404);
+        }
+
+        $merchant = DB::table('merchants')
+            ->leftJoin('banks', 'merchants.bank_id', '=', 'banks.id')
+            ->where('merchants.id', $merchantId)
+            ->select(
+                'merchants.nama_merchant',
+                'merchants.balance',
+                'merchants.pemilik_rekening',
+                'merchants.nomor_rekening',
+                'banks.nama_bank as bank_nama'
+            )
+            ->first();
+
+        if (!$merchant) {
+            return response()->json(['error' => 'Data merchant tidak ditemukan'], 404);
+        }
+
+        $pendingCount = DB::table('tarik_saldos')
+            ->where('merchant_id', $merchantId)
+            ->whereIn('status', ['pending', 'process'])
+            ->count();
+        $successCount = DB::table('tarik_saldos')
+            ->where('merchant_id', $merchantId)
+            ->where('status', 'success')
+            ->count();
+        $totalDitarikan = (float) DB::table('tarik_saldos')
+            ->where('merchant_id', $merchantId)
+            ->where('status', 'success')
+            ->sum('diterima');
+
+        return response()->json([
+            'balance' => (float) ($merchant->balance ?? 0),
+            'pending_count' => $pendingCount,
+            'success_count' => $successCount,
+            'total_ditarikan' => $totalDitarikan,
+            'bank' => $merchant->bank_nama ?? '-',
+            'nomor_rekening' => $merchant->nomor_rekening ?? '-',
+            'pemilik_rekening' => $merchant->pemilik_rekening ?? '-',
+        ]);
     }
 
     /**
@@ -246,7 +303,12 @@ class TarikSaldoController extends Controller implements HasMiddleware
             return redirect()->route('tarik-saldos.index');
         }
 
-		return view(view: 'tarik-saldos.show', data: compact(var_name: 'tarikSaldo'));
+        $buktiTrfUrl = null;
+        if (!empty($tarikSaldo->bukti_trf)) {
+            $buktiTrfUrl = $this->imageServiceV2->getImageCastUrl($tarikSaldo->bukti_trf, 'bukti-trves', 'storage.public');
+        }
+
+        return view(view: 'tarik-saldos.show', data: compact('tarikSaldo', 'buktiTrfUrl'));
     }
 
     /**
@@ -360,7 +422,7 @@ class TarikSaldoController extends Controller implements HasMiddleware
             $buktiTrf = $this->imageServiceV2->upload(
                 name: 'bukti_trf',
                 path: $this->buktiTrfPath,
-                defaultImage: $tarikSaldo->bukti_trf,
+                defaultImage: $tarikSaldo->getRawOriginal('bukti_trf'),
                 disk: $this->disk
             );
 

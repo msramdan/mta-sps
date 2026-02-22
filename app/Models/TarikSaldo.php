@@ -83,14 +83,14 @@ class TarikSaldo extends Model
     {
         $path = 'bukti-trves';
         $imageService = new ImageServiceV2();
-        $disk = $imageService->setDiskName('public');
+        $disk = $imageService->setDiskName('storage.public');
 
         return Attribute::make(
             get: fn (?string $value): string =>
                 $imageService->getImageCastUrl(
                     image: $value,
                     path: $path,
-                    disk: $disk
+                    disk: 'storage.public'
                 )
         );
     }

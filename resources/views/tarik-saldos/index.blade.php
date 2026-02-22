@@ -32,7 +32,7 @@
                     <div class="card border-0 shadow-sm h-100">
                         <div class="card-body py-3">
                             <small class="text-muted d-block mb-1">Saldo Tersedia</small>
-                            <div class="fw-bold text-primary fs-5">Rp {{ number_format($summary->balance, 0, ',', '.') }}</div>
+                            <div class="fw-bold text-primary fs-5" id="summary-balance">Rp {{ number_format($summary->balance, 0, ',', '.') }}</div>
                         </div>
                     </div>
                 </div>
@@ -40,8 +40,8 @@
                     <div class="card border-0 shadow-sm h-100">
                         <div class="card-body py-3">
                             <small class="text-muted d-block mb-1">Rekening Penarikan</small>
-                            <div class="fw-bold small">{{ $summary->bank }}</div>
-                            <div class="text-muted small">{{ $summary->nomor_rekening }} a.n. {{ $summary->pemilik_rekening }}</div>
+                            <div class="fw-bold small" id="summary-bank">{{ $summary->bank }}</div>
+                            <div class="text-muted small" id="summary-rekening">{{ $summary->nomor_rekening }} a.n. {{ $summary->pemilik_rekening }}</div>
                         </div>
                     </div>
                 </div>
@@ -49,7 +49,7 @@
                     <div class="card border-0 shadow-sm h-100">
                         <div class="card-body py-3">
                             <small class="text-muted d-block mb-1">Pengajuan Pending</small>
-                            <div class="fw-bold">{{ $summary->pending_count }}</div>
+                            <div class="fw-bold" id="summary-pending-count">{{ $summary->pending_count }}</div>
                             <small class="text-muted">sedang diproses</small>
                         </div>
                     </div>
@@ -58,8 +58,8 @@
                     <div class="card border-0 shadow-sm h-100">
                         <div class="card-body py-3">
                             <small class="text-muted d-block mb-1">Total Sudah Ditarik</small>
-                            <div class="fw-bold text-success">Rp {{ number_format($summary->total_ditarikan, 0, ',', '.') }}</div>
-                            <small class="text-muted">{{ $summary->success_count }}x berhasil</small>
+                            <div class="fw-bold text-success" id="summary-total-ditarikan">Rp {{ number_format($summary->total_ditarikan, 0, ',', '.') }}</div>
+                            <small class="text-muted"><span id="summary-success-count">{{ $summary->success_count }}</span>x berhasil</small>
                         </div>
                     </div>
                 </div>
@@ -344,6 +344,24 @@
             ],
         });
 
+        function refreshTarikSaldoSummary() {
+            var $balance = $('#summary-balance');
+            if (!$balance.length) return;
+            $.ajax({
+                url: "{{ route('tarik-saldos.summary') }}",
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    $balance.text('Rp ' + new Intl.NumberFormat('id-ID').format(data.balance || 0));
+                    $('#summary-bank').text(data.bank || '-');
+                    $('#summary-rekening').text((data.nomor_rekening || '-') + ' a.n. ' + (data.pemilik_rekening || '-'));
+                    $('#summary-pending-count').text(data.pending_count ?? 0);
+                    $('#summary-success-count').text(data.success_count ?? 0);
+                    $('#summary-total-ditarikan').text('Rp ' + new Intl.NumberFormat('id-ID').format(data.total_ditarikan || 0));
+                }
+            });
+        }
+
         // Load merchant data when modal opens
         $('#withdrawalModal').on('show.bs.modal', function (e) {
             loadMerchantData();
@@ -400,8 +418,7 @@
                     $('#withdrawalModal').modal('hide');
                     $('#withdrawalForm')[0].reset();
                     dataTable.ajax.reload();
-
-                    // Show success message using SweetAlert
+                    refreshTarikSaldoSummary();
                     Swal.fire({
                         icon: 'success',
                         title: 'Berhasil',
@@ -502,6 +519,7 @@
                 success: function(response) {
                     $('#statusWithdrawalModal').modal('hide');
                     dataTable.ajax.reload();
+                    refreshTarikSaldoSummary();
                     Swal.fire({ icon: 'success', title: 'Berhasil', text: response.message || 'Status berhasil diubah.', confirmButtonColor: '#3085d6' });
                 },
                 error: function(xhr) {
@@ -540,6 +558,7 @@
                 success: function(response) {
                     $('#confirmWithdrawalModal').modal('hide');
                     dataTable.ajax.reload();
+                    refreshTarikSaldoSummary();
                     Swal.fire({
                         icon: 'success',
                         title: 'Berhasil',
@@ -584,6 +603,7 @@
                         },
                         success: function(response) {
                             dataTable.ajax.reload();
+                            refreshTarikSaldoSummary();
                             Swal.fire({
                                 icon: 'success',
                                 title: 'Berhasil',

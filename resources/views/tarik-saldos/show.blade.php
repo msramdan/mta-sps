@@ -82,10 +82,13 @@
                                     <tr>
                                         <td class="fw-bold">{{ __(key: 'Bukti Trf') }}</td>
                                         <td>
-                                            @if ($tarikSaldo->bukti_trf ?? null)
-                                                <img src="{{ $tarikSaldo->bukti_trf }}" alt="Bukti Trf"
-                                                    class="rounded img-fluid"
-                                                    style="object-fit: cover; width: 350px; height: 200px;" />
+                                            @if ($buktiTrfUrl ?? null)
+                                                <a href="#" class="d-inline-block" data-bs-toggle="modal" data-bs-target="#buktiTrfModal" title="Lihat / Zoom">
+                                                    <img src="{{ $buktiTrfUrl }}" alt="Bukti Trf"
+                                                        class="rounded img-fluid border"
+                                                        style="object-fit: cover; width: 200px; height: 120px; cursor: pointer;" />
+                                                </a>
+                                                <small class="d-block mt-1 text-muted">Klik gambar untuk zoom</small>
                                             @else
                                                 <span class="text-muted">Belum ada bukti transfer</span>
                                             @endif
@@ -118,4 +121,20 @@
             </div>
         </div>
     </main>
+
+    @if($buktiTrfUrl ?? null)
+    <div class="modal fade" id="buktiTrfModal" tabindex="-1" aria-labelledby="buktiTrfModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header py-2">
+                    <h5 class="modal-title" id="buktiTrfModalLabel">{{ __(key: 'Bukti Transfer') }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-0 text-center bg-dark">
+                    <img src="{{ $buktiTrfUrl }}" alt="Bukti Transfer" class="img-fluid" style="max-height: 85vh; width: auto;" />
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
 @endsection
