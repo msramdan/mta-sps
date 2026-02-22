@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Models\TarikSaldo;
 use Illuminate\Contracts\View\View as ViewContract;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Spatie\Permission\Models\Role;
@@ -40,5 +42,16 @@ class ViewComposerServiceProvider extends ServiceProvider
             value: \App\Models\Bank::select(columns: ['id', 'nama_bank'])->get()
         ));
 
+        View::composer('layouts.header', function (ViewContract $view) {
+            $pendingTarikSaldos = collect();
+            if (Auth::check() && Auth::user()->can('konfirmasi tarik saldo')) {
+                $pendingTarikSaldos = TarikSaldo::with('merchant:id,nama_merchant')
+                    ->where('status', 'pending')
+                    ->latest()
+                    ->take(5)
+                    ->get();
+            }
+            $view->with('pendingTarikSaldos', $pendingTarikSaldos);
+        });
 	}
 }

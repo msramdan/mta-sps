@@ -18,62 +18,70 @@
                                         </div>
                                     </li>
 
+                                    @can('konfirmasi tarik saldo')
                                     <li class="header-notification">
                                         <a aria-controls="notificationcanvasRight"
                                             class="d-block head-icon position-relative bg-light-dark rounded-circle f-s-22 p-2"
                                             data-bs-target="#notificationcanvasRight" data-bs-toggle="offcanvas"
                                             href="#" role="button">
                                             <i class="ph ph-bell"></i>
-                                            <span
-                                                class="position-absolute translate-middle p-1 bg-primary border border-light rounded-circle animate__animated animate__fadeIn animate__infinite animate__slower"></span>
+                                            @if(isset($pendingTarikSaldos) && $pendingTarikSaldos->isNotEmpty())
+                                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 10px;">{{ $pendingTarikSaldos->count() }}</span>
+                                            @endif
                                         </a>
                                         <div aria-labelledby="notificationcanvasRightLabel"
                                             class="offcanvas offcanvas-end header-notification-canvas"
                                             id="notificationcanvasRight" tabindex="-1">
                                             <div class="offcanvas-header">
                                                 <h5 class="offcanvas-title" id="notificationcanvasRightLabel">
-                                                    Notification</h5>
+                                                    {{ __('Notification') }}</h5>
                                                 <button aria-label="Close" class="btn-close" data-bs-dismiss="offcanvas"
                                                     type="button"></button>
                                             </div>
                                             <div class="offcanvas-body app-scroll p-0">
                                                 <div class="head-container">
-                                                    <div class="notification-message head-box">
-                                                        <div class="message-content-box flex-grow-1 pe-2">
-                                                            <a class="f-s-15 text-dark mb-0"
-                                                                href="read_email.html"><span
-                                                                    class="f-w-500 text-dark">Gene Hart</span> wants to
-                                                                edit <span
-                                                                    class="f-w-500 text-dark">Report.doc</span></a>
-                                                            <div>
-                                                                <a class="d-inline-block f-w-500 text-success me-1"
-                                                                    href="#">Approve</a>
-                                                                <a class="d-inline-block f-w-500 text-danger"
-                                                                    href="#">Deny</a>
+                                                    @if(isset($pendingTarikSaldos) && $pendingTarikSaldos->isNotEmpty())
+                                                        @foreach($pendingTarikSaldos as $item)
+                                                        <div class="notification-message head-box">
+                                                            <div class="message-content-box flex-grow-1 pe-2">
+                                                                <a class="f-s-15 text-dark mb-0 d-block" href="{{ route('tarik-saldos.show', $item->id) }}">
+                                                                    <span class="f-w-500 text-dark">{{ $item->merchant->nama_merchant ?? '-' }}</span>
+                                                                    {{ __('Pengajuan penarikan saldo') }}
+                                                                    <span class="f-w-500 text-primary">Rp {{ number_format($item->jumlah, 0, ',', '.') }}</span>
+                                                                </a>
+                                                                <small class="text-muted">{{ $item->created_at?->format('d/m/Y H:i') }}</small>
+                                                            </div>
+                                                            <div class="text-end">
+                                                                <a href="{{ route('tarik-saldos.show', $item->id) }}" class="btn btn-sm btn-light-primary">{{ __('Detail') }}</a>
                                                             </div>
                                                         </div>
-                                                        <div class="text-end">
-                                                            <i class="ph ph-trash f-s-18 text-danger close-btn"></i>
-                                                            <div>
-                                                                <span class="badge text-light-primary"> sep 23 </span>
-                                                            </div>
+                                                        @endforeach
+                                                        <div class="p-3 border-top">
+                                                            <a href="{{ route('tarik-saldos.index') }}" class="btn btn-outline-primary btn-sm w-100">
+                                                                <i class="ph ph-list me-1"></i> {{ __('Lihat Semua') }}
+                                                            </a>
+                                                        </div>
+                                                    @else
+                                                    <div class="py-4 px-3">
+                                                        <div>
+                                                            <i class="ph-duotone ph-bell-ringing f-s-50 text-primary"></i>
+                                                        </div>
+                                                        <div>
+                                                            <h6 class="mb-0">{{ __('Tidak ada pengajuan pending') }}</h6>
+                                                            <p class="text-dark mb-0">{{ __('Pengajuan penarikan saldo pending akan tampil di sini.') }}</p>
+                                                        </div>
+                                                        <div class="mt-3">
+                                                            <a href="{{ route('tarik-saldos.index') }}" class="btn btn-outline-primary btn-sm w-100">
+                                                                <i class="ph ph-list me-1"></i> {{ __('Lihat Semua') }}
+                                                            </a>
                                                         </div>
                                                     </div>
-                                                    <div class="hidden-massage py-4 px-3">
-                                                        <div>
-                                                            <i
-                                                                class="ph-duotone ph-bell-ringing f-s-50 text-primary"></i>
-                                                        </div>
-                                                        <div>
-                                                            <h6 class="mb-0">Notification Not Found</h6>
-                                                            <p class="text-dark">When you have any notifications added
-                                                                here,will appear here.</p>
-                                                        </div>
-                                                    </div>
+                                                    @endif
                                                 </div>
                                             </div>
                                         </div>
                                     </li>
+                                    @endcan
                                 </ul>
                             </div>
                         </div>
