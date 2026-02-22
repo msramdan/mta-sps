@@ -6,6 +6,7 @@ use App\Models\LogTokenB2b;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use RealRashid\SweetAlert\Facades\Alert;
@@ -17,7 +18,7 @@ class LogTokenB2bController extends Controller implements HasMiddleware
     {
         return [
             new Middleware(middleware: 'permission:log token b2b view', only: ['index', 'show']),
-            new Middleware(middleware: 'permission:log token b2b delete', only: ['destroy']),
+            new Middleware(middleware: 'permission:log token b2b delete', only: ['destroy', 'bulkDestroy']),
         ];
     }
 
@@ -33,6 +34,9 @@ class LogTokenB2bController extends Controller implements HasMiddleware
                 ->latest();
 
             return DataTables::of($query)
+                ->addColumn('checkbox', function ($log) {
+                    return '<input type="checkbox" class="form-check-input log-row-checkbox" value="' . $log->id . '">';
+                })
                 ->addColumn('action', 'log-token-b2b.include.action')
                 ->editColumn('created_at', function ($log) {
                     return $log->created_at?->format('d/m/Y H:i');
@@ -49,7 +53,7 @@ class LogTokenB2bController extends Controller implements HasMiddleware
                     if (!$log->response) return '-';
                     return strlen($log->response) > 80 ? substr($log->response, 0, 80) . '...' : $log->response;
                 })
-                ->rawColumns(['action'])
+                ->rawColumns(['checkbox', 'action'])
                 ->make(true);
         }
 
@@ -68,6 +72,28 @@ class LogTokenB2bController extends Controller implements HasMiddleware
     {
         $logTokenB2b->delete();
         Alert::success('Berhasil', 'Log Token B2B berhasil dihapus.');
+        return redirect()->route('log-token-b2b.index');
+    }
+
+    public function bulkDestroy(Request $request): RedirectResponse|JsonResponse
+    {
+        $ids = $request->input('ids', []);
+        if (! is_array($ids)) {
+            $ids = array_filter(explode(',', (string) $ids));
+        }
+        $ids = array_map('intval', array_filter($ids));
+        if (count($ids) === 0) {
+            if ($request->wantsJson()) {
+                return response()->json(['success' => false, 'message' => 'Tidak ada data dipilih.'], 422);
+            }
+            Alert::warning('Peringatan', 'Tidak ada data dipilih.');
+            return redirect()->route('log-token-b2b.index');
+        }
+        LogTokenB2b::whereIn('id', $ids)->delete();
+        Alert::success('Berhasil', count($ids) . ' log berhasil dihapus.');
+        if ($request->wantsJson()) {
+            return response()->json(['success' => true, 'message' => count($ids) . ' log berhasil dihapus.']);
+        }
         return redirect()->route('log-token-b2b.index');
     }
 }

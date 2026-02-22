@@ -67,11 +67,21 @@
             <div class="row">
                 <div class="col-12">
                     <div class="card">
+                        @can('log callback delete')
+                        <div class="card-body border-bottom py-2">
+                            <button type="button" id="btn-bulk-delete-log" class="btn btn-danger btn-sm" data-url="{{ route('log-callbacks.bulk-destroy') }}" title="{{ __('Hapus data terpilih') }}">
+                                <i class="ti ti-trash"></i> {{ __('Hapus terpilih') }}
+                            </button>
+                        </div>
+                        @endcan
                         <div class="card-body p-0">
                             <div class="app-datatable-default overflow-auto">
                                 <table class="display w-100 row-border-table table-responsive" id="data-table">
                                     <thead>
                                         <tr>
+                                            <th class="text-center" style="width: 40px;">
+                                                <input type="checkbox" id="log-select-all" class="form-check-input" title="{{ __('Pilih semua') }}">
+                                            </th>
                                             <th>{{ __('Tanggal') }}</th>
                                             <th>{{ __('Transaksi ID') }}</th>
                                             <th>{{ __('Merchant') }}</th>
@@ -93,9 +103,10 @@
 
 @push('js')
     <script>
-        $('#data-table').DataTable({
+        var table = $('#data-table').DataTable({
             processing: true,
             serverSide: true,
+            pageLength: 50,
             ajax: {
                 url: "{{ route('log-callbacks.index') }}",
                 data: function(d) {
@@ -106,6 +117,7 @@
                 }
             },
             columns: [
+                { data: 'checkbox', name: 'checkbox', orderable: false, searchable: false, className: 'text-center' },
                 { data: 'created_at', name: 'created_at' },
                 { data: 'transaksi_id', name: 'transaksi_id' },
                 { data: 'merchant_id', name: 'merchant_id' },
@@ -122,7 +134,66 @@
                 },
                 { data: 'action', name: 'action', orderable: false, searchable: false }
             ],
-            order: [[0, 'desc']]
+            order: [[1, 'desc']]
+        });
+
+        $('#log-select-all').on('change', function() {
+            var checked = this.checked;
+            $('#data-table').find('.log-row-checkbox').each(function() {
+                this.checked = checked;
+            });
+        });
+
+        $(document).on('click', '#btn-bulk-delete-log', function() {
+            var ids = [];
+            $('#data-table').find('.log-row-checkbox:checked').each(function() {
+                ids.push($(this).val());
+            });
+            if (ids.length === 0) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Peringatan',
+                    text: 'Pilih minimal satu data untuk dihapus.'
+                });
+                return;
+            }
+            var url = $(this).data('url');
+            Swal.fire({
+                icon: 'warning',
+                title: 'Yakin hapus?',
+                text: 'Sebanyak ' + ids.length + ' log akan dihapus. Tindakan ini tidak dapat dibatalkan.',
+                showCancelButton: true,
+                confirmButtonText: 'Ya, hapus',
+                cancelButtonText: 'Batal',
+                confirmButtonColor: '#d33'
+            }).then(function(result) {
+                if (result.isConfirmed) {
+                    var form = $('<form>').attr({ method: 'POST', action: url }).css('display', 'none');
+                    form.append($('<input>').attr({ type: 'hidden', name: '_token', value: '{{ csrf_token() }}' }));
+                    ids.forEach(function(id) {
+                        form.append($('<input>').attr({ type: 'hidden', name: 'ids[]', value: id }));
+                    });
+                    $('body').append(form);
+                    form.submit();
+                }
+            });
+        });
+
+        $(document).on('submit', '.form-delete-log-single', function(e) {
+            e.preventDefault();
+            var form = this;
+            Swal.fire({
+                icon: 'warning',
+                title: 'Yakin hapus?',
+                text: 'Log ini akan dihapus.',
+                showCancelButton: true,
+                confirmButtonText: 'Ya, hapus',
+                cancelButtonText: 'Batal',
+                confirmButtonColor: '#d33'
+            }).then(function(result) {
+                if (result.isConfirmed) form.submit();
+            });
+            return false;
         });
     </script>
 @endpush

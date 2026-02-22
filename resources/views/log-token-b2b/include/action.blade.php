@@ -4,8 +4,7 @@
         <i class="ti ti-eye text-success"></i>
     </a>
     @can('log token b2b delete')
-        <form action="{{ route('log-token-b2b.destroy', $model->id) }}" method="post" class="d-inline"
-            onsubmit="return confirm('Yakin hapus log ini?')">
+        <form action="{{ route('log-token-b2b.destroy', $model->id) }}" method="post" class="d-inline form-delete-log-single">
             @csrf
             @method('delete')
             <button class="btn btn-light-danger icon-btn b-r-4" type="submit" title="Hapus">

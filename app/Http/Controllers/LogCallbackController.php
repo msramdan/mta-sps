@@ -7,6 +7,7 @@ use App\Models\Merchant;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use RealRashid\SweetAlert\Facades\Alert;
@@ -18,7 +19,7 @@ class LogCallbackController extends Controller implements HasMiddleware
     {
         return [
             new Middleware(middleware: 'permission:log callback view', only: ['index', 'show']),
-            new Middleware(middleware: 'permission:log callback delete', only: ['destroy']),
+            new Middleware(middleware: 'permission:log callback delete', only: ['destroy', 'bulkDestroy']),
         ];
     }
 
@@ -45,6 +46,9 @@ class LogCallbackController extends Controller implements HasMiddleware
             $query->latest();
 
             return DataTables::of($query)
+                ->addColumn('checkbox', function ($log) {
+                    return '<input type="checkbox" class="form-check-input log-row-checkbox" value="' . $log->id . '">';
+                })
                 ->addColumn('action', 'log-callbacks.include.action')
                 ->editColumn('merchant_id', function ($log) {
                     return $log->merchant ? $log->merchant->nama_merchant . ' (' . $log->merchant->kode_merchant . ')' : '-';
@@ -69,7 +73,7 @@ class LogCallbackController extends Controller implements HasMiddleware
                 ->editColumn('created_at', function ($log) {
                     return $log->created_at?->format('d/m/Y H:i');
                 })
-                ->rawColumns(['status_info', 'action'])
+                ->rawColumns(['checkbox', 'status_info', 'action'])
                 ->make(true);
         }
 
@@ -90,6 +94,28 @@ class LogCallbackController extends Controller implements HasMiddleware
     {
         $logCallback->delete();
         Alert::success('Berhasil', 'Log Callback berhasil dihapus.');
+        return redirect()->route('log-callbacks.index');
+    }
+
+    public function bulkDestroy(Request $request): RedirectResponse|JsonResponse
+    {
+        $ids = $request->input('ids', []);
+        if (! is_array($ids)) {
+            $ids = array_filter(explode(',', (string) $ids));
+        }
+        $ids = array_map('intval', array_filter($ids));
+        if (count($ids) === 0) {
+            if ($request->wantsJson()) {
+                return response()->json(['success' => false, 'message' => 'Tidak ada data dipilih.'], 422);
+            }
+            Alert::warning('Peringatan', 'Tidak ada data dipilih.');
+            return redirect()->route('log-callbacks.index');
+        }
+        LogCallback::whereIn('id', $ids)->delete();
+        Alert::success('Berhasil', count($ids) . ' log berhasil dihapus.');
+        if ($request->wantsJson()) {
+            return response()->json(['success' => true, 'message' => count($ids) . ' log berhasil dihapus.']);
+        }
         return redirect()->route('log-callbacks.index');
     }
 }

@@ -4,8 +4,7 @@
         <i class="ti ti-eye text-success"></i>
     </a>
     @can('log generate qr delete')
-        <form action="{{ route('log-generate-qrs.destroy', $model->id) }}" method="post" class="d-inline"
-            onsubmit="return confirm('Yakin hapus log ini?')">
+        <form action="{{ route('log-generate-qrs.destroy', $model->id) }}" method="post" class="d-inline form-delete-log-single">
             @csrf
             @method('delete')
             <button class="btn btn-light-danger icon-btn b-r-4" type="submit" title="Hapus">

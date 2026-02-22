@@ -7,6 +7,7 @@ use App\Models\Merchant;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use RealRashid\SweetAlert\Facades\Alert;
@@ -18,7 +19,7 @@ class LogGenerateQrController extends Controller implements HasMiddleware
     {
         return [
             new Middleware(middleware: 'permission:log generate qr view', only: ['index', 'show']),
-            new Middleware(middleware: 'permission:log generate qr delete', only: ['destroy']),
+            new Middleware(middleware: 'permission:log generate qr delete', only: ['destroy', 'bulkDestroy']),
         ];
     }
 
@@ -47,6 +48,9 @@ class LogGenerateQrController extends Controller implements HasMiddleware
             $query->latest();
 
             return DataTables::of($query)
+                ->addColumn('checkbox', function ($log) {
+                    return '<input type="checkbox" class="form-check-input log-row-checkbox" value="' . $log->id . '">';
+                })
                 ->addColumn('action', 'log-generate-qrs.include.action')
                 ->editColumn('merchant_id', function ($log) {
                     return $log->merchant ? $log->merchant->nama_merchant . ' (' . $log->merchant->kode_merchant . ')' : '-';
@@ -59,7 +63,7 @@ class LogGenerateQrController extends Controller implements HasMiddleware
                 ->editColumn('created_at', function ($log) {
                     return $log->created_at?->format('d/m/Y H:i');
                 })
-                ->rawColumns(['is_success', 'action'])
+                ->rawColumns(['checkbox', 'is_success', 'action'])
                 ->make(true);
         }
 
@@ -80,6 +84,28 @@ class LogGenerateQrController extends Controller implements HasMiddleware
     {
         $logGenerateQr->delete();
         Alert::success('Berhasil', 'Log Generate QR berhasil dihapus.');
+        return redirect()->route('log-generate-qrs.index');
+    }
+
+    public function bulkDestroy(Request $request): RedirectResponse|JsonResponse
+    {
+        $ids = $request->input('ids', []);
+        if (! is_array($ids)) {
+            $ids = array_filter(explode(',', (string) $ids));
+        }
+        $ids = array_map('intval', array_filter($ids));
+        if (count($ids) === 0) {
+            if ($request->wantsJson()) {
+                return response()->json(['success' => false, 'message' => 'Tidak ada data dipilih.'], 422);
+            }
+            Alert::warning('Peringatan', 'Tidak ada data dipilih.');
+            return redirect()->route('log-generate-qrs.index');
+        }
+        LogGenerateQr::whereIn('id', $ids)->delete();
+        Alert::success('Berhasil', count($ids) . ' log berhasil dihapus.');
+        if ($request->wantsJson()) {
+            return response()->json(['success' => true, 'message' => count($ids) . ' log berhasil dihapus.']);
+        }
         return redirect()->route('log-generate-qrs.index');
     }
 }
