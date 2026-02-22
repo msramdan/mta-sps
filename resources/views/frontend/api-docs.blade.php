@@ -61,12 +61,6 @@
         .doc-hero { padding: 100px 0 40px; }
         .doc-hero h1 { font-size: 2rem; font-weight: 700; background: linear-gradient(135deg, var(--primary-light), var(--accent-color)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
         .api-doc-card { border-radius: 14px; overflow: hidden; border: none; }
-        .api-doc-card .nav-tabs { border-bottom: 1px solid rgba(255,255,255,0.08); padding: 0 1rem; }
-        [data-bs-theme="light"] .api-doc-card .nav-tabs { border-bottom-color: rgba(0,0,0,0.08); }
-        .api-doc-card .nav-link { border: none; border-bottom: 3px solid transparent; padding: 1rem 1.25rem; font-weight: 600; color: var(--text-muted-light); }
-        [data-bs-theme="light"] .api-doc-card .nav-link { color: var(--text-muted-dark); }
-        .api-doc-card .nav-link:hover { color: var(--primary-light); }
-        .api-doc-card .nav-link.active { color: var(--primary-color); border-bottom-color: var(--primary-color); background: transparent; }
         .api-doc-card .tab-content { padding: 1.5rem 1.5rem 2rem; }
         .endpoint-badge { display: inline-block; padding: 6px 14px; border-radius: 6px; font-size: 12px; font-weight: 700; font-family: monospace; }
         .endpoint-badge.post { background: #10b981; color: white; }
@@ -77,8 +71,22 @@
         .code-block code { font-family: 'Consolas', 'Monaco', monospace; color: inherit; }
         [data-bs-theme="dark"] .code-block { background: var(--card-dark); color: var(--text-light); border: 1px solid rgba(255,255,255,0.08); }
         [data-bs-theme="light"] .code-block { background: #fff; color: var(--text-dark); border: 1px solid rgba(0,0,0,0.08); }
-        .response-success { border-left: 4px solid #10b981; }
-        .response-error { border-left: 4px solid #ef4444; }
+        [data-bs-theme="dark"] pre.rounded.border { background: var(--card-dark); color: var(--text-light); border: 1px solid rgba(255,255,255,0.08) !important; }
+        [data-bs-theme="light"] pre.rounded.border { background: #f8fafc; color: var(--text-dark); border: 1px solid rgba(0,0,0,0.08) !important; }
+        .response-success { border-left: 4px solid #10b981 !important; }
+        .response-error { border-left: 4px solid #ef4444 !important; }
+        .log-detail pre { font-size: 0.8rem; max-height: 400px; overflow: auto; white-space: pre-wrap; word-break: break-all; }
+        /* Tab card: kontras & compact di HP */
+        .api-doc-card #apiTabs { display: flex; flex-wrap: wrap; gap: 0.25rem; border-bottom: 1px solid rgba(255,255,255,0.08); padding: 0 1rem 0.5rem; }
+        [data-bs-theme="light"] .api-doc-card #apiTabs { border-bottom-color: rgba(0,0,0,0.08); }
+        .api-doc-card #apiTabs .nav-item { flex: 1; min-width: 0; }
+        .api-doc-card #apiTabs .nav-link { width: 100%; text-align: center; padding: 0.5rem 0.75rem; font-size: 0.875rem; font-weight: 600; border: none; border-bottom: 3px solid transparent; border-radius: 6px; background: rgba(255,255,255,0.04); color: var(--text-muted-light); }
+        [data-bs-theme="light"] .api-doc-card #apiTabs .nav-link { background: rgba(0,0,0,0.04); color: var(--text-muted-dark); }
+        .api-doc-card #apiTabs .nav-link:hover { color: var(--primary-light); background: rgba(19, 115, 125, 0.12); }
+        .api-doc-card #apiTabs .nav-link.active { color: white; background: linear-gradient(135deg, var(--primary-color), var(--primary-light)); border-bottom-color: transparent; }
+        @media (max-width: 576px) {
+            .api-doc-card #apiTabs .nav-link { padding: 0.4rem 0.5rem; font-size: 0.8125rem; }
+        }
         .param-table { font-size: 14px; }
         .param-table th { font-weight: 600; }
         .param-table code { background: rgba(19, 115, 125, 0.15); padding: 2px 8px; border-radius: 4px; font-size: 13px; }
@@ -143,15 +151,15 @@
         <div class="container">
             <div class="card api-doc-card shadow-sm">
                 <div class="card-body p-0">
-                    <ul class="nav nav-tabs" id="apiTabs" role="tablist">
+                    <ul class="nav nav-tabs pt-3" id="apiTabs" role="tablist">
                         <li class="nav-item" role="presentation">
                             <button class="nav-link active" id="tab-generate-qris" data-bs-toggle="tab" data-bs-target="#panel-generate-qris" type="button" role="tab">
-                                <i class="fas fa-qrcode me-2"></i>Generate QRIS
+                                <i class="fas fa-qrcode me-1 me-sm-2"></i><span class="d-none d-sm-inline">Generate QRIS</span><span class="d-inline d-sm-none">QRIS</span>
                             </button>
                         </li>
                         <li class="nav-item" role="presentation">
                             <button class="nav-link" id="tab-webhook" data-bs-toggle="tab" data-bs-target="#panel-webhook" type="button" role="tab">
-                                <i class="fas fa-webhook me-2"></i>Callback / Webhook
+                                <i class="fas fa-webhook me-1 me-sm-2"></i><span class="d-none d-sm-inline">Callback / Webhook</span><span class="d-inline d-sm-none">Webhook</span>
                             </button>
                         </li>
                     </ul>
@@ -162,69 +170,74 @@
                             <h5 class="fw-bold mb-2">1. Generate QRIS</h5>
                             <p class="text-muted mb-4">Endpoint untuk menghasilkan kode QRIS dinamis yang bisa dipindai oleh customer untuk membayar.</p>
 
-                            <div class="mb-4">
-                                <h6 class="section-title">Endpoint</h6>
-                                <div class="d-flex align-items-center gap-2 flex-wrap">
-                                    <span class="endpoint-badge post">POST</span>
-                                    <div class="endpoint-url flex-grow-1">https://api.qrin.web.id/v1.0/generate-qris</div>
+                            <div class="row g-3 log-detail">
+                                <div class="col-12">
+                                    <div class="card border h-100">
+                                        <div class="card-header py-2"><h6 class="mb-0 fw-bold">Endpoint</h6></div>
+                                        <div class="card-body p-3">
+                                            <p class="small text-muted mb-1">Method & URL</p>
+                                            <pre class="rounded border p-3 mb-0 response-success">POST https://api.qrin.web.id/v1.0/generate-qris</pre>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-
-                            <div class="mb-4">
-                                <h6 class="section-title">Request Body</h6>
-                                <p class="text-muted small mb-2">Kirim JSON dengan <code>Content-Type: application/json</code></p>
-                                <pre class="code-block"><code>{
+                                <div class="col-12">
+                                    <div class="card border h-100">
+                                        <div class="card-header py-2"><h6 class="mb-0 fw-bold">Request Body</h6></div>
+                                        <div class="card-body p-3">
+                                            <p class="text-muted small mb-2">Kirim JSON dengan <code>Content-Type: application/json</code></p>
+                                            <pre class="rounded border p-3 mb-0">{
     "token_qrin": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
     "request_payload_qris": {
         "no_ref_merchant": "TRX-123456789",
-        "amount": {
-            "value": "10000.00",
-            "currency": "IDR"
-        },
+        "amount": { "value": "10000.00", "currency": "IDR" },
         "additional_info": {
             "customer_name": "Nama Pelanggan",
             "customer_email": "emailpelanggan@domain.com",
             "customer_phone": "081234567890"
         }
     }
-}</code></pre>
-                            </div>
-
-                            <div class="mb-4">
-                                <h6 class="section-title">Parameter</h6>
-                                <div class="table-responsive">
-                                    <table class="table table-bordered param-table">
-                                        <thead>
-                                            <tr>
-                                                <th>Parameter</th>
-                                                <th>Type</th>
-                                                <th>Required</th>
-                                                <th>Keterangan</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr><td><code>token_qrin</code></td><td>String</td><td><span class="required-badge">Ya</span></td><td>Token QRIN dari Setting Merchant</td></tr>
-                                            <tr><td><code>request_payload_qris.no_ref_merchant</code></td><td>String</td><td><span class="required-badge">Ya</span></td><td>Nomor referensi unik transaksi</td></tr>
-                                            <tr><td><code>request_payload_qris.amount.value</code></td><td>String</td><td><span class="required-badge">Ya</span></td><td>Nominal (format: "10000.00", minimal 1000.00)</td></tr>
-                                            <tr><td><code>request_payload_qris.amount.currency</code></td><td>String</td><td><span class="required-badge">Ya</span></td><td>Mata uang (wajib "IDR")</td></tr>
-                                            <tr><td><code>request_payload_qris.additional_info.customer_name</code></td><td>String</td><td><span class="optional-badge">Opsional</span></td><td>Nama pelanggan. Jika diisi, panjang 5–100 karakter.</td></tr>
-                                            <tr><td><code>request_payload_qris.additional_info.customer_email</code></td><td>String</td><td><span class="optional-badge">Opsional</span></td><td>Email pelanggan. Jika diisi, harus format email yang valid.</td></tr>
-                                            <tr><td><code>request_payload_qris.additional_info.customer_phone</code></td><td>String</td><td><span class="optional-badge">Opsional</span></td><td>Nomor telepon pelanggan. Jika diisi, 8–13 karakter, diawali 08 atau 62.</td></tr>
-                                        </tbody>
-                                    </table>
+}</pre>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-
-                            <div class="mb-0">
-                                <h6 class="section-title">Response</h6>
-                                <p class="mb-2"><strong class="text-success">Success (200 OK)</strong></p>
-                                <pre class="code-block response-success"><code class="text-muted">{ }</code></pre>
-                                <p class="mb-2 mt-3"><strong class="text-danger">Failed / Error (400 Bad Request)</strong></p>
-                                <pre class="code-block response-error"><code>{
+                                <div class="col-12">
+                                    <div class="card border h-100">
+                                        <div class="card-header py-2"><h6 class="mb-0 fw-bold">Parameter</h6></div>
+                                        <div class="card-body p-3">
+                                            <div class="table-responsive">
+                                                <table class="table table-bordered param-table mb-0">
+                                                    <thead>
+                                                        <tr><th>Parameter</th><th>Type</th><th>Required</th><th>Keterangan</th></tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr><td><code>token_qrin</code></td><td>String</td><td><span class="required-badge">Ya</span></td><td>Token QRIN dari Setting Merchant</td></tr>
+                                                        <tr><td><code>request_payload_qris.no_ref_merchant</code></td><td>String</td><td><span class="required-badge">Ya</span></td><td>Nomor referensi unik transaksi</td></tr>
+                                                        <tr><td><code>request_payload_qris.amount.value</code></td><td>String</td><td><span class="required-badge">Ya</span></td><td>Nominal (format: "10000.00", minimal 1000.00)</td></tr>
+                                                        <tr><td><code>request_payload_qris.amount.currency</code></td><td>String</td><td><span class="required-badge">Ya</span></td><td>Mata uang (wajib "IDR")</td></tr>
+                                                        <tr><td><code>request_payload_qris.additional_info.customer_name</code></td><td>String</td><td><span class="optional-badge">Opsional</span></td><td>Nama pelanggan. Jika diisi, panjang 5–100 karakter.</td></tr>
+                                                        <tr><td><code>request_payload_qris.additional_info.customer_email</code></td><td>String</td><td><span class="optional-badge">Opsional</span></td><td>Email pelanggan. Jika diisi, harus format email yang valid.</td></tr>
+                                                        <tr><td><code>request_payload_qris.additional_info.customer_phone</code></td><td>String</td><td><span class="optional-badge">Opsional</span></td><td>Nomor telepon pelanggan. Jika diisi, 8–13 karakter, diawali 08 atau 62.</td></tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="card border h-100">
+                                        <div class="card-header py-2"><h6 class="mb-0 fw-bold">Response</h6></div>
+                                        <div class="card-body p-3">
+                                            <p class="small fw-bold text-muted mb-1">Success Response (200 OK)</p>
+                                            <pre class="rounded border p-3 mb-3 response-success">{ }</pre>
+                                            <p class="small fw-bold text-muted mb-1">Failed / Error Response (400 Bad Request)</p>
+                                            <pre class="rounded border p-3 mb-0 response-error">{
     "success": false,
     "message": "token_qrin is required",
     "data": null
-}</code></pre>
+}</pre>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
@@ -243,8 +256,7 @@
                                             <ul class="text-muted mb-0 small">
                                                 <li class="mb-1">QRIN mengirim <strong>POST</strong> ke URL callback merchant.</li>
                                                 <li class="mb-1">Body berisi JSON data transaksi (status, nominal, dll).</li>
-                                                <li class="mb-1">Header <code>X-Callback-Signature</code> = HMAC-SHA256(raw body, <code>token_qrin</code>) untuk validasi.</li>
-                                                <li>Baca body mentah (<code>php://input</code>) sebelum decode JSON.</li>
+                                                <li class="mb-0">Header <code>X-Callback-Signature</code> = HMAC-SHA256(raw body, <code>token_qrin</code>) untuk validasi.</li>
                                             </ul>
                                         </div>
                                     </div>
@@ -267,13 +279,24 @@
                                 </div>
                             </div>
 
-                            <h6 class="section-title">Header yang dikirim QRIN</h6>
-                            <pre class="code-block mb-2"><code>Content-Type: application/json
-X-Callback-Signature: &lt;hmac_sha256&gt;</code></pre>
-                            <p class="small text-muted mb-4"><code>X-Callback-Signature</code> = HMAC-SHA256(<em>raw body JSON</em>, <em>token_qrin</em>). Selalu baca body mentah (php://input) sebelum decode JSON.</p>
-
-                            <h6 class="section-title">Contoh payload (body) QRIN → Merchant</h6>
-                            <pre class="code-block mb-4"><code>{
+                            <div class="row g-3 mb-4 log-detail">
+                                <div class="col-12">
+                                    <div class="card border h-100">
+                                        <div class="card-header py-2"><h6 class="mb-0 fw-bold">Header yang dikirim QRIN</h6></div>
+                                        <div class="card-body p-3">
+                                            <p class="small text-muted mb-1">Contoh header</p>
+                                            <pre class="rounded border p-3 mb-3">Content-Type: application/json
+X-Callback-Signature: &lt;hmac_sha256&gt;</pre>
+                                            <p class="small text-muted mb-0"><code>X-Callback-Signature</code> = HMAC-SHA256(<em>raw body JSON</em>, <em>token_qrin</em>).</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="card border h-100">
+                                        <div class="card-header py-2"><h6 class="mb-0 fw-bold">Contoh payload (body) QRIN → Merchant</h6></div>
+                                        <div class="card-body p-3">
+                                            <p class="small text-muted mb-1">Contoh payload</p>
+                                            <pre class="rounded border p-3 mb-0">{
     "id": "ae0e42e0-b759-4cac-98da-9c0752152853",
     "tanggal_transaksi": "2026-02-22T23:52:00+07:00",
     "merchant_id": "04c9e242-3639-46bf-952a-e8221ef0cb5c",
@@ -289,11 +312,18 @@ X-Callback-Signature: &lt;hmac_sha256&gt;</code></pre>
     "beban_biaya": "Pelanggan",
     "created_at": "2026-02-22T23:53:25+07:00",
     "updated_at": "2026-02-22T23:53:59+07:00"
-}</code></pre>
+}</pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
-                            <h6 class="section-title">Contoh penanganan callback (PHP)</h6>
-                            <p class="text-muted small mb-2">Gunakan <strong>token_qrin</strong> dari Setting Merchant untuk validasi signature.</p>
-                            <pre class="code-block mb-0"><code>&lt;?php
+                            <div class="log-detail">
+                                <div class="card border">
+                                    <div class="card-header py-2"><h6 class="mb-0 fw-bold">Contoh penanganan callback (PHP)</h6></div>
+                                    <div class="card-body p-3">
+                                        <p class="text-muted small mb-2">Gunakan <strong>token_qrin</strong> dari Setting Merchant untuk validasi signature.</p>
+                                        <pre class="rounded border p-3 mb-0">&lt;?php
 $json = file_get_contents('php://input');
 $callbackSignature = $_SERVER['HTTP_X_CALLBACK_SIGNATURE'] ?? '';
 $tokenQrin = 'token_qrin_anda_dari_dashboard';
@@ -317,7 +347,10 @@ $status       = $data->status;
 // Update transaksi Anda berdasarkan no_ref_merchant
 
 header('Content-Type: application/json');
-echo json_encode(['success' => true]);</code></pre>
+echo json_encode(['success' => true]);</pre>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
             </div>
         </div>
