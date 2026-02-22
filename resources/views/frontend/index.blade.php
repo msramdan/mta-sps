@@ -1096,6 +1096,7 @@
             }
         });
     </script>
+    @include('layouts.partials.whatsapp-float')
 </body>
 
 </html>

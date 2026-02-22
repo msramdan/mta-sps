@@ -32,10 +32,10 @@
             </div>
         </div>
     </div>
+    @include('layouts.partials.whatsapp-float')
 </body>
 
 {{-- script --}}
-
 @include('layouts.script')
 @stack('scripts')
 @include('sweetalert::alert')

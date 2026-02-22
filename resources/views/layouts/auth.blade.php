@@ -88,6 +88,7 @@
 
 <body>
     @yield('content')
+    @include('layouts.partials.whatsapp-float')
     <script src="{{ asset('backend') }}/assets/js/jquery-3.6.3.min.js"></script>
     <script src="{{ asset('backend') }}/assets/vendor/bootstrap/bootstrap.bundle.min.js"></script>
     @stack('js')
