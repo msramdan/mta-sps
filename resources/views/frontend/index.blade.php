@@ -991,10 +991,11 @@
                         </div>
 
                         <div class="col-md-6 mb-3">
-                            <h6 class="fw-bold mb-2">Legal</h6>
+                            <h6 class="fw-bold mb-2">Link Terkait</h6>
                             <ul class="list-unstyled mb-0">
-                                <li class="mb-1"><a href="#" class="text-muted text-decoration-none">Kebijakan Privasi</a></li>
-                                <li><a href="#" class="text-muted text-decoration-none">Syarat Layanan</a></li>
+                                <li class="mb-1"><a href="https://tecanusa.com/" target="_blank" rel="noopener noreferrer" class="text-muted text-decoration-none">Tecanusa</a></li>
+                                <li class="mb-1"><a href="https://billinghub.id/" target="_blank" rel="noopener noreferrer" class="text-muted text-decoration-none">Billinghub.id</a></li>
+                                <li><a href="https://ultravpn.my.id/" target="_blank" rel="noopener noreferrer" class="text-muted text-decoration-none">Ultra VPN</a></li>
                             </ul>
                         </div>
                     </div>
