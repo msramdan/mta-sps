@@ -32,7 +32,6 @@
             </div>
         </div>
     </div>
-    @include('layouts.partials.whatsapp-float')
 </body>
 
 {{-- script --}}

@@ -305,13 +305,13 @@
                                     </a>
                                     @can('resend callback')
                                         @if($transaksi->status !== 'success')
-                                            <button type="button" class="btn btn-outline-primary" id="btn-resend-callback" data-transaksi-id="{{ $transaksi->id }}" title="Resend Callback">
+                                            <button type="button" class="btn btn-warning" id="btn-resend-callback" data-transaksi-id="{{ $transaksi->id }}" title="Resend Callback">
                                                 <i class="fas fa-paper-plane me-1"></i> Resend Callback
                                             </button>
                                         @endif
                                     @endcan
                                     @can('force resend callback')
-                                        <button type="button" class="btn btn-outline-warning" id="btn-force-resend-callback" data-transaksi-id="{{ $transaksi->id }}" title="Force Resend Callback">
+                                        <button type="button" class="btn btn-danger" id="btn-force-resend-callback" data-transaksi-id="{{ $transaksi->id }}" title="Force Resend Callback">
                                             <i class="fas fa-bolt me-1"></i> Force Resend Callback
                                         </button>
                                     @endcan
