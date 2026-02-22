@@ -25,17 +25,19 @@
         word-break: break-all;
     }
     pre.code-block {
-        background: #1e293b;
-        color: #e2e8f0;
+        background: #fff;
+        color: #1e293b;
         padding: 16px;
         border-radius: 6px;
         margin: 0;
         overflow-x: auto;
+        border: 1px solid #dee2e6;
     }
     pre.code-block code {
         font-family: 'Courier New', monospace;
         font-size: 13px;
         line-height: 1.6;
+        color: inherit;
     }
     .param-table th {
         font-weight: 600;
@@ -318,8 +320,6 @@ $status       = $data->status;
 header('Content-Type: application/json');
 echo json_encode(['success' => true]);</code></pre>
                                 </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>

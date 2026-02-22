@@ -73,8 +73,10 @@
         .endpoint-url { padding: 14px 16px; border-radius: 8px; font-family: 'Consolas', 'Monaco', monospace; font-size: 14px; border-left: 4px solid #10b981; word-break: break-all; }
         [data-bs-theme="dark"] .endpoint-url { background: rgba(0,0,0,0.2); }
         [data-bs-theme="light"] .endpoint-url { background: #f1f5f9; }
-        .code-block { background: #1e293b; color: #e2e8f0; padding: 18px 20px; border-radius: 8px; margin: 0; overflow-x: auto; font-size: 13px; line-height: 1.7; }
+        .code-block { padding: 18px 20px; border-radius: 8px; margin: 0; overflow-x: auto; font-size: 13px; line-height: 1.7; }
         .code-block code { font-family: 'Consolas', 'Monaco', monospace; color: inherit; }
+        [data-bs-theme="dark"] .code-block { background: var(--card-dark); color: var(--text-light); border: 1px solid rgba(255,255,255,0.08); }
+        [data-bs-theme="light"] .code-block { background: #fff; color: var(--text-dark); border: 1px solid rgba(0,0,0,0.08); }
         .response-success { border-left: 4px solid #10b981; }
         .response-error { border-left: 4px solid #ef4444; }
         .param-table { font-size: 14px; }
@@ -317,8 +319,6 @@ $status       = $data->status;
 header('Content-Type: application/json');
 echo json_encode(['success' => true]);</code></pre>
                         </div>
-                    </div>
-                </div>
             </div>
         </div>
     </section>
