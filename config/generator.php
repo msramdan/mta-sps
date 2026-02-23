@@ -201,7 +201,8 @@ return [
                 'log query payment status view',
                 'log query payment status delete',
                 'log token b2b view',
-                'log token b2b delete'
+                'log token b2b delete',
+                'activity log view'
             ],
             'menus' => [
                 [
@@ -216,7 +217,8 @@ return [
                         'log query payment status view',
                         'log query payment status delete',
                         'log token b2b view',
-                        'log token b2b delete'
+                        'log token b2b delete',
+                        'activity log view'
                     ],
                     'submenus' => [
                         [
@@ -238,6 +240,11 @@ return [
                             'title' => 'Log Callback',
                             'route' => 'log-callbacks',
                             'permission' => 'log callback view'
+                        ],
+                        [
+                            'title' => 'Activity Log',
+                            'route' => 'activity-logs',
+                            'permission' => 'activity log view'
                         ]
                     ]
                 ]

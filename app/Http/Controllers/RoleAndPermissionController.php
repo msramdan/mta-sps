@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\ActivityLogHelper;
 use App\Http\Requests\Roles\StoreRoleRequest;
 use App\Http\Requests\Roles\UpdateRoleRequest;
 use Illuminate\Contracts\View\View;
@@ -65,6 +66,16 @@ class RoleAndPermissionController extends Controller implements HasMiddleware
             $role = Role::create(attributes: ['name' => $request->name]);
             $role->givePermissionTo(permissions: $request->permissions);
 
+            ActivityLogHelper::log(
+                description: 'Role created',
+                logName: 'role',
+                properties: [
+                    'before' => null,
+                    'after' => ['role_id' => $role->id, 'name' => $role->name, 'permissions' => $request->permissions],
+                ],
+                subject: $role
+            );
+
             return to_route(route: 'roles.index')->with(key: 'success', value: __(key: 'The role was created successfully.'));
         });
     }
@@ -95,9 +106,21 @@ class RoleAndPermissionController extends Controller implements HasMiddleware
     public function update(UpdateRoleRequest $request, string $id): RedirectResponse
     {
         return DB::transaction(callback: function () use ($request, $id): RedirectResponse {
-            $role = Role::findOrFail(id: $id);
+            $role = Role::with('permissions')->findOrFail(id: $id);
+            $oldName = $role->name;
+            $oldPermissions = $role->permissions->pluck('name')->toArray();
             $role->update(attributes: ['name' => $request->name]);
             $role->syncPermissions(permissions: $request->permissions);
+
+            ActivityLogHelper::log(
+                description: 'Role updated',
+                logName: 'role',
+                properties: [
+                    'before' => ['name' => $oldName, 'permissions' => $oldPermissions],
+                    'after' => ['name' => $role->name, 'permissions' => $request->permissions],
+                ],
+                subject: $role
+            );
 
             return to_route(route: 'roles.index')->with(key: 'success', value: __(key: 'The role was updated successfully.'));
         });
@@ -112,7 +135,17 @@ class RoleAndPermissionController extends Controller implements HasMiddleware
             $role = Role::withCount(relations: 'users')->findOrFail(id: $id);
 
             if ($role->users_count < 1) {
+                $roleData = ['id' => $role->id, 'name' => $role->name];
                 $role->delete();
+
+                ActivityLogHelper::log(
+                    description: 'Role deleted',
+                    logName: 'role',
+                    properties: [
+                        'before' => $roleData,
+                        'after' => null,
+                    ]
+                );
 
                 return to_route(route: 'roles.index')->with(key: 'success', value: __(key: 'The role was deleted successfully.'));
             }

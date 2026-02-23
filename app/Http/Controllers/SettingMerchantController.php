@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\ActivityLogHelper;
 use App\Models\Merchant;
 use App\Http\Requests\Merchants\{UpdateMerchantRequest};
 use Illuminate\Contracts\View\View;
@@ -95,8 +96,19 @@ class SettingMerchantController extends Controller implements HasMiddleware
             return response()->json(['success' => false, 'message' => 'Akses ditolak'], 403);
         }
 
-        // Update session
+        $oldMerchantId = session('sessionMerchant');
         session(['sessionMerchant' => $merchantId]);
+
+        $merchant = Merchant::find($merchantId);
+        ActivityLogHelper::log(
+            description: 'User switch merchant',
+            logName: 'merchant',
+            properties: [
+                'before' => ['merchant_id' => $oldMerchantId],
+                'after' => ['merchant_id' => $merchantId, 'merchant_name' => $merchant?->nama_merchant],
+            ],
+            subject: $merchant
+        );
 
         return response()->json(['success' => true]);
     }

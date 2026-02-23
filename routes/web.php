@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginOtpController;
 use App\Http\Controllers\{
+    ActivityLogController,
     DashboardController,
     ProfileController,
     UserController,
@@ -64,6 +65,9 @@ Route::middleware(['auth', 'web'])->group(function () {
     Route::get('/log-token-b2b/{logTokenB2b}', [LogTokenB2bController::class, 'show'])->name('log-token-b2b.show');
     Route::delete('/log-token-b2b/{logTokenB2b}', [LogTokenB2bController::class, 'destroy'])->name('log-token-b2b.destroy');
     Route::post('/log-token-b2b/bulk-destroy', [LogTokenB2bController::class, 'bulkDestroy'])->name('log-token-b2b.bulk-destroy');
+
+    Route::get('/activity-logs', [ActivityLogController::class, 'index'])->name('activity-logs.index');
+    Route::get('/activity-logs/{activityLog}', [ActivityLogController::class, 'show'])->name('activity-logs.show');
 
     // Bank Management
     Route::resource('banks', BankController::class);

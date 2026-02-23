@@ -8,10 +8,21 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Str;
 use App\Generators\Services\ImageServiceV2;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Merchant extends Model
 {
-    use HasFactory;
+    use HasFactory, LogsActivity;
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logFillable()
+            ->logOnlyDirty()
+            ->logExcept(['token_qrin', 'nobu_client_secret', 'nobu_private_key'])
+            ->setDescriptionForEvent(fn (string $eventName) => "Merchant {$eventName}");
+    }
 
     /**
      * The table associated with the model.

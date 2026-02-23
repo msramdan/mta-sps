@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Frontend;
 
+use App\Helpers\ActivityLogHelper;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -121,6 +122,20 @@ class WebController extends Controller
             $user = \App\Models\User::find($userId);
             if ($user) {
                 $user->assignRole('User Merchant');
+                ActivityLogHelper::log(
+                    description: 'Merchant registration',
+                    logName: 'auth',
+                    properties: [
+                        'before' => null,
+                        'after' => [
+                            'user_id' => $userId,
+                            'email' => $user->email,
+                            'merchant_id' => $merchantId,
+                            'nama_merchant' => $request->nama_perusahaan,
+                        ],
+                    ],
+                    subject: $user
+                );
             }
 
             // Redirect ke login dengan session success

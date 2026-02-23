@@ -224,6 +224,6 @@ return [
         ['group' => 'tarik saldo', 'access' => ['tarik saldo view', 'pengajuan tarik saldo', 'konfirmasi tarik saldo', 'batalkan tarik saldo']],
         ['group' => 'transaksi', 'access' => ['transaksi view', 'transaksi create', 'transaksi edit', 'transaksi delete', 'resend callback']],
         ['group' => 'simulator', 'access' => ['simulator view']],
-        ['group' => 'system log', 'access' => ['log generate qr view', 'log generate qr delete', 'log callback view', 'log callback delete', 'log query payment status view', 'log query payment status delete', 'log token b2b view', 'log token b2b delete']],
+        ['group' => 'system log', 'access' => ['log generate qr view', 'log generate qr delete', 'log callback view', 'log callback delete', 'log query payment status view', 'log query payment status delete', 'log token b2b view', 'log token b2b delete', 'activity log view']],
     ],
 ];
