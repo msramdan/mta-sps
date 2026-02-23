@@ -14,14 +14,12 @@ trait PasswordValidationRules
         $validations = ['confirmed'];
 
         if (app()->isProduction()) {
-            $validations[] = [
-                Password::min(size: 8)
-                    ->letters()
-                    ->mixedCase()
-                    ->numbers()
-                    ->symbols()
-                    ->uncompromised(),
-            ];
+            $validations[] = Password::min(size: 8)
+                ->letters()
+                ->mixedCase()
+                ->numbers()
+                ->symbols()
+                ->uncompromised();
         }
 
         return $validations;
