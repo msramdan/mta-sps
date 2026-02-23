@@ -331,6 +331,57 @@
                                             @endif
                                         </div>
                                     </div>
+
+                                    <!-- Log Resend Callback QRIN → Merchant -->
+                                    <div class="card border">
+                                        <div class="card-header py-2">
+                                            <h6 class="mb-0 fw-bold">
+                                                <i class="fas fa-paper-plane me-1"></i> Log Resend Callback QRIN → Merchant
+                                            </h6>
+                                        </div>
+                                        <div class="card-body p-0">
+                                            @if($transaksi->logResendCallbacks->isEmpty())
+                                                <p class="text-muted fst-italic p-3 mb-0">Belum ada log resend callback.</p>
+                                            @else
+                                                <div class="accordion accordion-flush" id="accordionLogResendCallback">
+                                                    @foreach($transaksi->logResendCallbacks as $index => $log)
+                                                        @php
+                                                            $accId = 'log-resend-' . $log->id;
+                                                            $headerPretty = $prettyJson($log->header_resend_callback_qrin_to_merchant);
+                                                            $payloadPretty = $prettyJson($log->payload_resend_callback_qrin_to_merchant);
+                                                            $responsePretty = $prettyJson($log->response_resend_callback_qrin_to_merchant);
+                                                            $tgl = $log->tanggal_resend_callback_qrin_to_merchant ?? $log->created_at;
+                                                        @endphp
+                                                        <div class="accordion-item border-bottom">
+                                                            <h2 class="accordion-header">
+                                                                <button class="accordion-button collapsed py-2" type="button" data-bs-toggle="collapse" data-bs-target="#{{ $accId }}" aria-expanded="false" aria-controls="{{ $accId }}">
+                                                                    <span class="me-2 fw-bold">#{{ $index + 1 }}</span>
+                                                                    <span class="me-2">{{ $tgl->format('d M Y H:i') }}</span>
+                                                                    @if($log->processing_time)
+                                                                        <span class="badge bg-info">{{ $log->processing_time }}</span>
+                                                                    @endif
+                                                                </button>
+                                                            </h2>
+                                                            <div id="{{ $accId }}" class="accordion-collapse collapse" data-bs-parent="#accordionLogResendCallback">
+                                                                <div class="accordion-body pt-2 pb-2 px-3">
+                                                                    <p class="small text-muted mb-1">Metode</p>
+                                                                    <p class="mb-2"><span class="badge bg-primary">{{ $log->metode ?? 'POST' }}</span></p>
+                                                                    <p class="small text-muted mb-1">URL Callback</p>
+                                                                    <pre class="rounded border p-2 mb-2 overflow-auto small text-break">{{ $log->url_callback ?? '-' }}</pre>
+                                                                    <p class="small text-muted mb-1">Header</p>
+                                                                    <pre class="rounded border p-2 mb-2 overflow-auto small">{{ $headerPretty ?: '-' }}</pre>
+                                                                    <p class="small text-muted mb-1">Payload</p>
+                                                                    <pre class="rounded border p-2 mb-2 overflow-auto">{{ $payloadPretty ?: '-' }}</pre>
+                                                                    <p class="small text-muted mb-1">Response</p>
+                                                                    <pre class="rounded border p-2 mb-0 overflow-auto">{{ $responsePretty ?: '-' }}</pre>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    @endforeach
+                                                </div>
+                                            @endif
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <!-- Tombol di dalam card -->
@@ -341,8 +392,8 @@
                                     </a>
                                     @if($transaksi->status === 'success')
                                         @can('resend callback')
-                                            <button type="button" class="btn btn-warning" id="btn-resend-callback" data-transaksi-id="{{ $transaksi->id }}" title="Resend Callback">
-                                                <i class="fas fa-paper-plane me-1"></i> Resend Callback
+                                            <button type="button" class="btn btn-warning" id="btn-resend-callback" data-transaksi-id="{{ $transaksi->id }}" data-url="{{ route('transaksis.resend-callback', $transaksi) }}" title="Send Callback">
+                                                <i class="fas fa-paper-plane me-1"></i> Send Callback
                                             </button>
                                         @endcan
                                     @endif
@@ -355,3 +406,65 @@
         </div>
     </main>
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const btn = document.getElementById('btn-resend-callback');
+    if (!btn) return;
+
+    btn.addEventListener('click', function() {
+        const url = btn.getAttribute('data-url');
+        if (!url) return;
+
+        Swal.fire({
+            title: 'Kirim Callback?',
+            text: 'Data transaksi akan dikirim ke URL Callback merchant. Lanjutkan?',
+            icon: 'question',
+            showDenyButton: true,
+            confirmButtonText: 'Yes',
+            denyButtonText: 'No',
+            confirmButtonColor: '#3085d6',
+            denyButtonColor: '#6c757d'
+        }).then(function(result) {
+            if (!result.isConfirmed) return;
+
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status"></span> Mengirim...';
+
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                }
+            })
+            .then(function(res) { return res.json(); })
+            .then(function(data) {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-paper-plane me-1"></i> Send Callback';
+                Swal.fire({
+                    icon: data.success ? 'success' : 'error',
+                    title: data.success ? 'Berhasil' : 'Gagal',
+                    text: data.message || (data.success ? 'Callback berhasil dikirim.' : 'Terjadi kesalahan.'),
+                    confirmButtonColor: '#3085d6'
+                }).then(function() {
+                    if (data.success) location.reload();
+                });
+            })
+            .catch(function(err) {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-paper-plane me-1"></i> Send Callback';
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal',
+                    text: err.message || 'Terjadi kesalahan saat mengirim callback.',
+                    confirmButtonColor: '#d33'
+                });
+            });
+        });
+    });
+});
+</script>
+@endpush

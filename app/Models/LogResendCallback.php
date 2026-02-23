@@ -6,11 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class LogCallback extends Model
+class LogResendCallback extends Model
 {
     use HasFactory;
 
-    protected $table = 'log_callbacks';
+    protected $table = 'log_resend_callbacks';
 
     protected $keyType = 'string';
     public $incrementing = false;
@@ -19,17 +19,13 @@ class LogCallback extends Model
         'id',
         'transaksi_id',
         'merchant_id',
-        'header_callback_nobu_to_qrin',
-        'payload_callback_nobu_to_qrin',
-        'response_callback_nobu_to_qrin',
-        'tanggal_callback_nobu_to_qrin',
-        'header_callback_qrin_to_merchant',
-        'payload_callback_qrin_to_merchant',
-        'response_callback_qrin_to_merchant',
-        'tanggal_callback_qrin_to_merchant',
+        'metode',
+        'url_callback',
+        'header_resend_callback_qrin_to_merchant',
+        'payload_resend_callback_qrin_to_merchant',
+        'response_resend_callback_qrin_to_merchant',
+        'tanggal_resend_callback_qrin_to_merchant',
         'processing_time',
-        'transaction_status',
-        'status_desc',
     ];
 
     protected function casts(): array
@@ -38,8 +34,7 @@ class LogCallback extends Model
             'id' => 'string',
             'transaksi_id' => 'string',
             'merchant_id' => 'string',
-            'tanggal_callback_nobu_to_qrin' => 'datetime',
-            'tanggal_callback_qrin_to_merchant' => 'datetime',
+            'tanggal_resend_callback_qrin_to_merchant' => 'datetime',
             'created_at' => 'datetime',
             'updated_at' => 'datetime',
         ];

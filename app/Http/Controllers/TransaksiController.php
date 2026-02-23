@@ -4,9 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Transaksis\StoreTransaksiRequest;
 use App\Http\Requests\Transaksis\UpdateTransaksiRequest;
+use App\Models\LogResendCallback;
 use App\Models\Transaksi;
 use App\Models\Merchant;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Controllers\HasMiddleware;
@@ -27,6 +30,7 @@ class TransaksiController extends Controller implements HasMiddleware
             new Middleware(middleware: 'permission:transaksi create', only: ['create', 'store']),
             new Middleware(middleware: 'permission:transaksi edit', only: ['edit', 'update']),
             new Middleware(middleware: 'permission:transaksi delete', only: ['destroy']),
+            new Middleware(middleware: 'permission:resend callback', only: ['resendCallback']),
         ];
     }
 
@@ -214,6 +218,7 @@ class TransaksiController extends Controller implements HasMiddleware
             'merchant:id,nama_merchant,kode_merchant',
             'logGenerateQrs' => fn ($q) => $q->orderByDesc('created_at'),
             'logCallbacks' => fn ($q) => $q->orderByDesc('tanggal_callback_nobu_to_qrin')->orderByDesc('created_at'),
+            'logResendCallbacks' => fn ($q) => $q->orderByDesc('tanggal_resend_callback_qrin_to_merchant')->orderByDesc('created_at'),
         ]);
 
         return view('transaksis.show', compact('transaksi'));
@@ -257,6 +262,113 @@ class TransaksiController extends Controller implements HasMiddleware
 
         Alert::success('Berhasil', 'Transaksi berhasil diperbarui.');
         return redirect()->route('transaksis.index');
+    }
+
+    /**
+     * Resend callback to merchant's url_callback.
+     */
+    public function resendCallback(Transaksi $transaksi): JsonResponse
+    {
+        $transaksi->load('merchant:id,url_callback,token_qrin');
+
+        $merchant = $transaksi->merchant;
+        if (!$merchant || empty($merchant->url_callback)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Merchant tidak memiliki URL Callback yang terdaftar.',
+            ], 400);
+        }
+
+        if (empty($merchant->token_qrin)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Merchant tidak memiliki Token QRIN untuk signature.',
+            ], 400);
+        }
+
+        $payload = [
+            'id' => $transaksi->id,
+            'tanggal_transaksi' => $transaksi->tanggal_transaksi->format('Y-m-d\TH:i:sP'),
+            'merchant_id' => $transaksi->merchant_id,
+            'no_referensi' => $transaksi->no_referensi,
+            'no_ref_merchant' => $transaksi->no_ref_merchant ?? null,
+            'nama_pelanggan' => $transaksi->nama_pelanggan ?? null,
+            'email_pelanggan' => $transaksi->email_pelanggan ?? null,
+            'no_telpon_pelanggan' => $transaksi->no_telpon_pelanggan ?? null,
+            'biaya' => (float) $transaksi->biaya,
+            'jumlah_dibayar' => (float) $transaksi->jumlah_dibayar,
+            'jumlah_diterima' => (float) ($transaksi->jumlah_diterima ?? 0),
+            'status' => $transaksi->status,
+            'beban_biaya' => $transaksi->beban_biaya ?? 'Merchant',
+            'created_at' => $transaksi->created_at->format('Y-m-d\TH:i:sP'),
+            'updated_at' => $transaksi->updated_at->format('Y-m-d\TH:i:sP'),
+        ];
+
+        $rawBody = json_encode($payload, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        $signature = hash_hmac('sha256', $rawBody, $merchant->token_qrin);
+
+        $headers = [
+            'Content-Type' => 'application/json',
+            'X-Callback-Signature' => $signature,
+        ];
+
+        $startTime = microtime(true);
+
+        try {
+            $response = Http::timeout(30)
+                ->withHeaders($headers)
+                ->withBody($rawBody, 'application/json')
+                ->post($merchant->url_callback);
+
+            $processingTime = round((microtime(true) - $startTime) * 1000) . 'ms';
+            $responseBody = $response->body();
+            $statusCode = $response->status();
+            $tanggalCallback = now();
+
+            LogResendCallback::create([
+                'id' => (string) Str::uuid(),
+                'transaksi_id' => $transaksi->id,
+                'merchant_id' => $merchant->id,
+                'metode' => 'POST',
+                'url_callback' => $merchant->url_callback,
+                'header_resend_callback_qrin_to_merchant' => json_encode($headers, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT),
+                'payload_resend_callback_qrin_to_merchant' => $rawBody,
+                'response_resend_callback_qrin_to_merchant' => $responseBody,
+                'tanggal_resend_callback_qrin_to_merchant' => $tanggalCallback,
+                'processing_time' => $processingTime,
+            ]);
+
+            $isSuccess = $statusCode >= 200 && $statusCode < 300;
+
+            return response()->json([
+                'success' => $isSuccess,
+                'message' => $isSuccess
+                    ? 'Callback berhasil dikirim ke merchant.'
+                    : "Callback dikirim tetapi merchant merespons dengan status {$statusCode}.",
+                'status_code' => $statusCode,
+            ]);
+        } catch (\Exception $e) {
+            $processingTime = round((microtime(true) - $startTime) * 1000) . 'ms';
+            $tanggalCallback = now();
+
+            LogResendCallback::create([
+                'id' => (string) Str::uuid(),
+                'transaksi_id' => $transaksi->id,
+                'merchant_id' => $merchant->id,
+                'metode' => 'POST',
+                'url_callback' => $merchant->url_callback,
+                'header_resend_callback_qrin_to_merchant' => json_encode($headers, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT),
+                'payload_resend_callback_qrin_to_merchant' => $rawBody,
+                'response_resend_callback_qrin_to_merchant' => json_encode(['error' => $e->getMessage()]),
+                'tanggal_resend_callback_qrin_to_merchant' => $tanggalCallback,
+                'processing_time' => $processingTime,
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal mengirim callback: ' . $e->getMessage(),
+            ], 500);
+        }
     }
 
     /**

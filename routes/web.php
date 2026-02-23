@@ -16,6 +16,7 @@ use App\Http\Controllers\{
     ApiDocumentationController,
     LogGenerateQrController,
     LogCallbackController,
+    LogResendCallbackController,
     LogQueryPaymentStatusController,
     LogTokenB2bController
 };
@@ -57,6 +58,10 @@ Route::middleware(['auth', 'web'])->group(function () {
     Route::get('/log-callbacks/{logCallback}', [LogCallbackController::class, 'show'])->name('log-callbacks.show');
     Route::delete('/log-callbacks/{logCallback}', [LogCallbackController::class, 'destroy'])->name('log-callbacks.destroy');
     Route::post('/log-callbacks/bulk-destroy', [LogCallbackController::class, 'bulkDestroy'])->name('log-callbacks.bulk-destroy');
+    Route::get('/log-resend-callbacks', [LogResendCallbackController::class, 'index'])->name('log-resend-callbacks.index');
+    Route::get('/log-resend-callbacks/{logResendCallback}', [LogResendCallbackController::class, 'show'])->name('log-resend-callbacks.show');
+    Route::delete('/log-resend-callbacks/{logResendCallback}', [LogResendCallbackController::class, 'destroy'])->name('log-resend-callbacks.destroy');
+    Route::post('/log-resend-callbacks/bulk-destroy', [LogResendCallbackController::class, 'bulkDestroy'])->name('log-resend-callbacks.bulk-destroy');
     Route::get('/log-query-payment-status', [LogQueryPaymentStatusController::class, 'index'])->name('log-query-payment-status.index');
     Route::get('/log-query-payment-status/{logQueryPaymentStatus}', [LogQueryPaymentStatusController::class, 'show'])->name('log-query-payment-status.show');
     Route::delete('/log-query-payment-status/{logQueryPaymentStatus}', [LogQueryPaymentStatusController::class, 'destroy'])->name('log-query-payment-status.destroy');
@@ -88,6 +93,7 @@ Route::middleware(['auth', 'web'])->group(function () {
 
     // Transaksi Management
     Route::get('/transaksis-summary', [TransaksiController::class, 'summary'])->name('transaksis.summary');
+    Route::post('/transaksis/{transaksi}/resend-callback', [TransaksiController::class, 'resendCallback'])->name('transaksis.resend-callback');
     Route::resource('transaksis', TransaksiController::class);
 
     // Tarik Saldo Management

@@ -198,6 +198,8 @@ return [
                 'log generate qr delete',
                 'log callback view',
                 'log callback delete',
+                'log resend callback view',
+                'log resend callback delete',
                 'log query payment status view',
                 'log query payment status delete',
                 'log token b2b view',
@@ -214,6 +216,8 @@ return [
                         'log generate qr delete',
                         'log callback view',
                         'log callback delete',
+                        'log resend callback view',
+                        'log resend callback delete',
                         'log query payment status view',
                         'log query payment status delete',
                         'log token b2b view',
@@ -240,6 +244,11 @@ return [
                             'title' => 'Log Callback',
                             'route' => 'log-callbacks',
                             'permission' => 'log callback view'
+                        ],
+                        [
+                            'title' => 'Log Resend Callback',
+                            'route' => 'log-resend-callbacks',
+                            'permission' => 'log resend callback view'
                         ],
                         [
                             'title' => 'Activity Log',

@@ -165,4 +165,9 @@ class Transaksi extends Model
     {
         return $this->hasMany(LogCallback::class, 'transaksi_id');
     }
+
+    public function logResendCallbacks(): HasMany
+    {
+        return $this->hasMany(LogResendCallback::class, 'transaksi_id');
+    }
 }
