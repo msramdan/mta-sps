@@ -287,17 +287,21 @@
                                                     <div class="row g-3">
                                                         <div class="col-12 col-lg-8">
                                                             <p class="small fw-bold text-muted mb-1">Success Response (200 OK)</p>
-                                                            <p class="small text-muted mb-2">Data yang di-generate menjadi kode QR (untuk di-scan atau di-render sebagai gambar QR) ada di field <strong><code>qrContent</code></strong>. Gunakan nilai <code>qrContent</code> sebagai input ke library QR code (misalnya untuk generate gambar QR di frontend/backend).</p>
+                                                            <p class="small text-muted mb-2">Data yang di-generate menjadi kode QR (untuk di-scan atau di-render sebagai gambar QR) ada di field <strong><code>data.qrContent</code></strong>. Gunakan nilai <code>data.qrContent</code> sebagai input ke library QR code (misalnya untuk generate gambar QR di frontend/backend).</p>
                                                             <pre class="rounded border p-3 mb-3 response-success">{
-    "additionalInfo": {},
-    "merchantName": "teca nusa UAT TESTING",
-    "partnerReferenceNo": "QR000001-260223-315170",
-    "qrContent": "00020101021226670016COM.NOBUBANK.WWW01189360050300000783000214260209000000050303UME51440014ID.CO.QRIS.WWW0303UME0215ID2026020900005520450395303360540810000.005802ID5921teca nusa UAT TESTING6006BEKASI61051773062750108MB1339LJ0622QR000001-260223-3151700703A010804POSP99180002000108202602236304B480",
-    "qrUrl": "",
-    "responseCode": "2004700",
-    "responseMessage": "Request has been processed successfully",
-    "storeId": "ID2026020900005",
-    "terminalId": "A01"
+    "success": true,
+    "message": "QRIS generated successfully",
+    "data": {
+        "additionalInfo": {},
+        "merchantName": "teca nusa UAT TESTING",
+        "partnerReferenceNo": "QR000001-260223-860789",
+        "qrContent": "00020101021226670016COM.NOBUBANK.WWW01189360050300000783000214260209000000050303UME51440014ID.CO.QRIS.WWW0303UME0215ID2026020900005520450395303360540810575.005802ID5921teca nusa UAT TESTING6006BEKASI61051773062750108MB1339MB0622QR000001-260223-8607890703A010804POSP99180002000108202602236304B086",
+        "qrUrl": "",
+        "responseCode": "2004700",
+        "responseMessage": "Request has been processed successfully",
+        "storeId": "ID2026020900005",
+        "terminalId": "A01"
+    }
 }</pre>
                                                             <p class="small fw-bold text-muted mb-1">Failed / Error Response (400 Bad Request)</p>
                                                             <pre class="rounded border p-3 mb-0 response-error">{
@@ -308,7 +312,7 @@
                                                         </div>
                                                         <div class="col-12 col-lg-4">
                                                             <div class="rounded border p-3 text-center">
-                                                                <p class="small fw-bold text-muted mb-2">Contoh hasil QR dari <code>qrContent</code></p>
+                                                                <p class="small fw-bold text-muted mb-2">Contoh hasil QR dari <code>data.qrContent</code></p>
                                                                 <div id="example-qr-output" class="d-inline-block bg-white p-2 rounded"></div>
                                                                 <p class="small text-muted mt-2 mb-0">Scan dengan aplikasi e-wallet / QRIS</p>
                                                             </div>
@@ -449,7 +453,7 @@ echo json_encode(['success' => true]);</pre>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script>
 (function () {
-    var qrContent = "00020101021226670016COM.NOBUBANK.WWW01189360050300000783000214260209000000050303UME51440014ID.CO.QRIS.WWW0303UME0215ID2026020900005520450395303360540810000.005802ID5921teca nusa UAT TESTING6006BEKASI61051773062750108MB1339LJ0622QR000001-260223-3151700703A010804POSP99180002000108202602236304B480";
+    var qrContent = "00020101021226670016COM.NOBUBANK.WWW01189360050300000783000214260209000000050303UME51440014ID.CO.QRIS.WWW0303UME0215ID2026020900005520450395303360540810575.005802ID5921teca nusa UAT TESTING6006BEKASI61051773062750108MB1339MB0622QR000001-260223-8607890703A010804POSP99180002000108202602236304B086";
     var el = document.getElementById("example-qr-output");
     if (el && typeof QRCode !== "undefined") {
         new QRCode(el, { text: qrContent, width: 200, height: 200 });
