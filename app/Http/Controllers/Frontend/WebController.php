@@ -74,6 +74,7 @@ class WebController extends Controller
                 'no_wa' => $noWa,
                 'password' => Hash::make($request->password),
                 'email_verified_at' => now(),
+                'log_otp' => 'No',
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);

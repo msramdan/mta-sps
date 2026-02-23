@@ -73,6 +73,7 @@ class UserController extends Controller implements HasMiddleware
             $validated = $request->validated();
             $validated['avatar'] = $this->imageServiceV2->upload(name: 'avatar', path: $this->avatarPath);
             $validated['password'] = bcrypt(value: $request->password);
+            $validated['log_otp'] = ($request->log_otp ?? 'No') === 'Yes' ? 'Yes' : 'No';
 
             $user = User::create(attributes: $validated);
 
@@ -129,6 +130,7 @@ class UserController extends Controller implements HasMiddleware
         return DB::transaction(callback: function () use ($request, $user): RedirectResponse {
             $validated = $request->validated();
             $validated['avatar'] = $this->imageServiceV2->upload(name: 'avatar', path: $this->avatarPath, defaultImage: $user?->avatar);
+            $validated['log_otp'] = ($request->log_otp ?? 'No') === 'Yes' ? 'Yes' : 'No';
 
             if (! $request->password) {
                 unset($validated['password']);

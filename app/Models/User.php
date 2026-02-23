@@ -21,6 +21,7 @@ class User extends Authenticatable
         'password',
         'avatar',
         'no_wa',
+        'log_otp',
     ];
 
 

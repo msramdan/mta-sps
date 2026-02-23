@@ -31,6 +31,7 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
                 Rule::unique(table: 'users')->ignore(id: $user->id),
             ],
             'avatar' => ['nullable', 'image', 'max:1024'],
+            'log_otp' => ['nullable', 'in:Yes,No'],
         ])->validateWithBag(errorBag: 'updateProfileInformation');
 
         if (isset($input['avatar']) && $input['avatar']->isValid()) {
@@ -45,6 +46,7 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
             $user->forceFill(attributes: [
                 'name' => $input['name'],
                 'email' => $input['email'],
+                'log_otp' => ($input['log_otp'] ?? 'No') === 'Yes' ? 'Yes' : 'No',
             ])->save();
         }
     }
@@ -58,6 +60,7 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
             'name' => $input['name'],
             'email' => $input['email'],
             'email_verified_at' => null,
+            'log_otp' => ($input['log_otp'] ?? 'No') === 'Yes' ? 'Yes' : 'No',
         ])->save();
 
         $user->sendEmailVerificationNotification();

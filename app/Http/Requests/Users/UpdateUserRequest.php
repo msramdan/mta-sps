@@ -32,6 +32,7 @@ class UpdateUserRequest extends FormRequest
             'password' => ['nullable', ...$this->passwordRules()],
             'merchants' => ['required', 'array', 'min:1'],
             'merchants.*' => ['exists:merchants,id'],
+            'log_otp' => ['nullable', 'in:Yes,No'],
         ];
     }
 

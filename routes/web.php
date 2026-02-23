@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth\LoginOtpController;
 use App\Http\Controllers\{
     DashboardController,
     ProfileController,
@@ -18,6 +19,13 @@ use App\Http\Controllers\{
     LogTokenB2bController
 };
 use App\Http\Controllers\Frontend\WebController;
+
+// Login OTP verification (before auth)
+Route::middleware(['web'])->group(function () {
+    Route::get('/login-otp', [LoginOtpController::class, 'showForm'])->name('login-otp.form');
+    Route::post('/login-otp', [LoginOtpController::class, 'verify'])->name('login-otp.verify');
+    Route::post('/login-otp/resend', [LoginOtpController::class, 'resend'])->name('login-otp.resend');
+});
 
 Route::controller(WebController::class)->group(function () {
     Route::get('/', 'index')->name('web.landing.page');

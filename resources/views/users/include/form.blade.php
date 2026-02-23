@@ -91,6 +91,23 @@
             @enderror
         </div>
     </div>
+    <div class="col-12 mb-3">
+        <div class="form-group">
+            <label class="form-label">{{ __('Login OTP') }}</label>
+            <input type="hidden" name="log_otp" value="No">
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" name="log_otp" id="log_otp" value="Yes"
+                    {{ (isset($user) ? $user->log_otp : old('log_otp', 'No')) === 'Yes' ? 'checked' : '' }}>
+                <label class="form-check-label" for="log_otp">
+                    {{ __('Aktifkan Login OTP via Email') }}
+                </label>
+            </div>
+            <div class="form-text text-muted">
+                Jika diaktifkan, ketika login akan dikirimkan OTP ke Email untuk verifikasi.
+            </div>
+        </div>
+    </div>
+
     <div class="col-md-6 mb-3">
         <div class="row g-0">
             <div class="col-md-5 text-center">

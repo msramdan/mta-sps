@@ -78,6 +78,21 @@
                                         @enderror
                                         <div class="form-text">Max file size: 2MB. Allowed formats: JPG, PNG, GIF.</div>
                                     </div>
+
+                                    <div class="col-md-12 mb-3">
+                                        <label class="form-label">{{ __(key: 'Login OTP') }}</label>
+                                        <input type="hidden" name="log_otp" value="No">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" name="log_otp" id="log_otp_profile" value="Yes"
+                                                {{ (old('log_otp', auth()->user()->log_otp ?? 'No') === 'Yes') ? 'checked' : '' }}>
+                                            <label class="form-check-label" for="log_otp_profile">
+                                                {{ __(key: 'Aktifkan Login OTP via Email') }}
+                                            </label>
+                                        </div>
+                                        <div class="form-text text-muted">
+                                            Jika diaktifkan, ketika login akan dikirimkan OTP ke Email untuk verifikasi.
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <div class="d-flex justify-content-end">

@@ -6,12 +6,16 @@ use App\Actions\Fortify\CreateNewUser;
 use App\Actions\Fortify\ResetUserPassword;
 use App\Actions\Fortify\UpdateUserPassword;
 use App\Actions\Fortify\UpdateUserProfileInformation;
+use App\Mail\LoginOtpMail;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Laravel\Fortify\Fortify;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Hash;
@@ -74,6 +78,23 @@ class FortifyServiceProvider extends ServiceProvider
                 throw ValidationException::withMessages([
                     'email' => ['Anda tidak memiliki akses ke merchant manapun. Silakan hubungi admin.'],
                 ]);
+            }
+
+            // 🔍 CEK LOG OTP - jika aktif, kirim OTP dan redirect ke halaman verifikasi
+            if (($user->log_otp ?? 'No') === 'Yes') {
+                $otp = str_pad((string) random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+                Cache::put('login_otp_' . $user->id, $otp, now()->addMinutes(5));
+
+                session([
+                    'login_otp_user_id' => $user->id,
+                    'login_otp_remember' => $request->boolean('remember'),
+                ]);
+                Mail::to($user->email)->send(new LoginOtpMail($otp, $user->name));
+
+                throw new HttpResponseException(
+                    redirect()->route('login-otp.form')
+                        ->with('success', 'Kode OTP telah dikirim ke email Anda. Silakan verifikasi untuk melanjutkan login.')
+                );
             }
 
             session([
