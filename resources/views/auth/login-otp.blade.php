@@ -43,18 +43,25 @@
                                         @endif
 
                                         <div class="mb-3">
-                                            <label class="form-label" for="otp">Kode OTP (6 digit)</label>
-                                            <input type="text" class="form-control form-control-lg text-center @error('otp') is-invalid @enderror"
-                                                name="otp" id="otp" placeholder="000000" maxlength="6" pattern="[0-9]*"
-                                                inputmode="numeric" autocomplete="one-time-code" required autofocus
-                                                value="{{ old('otp') }}">
+                                            <label class="form-label">Kode OTP (6 digit)</label>
+                                            <div class="otp-inputs d-flex justify-content-center gap-2 mb-2">
+                                                @php $oldOtp = str_split((string) old('otp', '')); @endphp
+                                                @for ($i = 0; $i < 6; $i++)
+                                                    <input type="text" class="form-control form-control-lg text-center otp-digit @error('otp') is-invalid @enderror"
+                                                        maxlength="1" pattern="[0-9]*" inputmode="numeric"
+                                                        data-index="{{ $i }}" autocomplete="off"
+                                                        value="{{ $oldOtp[$i] ?? '' }}"
+                                                        {{ $i === 0 ? 'autofocus' : '' }}>
+                                                @endfor
+                                            </div>
+                                            <input type="hidden" name="otp" id="otp" value="{{ old('otp') }}">
                                             @error('otp')
-                                                <div class="invalid-feedback">{{ $message }}</div>
+                                                <div class="invalid-feedback d-block">{{ $message }}</div>
                                             @enderror
                                             <div class="form-text">Kode berlaku selama 5 menit.</div>
                                         </div>
 
-                                        <div class="mb-1">
+                                        <div class="mb-3">
                                             <button type="submit" class="btn btn-primary w-100">{{ __('Verifikasi') }}</button>
                                         </div>
                                     </form>
@@ -79,15 +86,54 @@
     </div>
 @endsection
 
+@push('css')
+    <style>
+        .otp-inputs .otp-digit {
+            width: 48px;
+            height: 52px;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+    </style>
+@endpush
+
 @push('js')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const otpInput = document.getElementById('otp');
-            if (otpInput) {
-                otpInput.addEventListener('input', function(e) {
-                    this.value = this.value.replace(/\D/g, '');
-                });
+            const digits = document.querySelectorAll('.otp-digit');
+            const hiddenInput = document.getElementById('otp');
+
+            function updateHidden() {
+                hiddenInput.value = Array.from(digits).map(d => d.value).join('');
             }
+
+            document.querySelector('.form_container form').addEventListener('submit', function() {
+                updateHidden();
+            });
+
+            digits.forEach((digit, i) => {
+                digit.addEventListener('input', function() {
+                    this.value = this.value.replace(/\D/g, '').slice(0, 1);
+                    updateHidden();
+                    if (this.value && i < 5) digits[i + 1].focus();
+                });
+
+                digit.addEventListener('keydown', function(e) {
+                    if (e.key === 'Backspace' && !this.value && i > 0) {
+                        digits[i - 1].focus();
+                    }
+                });
+
+                digit.addEventListener('paste', function(e) {
+                    e.preventDefault();
+                    const pasted = (e.clipboardData?.getData('text') || '').replace(/\D/g, '').slice(0, 6);
+                    pasted.split('').forEach((char, j) => {
+                        if (digits[i + j]) digits[i + j].value = char;
+                    });
+                    updateHidden();
+                    digits[Math.min(i + pasted.length, 5)].focus();
+                });
+            });
         });
     </script>
 @endpush
