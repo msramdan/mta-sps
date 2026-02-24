@@ -34,6 +34,12 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
                 'max:255',
                 Rule::unique(table: 'users')->ignore(id: $user->id),
             ],
+            'no_wa' => [
+                'required',
+                'string',
+                'regex:/^(08|62)[0-9]{8,11}$/',
+                Rule::unique(table: 'users', column: 'no_wa')->ignore(id: $user->id),
+            ],
             'avatar' => ['nullable', 'image', 'max:1024'],
             'log_otp' => ['nullable', 'in:Yes,No'],
         ])->validateWithBag(errorBag: 'updateProfileInformation');
@@ -55,6 +61,7 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
             $user->forceFill(attributes: [
                 'name' => $input['name'],
                 'email' => $input['email'],
+                'no_wa' => $input['no_wa'],
                 'log_otp' => ($input['log_otp'] ?? 'No') === 'Yes' ? 'Yes' : 'No',
             ])->save();
         }
@@ -69,6 +76,7 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
             'name' => $input['name'],
             'email' => $input['email'],
             'email_verified_at' => null,
+            'no_wa' => $input['no_wa'],
             'log_otp' => ($input['log_otp'] ?? 'No') === 'Yes' ? 'Yes' : 'No',
         ])->save();
 

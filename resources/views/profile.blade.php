@@ -69,7 +69,7 @@
                                         @enderror
                                     </div>
 
-                                    <div class="col-md-12 mb-3">
+                                    <div class="col-md-6 mb-3">
                                         <label for="avatar" class="form-label">{{ __(key: 'Avatar') }}</label>
                                         <input type="file" name="avatar" class="form-control @error('avatar', 'updateProfileInformation') is-invalid @enderror"
                                                id="avatar" accept="image/*">
@@ -77,6 +77,21 @@
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
                                         <div class="form-text">Max file size: 2MB. Allowed formats: JPG, PNG, GIF.</div>
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label for="no-wa" class="form-label">No. WhatsApp <span class="text-danger">*</span></label>
+                                        <input type="tel" name="no_wa" id="no-wa"
+                                               class="form-control @error('no_wa', 'updateProfileInformation') is-invalid @enderror"
+                                               placeholder="08xxx atau 62xxx (min 8, max 13 digit)"
+                                               value="{{ old('no_wa') ?? auth()->user()->no_wa }}"
+                                               required maxlength="13" pattern="(08|62)[0-9]{8,11}">
+                                        @error('no_wa', 'updateProfileInformation')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                        <div class="form-text">
+                                            Format: awalan 08 atau 62, minimal 8 digit, maksimal 13 digit.
+                                        </div>
                                     </div>
 
                                     <div class="col-md-12 mb-3">
