@@ -6,6 +6,7 @@ use App\Generators\ImageUploadOption;
 use App\Generators\Interfaces\ImageServiceInterfaceV2;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
+use League\Flysystem\UnableToCheckFileExistence;
 
 class ImageServiceV2 implements ImageServiceInterfaceV2
 {
@@ -58,13 +59,21 @@ class ImageServiceV2 implements ImageServiceInterfaceV2
         }
 
         $imageName = $this->getActualImageName(name: $image, path: $path, disk: $disk);
+        if (! $imageName) {
+            return false;
+        }
+
         $fullPath = "$path/$imageName";
         $actualDisk = $this->setDiskName(disk: $disk);
 
-        return match ($actualDisk) {
-            's3', 'public', 'local' => Storage::disk(name: $actualDisk)->delete(paths: $fullPath),
-            default => @unlink(filename: public_path(path: $fullPath)),
-        };
+        try {
+            return match ($actualDisk) {
+                's3', 'public', 'local' => Storage::disk(name: $actualDisk)->delete(paths: $fullPath),
+                default => @unlink(filename: public_path(path: $fullPath)),
+            };
+        } catch (\Throwable $e) {
+            return false;
+        }
     }
 
     /**
@@ -293,10 +302,16 @@ class ImageServiceV2 implements ImageServiceInterfaceV2
         $fullPath = "$path/$cleanImg";
         $actualDisk = $this->setDiskName(disk: $disk);
 
-        $exists = match ($actualDisk) {
-            's3', 'local', 'public' => Storage::disk(name: $actualDisk)->exists(path: $fullPath),
-            default => file_exists(filename: public_path(path: $fullPath)),
-        };
+        try {
+            $exists = match ($actualDisk) {
+                's3', 'local', 'public' => Storage::disk(name: $actualDisk)->exists(path: $fullPath),
+                default => file_exists(filename: public_path(path: $fullPath)),
+            };
+        } catch (UnableToCheckFileExistence $e) {
+            // Custom S3 endpoint kadang gagal cek existence; tetap kembalikan nama file
+            // agar avatar tidak ter-overwrite jadi kosong saat update tanpa ganti foto
+            return $cleanImg;
+        }
 
         if (! $exists) {
             return null;

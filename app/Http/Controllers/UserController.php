@@ -138,12 +138,20 @@ class UserController extends Controller implements HasMiddleware
     {
         return DB::transaction(callback: function () use ($request, $user): RedirectResponse {
             $validated = $request->validated();
-            $validated['avatar'] = $this->imageServiceV2->upload(
-                name: 'avatar',
-                path: $this->avatarPath,
-                defaultImage: $user->getRawOriginal('avatar'),
-                disk: $this->disk
-            );
+
+            // Tidak ada upload gambar → skip, tetap pakai avatar lama
+            // Ada upload gambar baru → upload ke RustFS dan replace (hapus file lama)
+            if ($request->hasFile('avatar') && $request->file('avatar')->isValid()) {
+                $validated['avatar'] = $this->imageServiceV2->upload(
+                    name: 'avatar',
+                    path: $this->avatarPath,
+                    defaultImage: $user->getRawOriginal('avatar'),
+                    disk: $this->disk
+                );
+            } else {
+                $validated['avatar'] = $user->getRawOriginal('avatar');
+            }
+
             $validated['log_otp'] = ($request->log_otp ?? 'No') === 'Yes' ? 'Yes' : 'No';
 
             if (! $request->password) {

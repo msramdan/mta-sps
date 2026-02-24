@@ -69,16 +69,29 @@ class SettingMerchantController extends Controller implements HasMiddleware
 
         $validated = $request->validated();
 
-        $validated['logo'] = $this->imageServiceV2->upload(name: 'logo', path: $this->logoPath, defaultImage: $merchant->getRawOriginal('logo'), disk: $this->disk);
-        $validated['ktp'] = $this->imageServiceV2->upload(name: 'ktp', path: $this->ktpPath, defaultImage: $merchant->getRawOriginal('ktp'), disk: $this->disk);
-        $validated['ktp_lembar_verifikasi'] = $this->imageServiceV2->upload(name: 'ktp_lembar_verifikasi', path: $this->ktpLembarVerifikasiPath, defaultImage: $merchant->getRawOriginal('ktp_lembar_verifikasi'), disk: $this->disk);
-        $validated['ktp_photo_selfie'] = $this->imageServiceV2->upload(name: 'ktp_photo_selfie', path: $this->ktpPhotoSelfiePath, defaultImage: $merchant->getRawOriginal('ktp_photo_selfie'), disk: $this->disk);
-        $validated['photo_toko_tampak_depan'] = $this->imageServiceV2->upload(name: 'photo_toko_tampak_depan', path: $this->photoTokoPath, defaultImage: $merchant->getRawOriginal('photo_toko_tampak_depan'), disk: $this->disk);
+        // Tidak ada upload → skip, tetap pakai berkas lama. Ada upload baru → replace.
+        $validated['logo'] = $this->uploadOrKeep($request, 'logo', $this->logoPath, $merchant->getRawOriginal('logo'));
+        $validated['ktp'] = $this->uploadOrKeep($request, 'ktp', $this->ktpPath, $merchant->getRawOriginal('ktp'));
+        $validated['ktp_lembar_verifikasi'] = $this->uploadOrKeep($request, 'ktp_lembar_verifikasi', $this->ktpLembarVerifikasiPath, $merchant->getRawOriginal('ktp_lembar_verifikasi'));
+        $validated['ktp_photo_selfie'] = $this->uploadOrKeep($request, 'ktp_photo_selfie', $this->ktpPhotoSelfiePath, $merchant->getRawOriginal('ktp_photo_selfie'));
+        $validated['photo_toko_tampak_depan'] = $this->uploadOrKeep($request, 'photo_toko_tampak_depan', $this->photoTokoPath, $merchant->getRawOriginal('photo_toko_tampak_depan'));
 
         $merchant->update(attributes: $validated);
 
         Alert::success('Berhasil', 'Merchant berhasil diperbarui.');
         return redirect()->route('setting-merchant.index');
+    }
+
+    /**
+     * Upload file baru (replace lama) hanya jika ada file; bila tidak, tetap pakai nilai lama.
+     */
+    private function uploadOrKeep($request, string $name, string $path, ?string $currentValue): ?string
+    {
+        if ($request->hasFile($name) && $request->file($name)->isValid()) {
+            return $this->imageServiceV2->upload(name: $name, path: $path, defaultImage: $currentValue, disk: $this->disk);
+        }
+
+        return $currentValue;
     }
 
     public function switchMerchant(Request $request): JsonResponse

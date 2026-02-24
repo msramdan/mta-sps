@@ -53,7 +53,9 @@ return [
             'secret' => env('AWS_SECRET_ACCESS_KEY'),
             'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
             'bucket' => env('AWS_BUCKET'),
+            // URL publik untuk link file (pakai domain HTTPS agar tidak CORS saat di hosting)
             'url' => env('AWS_URL'),
+            // Endpoint S3: pakai HTTPS (mis. https://rustfs.qrin.web.id) di production agar aman & hindari CORS
             'endpoint' => env('AWS_ENDPOINT', 'http://103.76.120.95:19000'),
             'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', true),
             'throw' => false,
