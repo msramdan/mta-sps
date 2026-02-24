@@ -144,15 +144,27 @@ class Merchant extends Model
     {
         $path = 'logos';
         $imageService = new ImageServiceV2();
-        $disk = $imageService->setDiskName(disk: 'public');
+        $disk = $imageService->setDiskName(disk: 's3');
 
         return Attribute::make(
-            get: fn (?string $value): string =>
-                $imageService->getImageCastUrl(
-                    image: $value,
-                    path: $path,
-                    disk: $disk
-                )
+            get: function (?string $value) use ($path, $imageService, $disk) {
+                if (! $value) {
+                    return $imageService->getPlaceholderImage();
+                }
+
+                if (str_starts_with($value, 'http://') || str_starts_with($value, 'https://')) {
+                    return $value;
+                }
+
+                return match (true) {
+                    $imageService->isPrivateS3(disk: $disk) || $disk === 'local'
+                        => $imageService->getTemporaryUrl(disk: $disk, image: "$path/$value"),
+                    in_array(needle: $disk, haystack: ['s3', 'public'])
+                        => $imageService->getStoragePublicUrl(disk: $disk, image: "$path/$value"),
+                    default
+                        => $imageService->getPublicAssetUrl(image: "$path/$value"),
+                };
+            }
         );
     }
 
@@ -163,15 +175,27 @@ class Merchant extends Model
     {
         $path = 'ktps';
         $imageService = new ImageServiceV2();
-        $disk = $imageService->setDiskName(disk: 'public');
+        $disk = $imageService->setDiskName(disk: 's3');
 
         return Attribute::make(
-            get: fn (?string $value): string =>
-                $imageService->getImageCastUrl(
-                    image: $value,
-                    path: $path,
-                    disk: $disk
-                )
+            get: function (?string $value) use ($path, $imageService, $disk) {
+                if (! $value) {
+                    return $imageService->getPlaceholderImage();
+                }
+
+                if (str_starts_with($value, 'http://') || str_starts_with($value, 'https://')) {
+                    return $value;
+                }
+
+                return match (true) {
+                    $imageService->isPrivateS3(disk: $disk) || $disk === 'local'
+                        => $imageService->getTemporaryUrl(disk: $disk, image: "$path/$value"),
+                    in_array(needle: $disk, haystack: ['s3', 'public'])
+                        => $imageService->getStoragePublicUrl(disk: $disk, image: "$path/$value"),
+                    default
+                        => $imageService->getPublicAssetUrl(image: "$path/$value"),
+                };
+            }
         );
     }
 
@@ -179,10 +203,26 @@ class Merchant extends Model
     {
         $path = 'ktp-lembar-verifikasi';
         $imageService = new ImageServiceV2();
-        $disk = $imageService->setDiskName(disk: 'public');
+        $disk = $imageService->setDiskName(disk: 's3');
         return Attribute::make(
-            get: fn (?string $value): string =>
-                $imageService->getImageCastUrl(image: $value, path: $path, disk: $disk)
+            get: function (?string $value) use ($path, $imageService, $disk) {
+                if (! $value) {
+                    return $imageService->getPlaceholderImage();
+                }
+
+                if (str_starts_with($value, 'http://') || str_starts_with($value, 'https://')) {
+                    return $value;
+                }
+
+                return match (true) {
+                    $imageService->isPrivateS3(disk: $disk) || $disk === 'local'
+                        => $imageService->getTemporaryUrl(disk: $disk, image: "$path/$value"),
+                    in_array(needle: $disk, haystack: ['s3', 'public'])
+                        => $imageService->getStoragePublicUrl(disk: $disk, image: "$path/$value"),
+                    default
+                        => $imageService->getPublicAssetUrl(image: "$path/$value"),
+                };
+            }
         );
     }
 
@@ -190,10 +230,26 @@ class Merchant extends Model
     {
         $path = 'ktp-photo-selfie';
         $imageService = new ImageServiceV2();
-        $disk = $imageService->setDiskName(disk: 'public');
+        $disk = $imageService->setDiskName(disk: 's3');
         return Attribute::make(
-            get: fn (?string $value): string =>
-                $imageService->getImageCastUrl(image: $value, path: $path, disk: $disk)
+            get: function (?string $value) use ($path, $imageService, $disk) {
+                if (! $value) {
+                    return $imageService->getPlaceholderImage();
+                }
+
+                if (str_starts_with($value, 'http://') || str_starts_with($value, 'https://')) {
+                    return $value;
+                }
+
+                return match (true) {
+                    $imageService->isPrivateS3(disk: $disk) || $disk === 'local'
+                        => $imageService->getTemporaryUrl(disk: $disk, image: "$path/$value"),
+                    in_array(needle: $disk, haystack: ['s3', 'public'])
+                        => $imageService->getStoragePublicUrl(disk: $disk, image: "$path/$value"),
+                    default
+                        => $imageService->getPublicAssetUrl(image: "$path/$value"),
+                };
+            }
         );
     }
 
@@ -201,10 +257,26 @@ class Merchant extends Model
     {
         $path = 'photo-toko-tampak-depan';
         $imageService = new ImageServiceV2();
-        $disk = $imageService->setDiskName(disk: 'public');
+        $disk = $imageService->setDiskName(disk: 's3');
         return Attribute::make(
-            get: fn (?string $value): string =>
-                $imageService->getImageCastUrl(image: $value, path: $path, disk: $disk)
+            get: function (?string $value) use ($path, $imageService, $disk) {
+                if (! $value) {
+                    return $imageService->getPlaceholderImage();
+                }
+
+                if (str_starts_with($value, 'http://') || str_starts_with($value, 'https://')) {
+                    return $value;
+                }
+
+                return match (true) {
+                    $imageService->isPrivateS3(disk: $disk) || $disk === 'local'
+                        => $imageService->getTemporaryUrl(disk: $disk, image: "$path/$value"),
+                    in_array(needle: $disk, haystack: ['s3', 'public'])
+                        => $imageService->getStoragePublicUrl(disk: $disk, image: "$path/$value"),
+                    default
+                        => $imageService->getPublicAssetUrl(image: "$path/$value"),
+                };
+            }
         );
     }
 }

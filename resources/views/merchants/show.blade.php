@@ -31,7 +31,7 @@
                     <div class="card">
                         <div class="card-body">
                             <div class="row">
-                                <!-- COL KIRI: Merchant Info & QRIN -->
+                                <!-- COL KIRI: Merchant Info, Dokumen & QRIN -->
                                 <div class="col-lg-6 col-md-12">
                                     <!-- 1. Informasi Merchant -->
                                     <div class="card border mb-4">
@@ -56,50 +56,6 @@
                                                     <td class="fw-bold">Balance</td>
                                                     <td>
                                                         <span class="badge bg-success fs-6">Rp {{ number_format($merchant->balance ?? 0, 0, ',', '.') }}</span>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="fw-bold">Logo</td>
-                                                    <td>
-                                                        @if ($merchant->logo)
-                                                            <div class="d-flex align-items-center">
-                                                                <div class="position-relative">
-                                                                    <img src="{{ $merchant->logo }}" alt="Logo"
-                                                                        class="rounded" style="width: 150px" />
-                                                                    <a href="{{ $merchant->logo }}" target="_blank"
-                                                                        class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
-                                                                        style="background: rgba(0,0,0,0.3); opacity: 0; transition: opacity 0.3s; text-decoration: none;"
-                                                                        onmouseover="this.style.opacity='1'"
-                                                                        onmouseout="this.style.opacity='0'">
-                                                                        <i class="fas fa-external-link-alt text-white"></i>
-                                                                    </a>
-                                                                </div>
-                                                            </div>
-                                                        @else
-                                                            <span class="text-muted">-</span>
-                                                        @endif
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="fw-bold">KTP</td>
-                                                    <td>
-                                                        @if ($merchant->ktp && $merchant->ktp != '')
-                                                            <div class="d-flex align-items-center">
-                                                                <div class="position-relative">
-                                                                    <img src="{{ $merchant->ktp }}" alt="KTP"
-                                                                        class="rounded" style="width: 150px" />
-                                                                    <a href="{{ $merchant->ktp }}" target="_blank"
-                                                                        class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
-                                                                        style="background: rgba(0,0,0,0.3); opacity: 0; transition: opacity 0.3s; text-decoration: none;"
-                                                                        onmouseover="this.style.opacity='1'"
-                                                                        onmouseout="this.style.opacity='0'">
-                                                                        <i class="fas fa-external-link-alt text-white"></i>
-                                                                    </a>
-                                                                </div>
-                                                            </div>
-                                                        @else
-                                                            <span class="text-muted fst-italic">-</span>
-                                                        @endif
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -145,6 +101,90 @@
                                                     </td>
                                                 </tr>
                                             </table>
+                                        </div>
+                                    </div>
+
+                                    <!-- 2. Dokumen Merchant -->
+                                    <div class="card border mb-4">
+                                        <div class="card-header py-2">
+                                            <h6 class="mb-0 fw-bold">
+                                                <i class="fas fa-file-image me-1"></i> Dokumen Merchant
+                                            </h6>
+                                        </div>
+                                        <div class="card-body p-3">
+                                            <div class="row g-3">
+                                                <div class="col-6">
+                                                    <div class="small text-muted mb-1">KTP</div>
+                                                    @if ($merchant->ktp)
+                                                        <div class="position-relative d-inline-block">
+                                                            <img src="{{ $merchant->ktp }}" alt="KTP"
+                                                                class="rounded border"
+                                                                style="width: 140px; height: 90px; object-fit: cover;">
+                                                            <a href="{{ $merchant->ktp }}" target="_blank"
+                                                                class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center text-decoration-none"
+                                                                style="background: rgba(0,0,0,0.3); opacity: 0; transition: opacity 0.3s;">
+                                                                <i class="fas fa-external-link-alt text-white"></i>
+                                                            </a>
+                                                        </div>
+                                                    @else
+                                                        <span class="text-muted fst-italic">-</span>
+                                                    @endif
+                                                </div>
+
+                                                <div class="col-6">
+                                                    <div class="small text-muted mb-1">KTP Lembar Verifikasi</div>
+                                                    @if ($merchant->ktp_lembar_verifikasi)
+                                                        <div class="position-relative d-inline-block">
+                                                            <img src="{{ $merchant->ktp_lembar_verifikasi }}" alt="KTP Verifikasi"
+                                                                class="rounded border"
+                                                                style="width: 140px; height: 90px; object-fit: cover;">
+                                                            <a href="{{ $merchant->ktp_lembar_verifikasi }}" target="_blank"
+                                                                class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center text-decoration-none"
+                                                                style="background: rgba(0,0,0,0.3); opacity: 0; transition: opacity 0.3s;">
+                                                                <i class="fas fa-external-link-alt text-white"></i>
+                                                            </a>
+                                                        </div>
+                                                    @else
+                                                        <span class="text-muted fst-italic">-</span>
+                                                    @endif
+                                                </div>
+
+                                                <div class="col-6">
+                                                    <div class="small text-muted mb-1">KTP + Photo Selfie</div>
+                                                    @if ($merchant->ktp_photo_selfie)
+                                                        <div class="position-relative d-inline-block">
+                                                            <img src="{{ $merchant->ktp_photo_selfie }}" alt="Selfie"
+                                                                class="rounded border"
+                                                                style="width: 140px; height: 90px; object-fit: cover;">
+                                                            <a href="{{ $merchant->ktp_photo_selfie }}" target="_blank"
+                                                                class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center text-decoration-none"
+                                                                style="background: rgba(0,0,0,0.3); opacity: 0; transition: opacity 0.3s;">
+                                                                <i class="fas fa-external-link-alt text-white"></i>
+                                                            </a>
+                                                        </div>
+                                                    @else
+                                                        <span class="text-muted fst-italic">-</span>
+                                                    @endif
+                                                </div>
+
+                                                <div class="col-6">
+                                                    <div class="small text-muted mb-1">Photo Toko/Rumah Tampak Depan</div>
+                                                    @if ($merchant->photo_toko_tampak_depan)
+                                                        <div class="position-relative d-inline-block">
+                                                            <img src="{{ $merchant->photo_toko_tampak_depan }}" alt="Toko"
+                                                                class="rounded border"
+                                                                style="width: 140px; height: 90px; object-fit: cover;">
+                                                            <a href="{{ $merchant->photo_toko_tampak_depan }}" target="_blank"
+                                                                class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center text-decoration-none"
+                                                                style="background: rgba(0,0,0,0.3); opacity: 0; transition: opacity 0.3s;">
+                                                                <i class="fas fa-external-link-alt text-white"></i>
+                                                            </a>
+                                                        </div>
+                                                    @else
+                                                        <span class="text-muted fst-italic">-</span>
+                                                    @endif
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
 

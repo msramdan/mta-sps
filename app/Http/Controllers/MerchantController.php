@@ -14,16 +14,30 @@ use Illuminate\Http\Request;
 
 class MerchantController extends Controller implements HasMiddleware
 {
+    public ImageServiceV2 $imageServiceV2;
+    public string $logoPath;
+    public string $ktpPath;
+    public string $ktpLembarVerifikasiPath;
+    public string $ktpPhotoSelfiePath;
+    public string $photoTokoPath;
+    public string $disk;
+
     public function __construct(
-        public ImageServiceV2 $imageServiceV2,
-        public string $logoPath = 'logos',
-        public string $ktpPath = 'ktps',
-        public string $ktpLembarVerifikasiPath = 'ktp-lembar-verifikasi',
-        public string $ktpPhotoSelfiePath = 'ktp-photo-selfie',
-        public string $photoTokoPath = 'photo-toko-tampak-depan',
-        public string $disk = 'public'
+        ImageServiceV2 $imageServiceV2,
+        string $logoPath = 'logos',
+        string $ktpPath = 'ktps',
+        string $ktpLembarVerifikasiPath = 'ktp-lembar-verifikasi',
+        string $ktpPhotoSelfiePath = 'ktp-photo-selfie',
+        string $photoTokoPath = 'photo-toko-tampak-depan',
+        string $disk = 's3'
     ) {
-        //
+        $this->imageServiceV2 = $imageServiceV2;
+        $this->logoPath = $logoPath;
+        $this->ktpPath = $ktpPath;
+        $this->ktpLembarVerifikasiPath = $ktpLembarVerifikasiPath;
+        $this->ktpPhotoSelfiePath = $ktpPhotoSelfiePath;
+        $this->photoTokoPath = $photoTokoPath;
+        $this->disk = $disk;
     }
 
     /**
@@ -76,11 +90,36 @@ class MerchantController extends Controller implements HasMiddleware
     {
         $validated = $request->validated();
 
-        $validated['logo'] = $this->imageServiceV2->upload(name: 'logo', path: $this->logoPath, disk: $this->disk);
-        $validated['ktp'] = $this->imageServiceV2->upload(name: 'ktp', path: $this->ktpPath, disk: $this->disk);
-        $validated['ktp_lembar_verifikasi'] = $this->imageServiceV2->upload(name: 'ktp_lembar_verifikasi', path: $this->ktpLembarVerifikasiPath, disk: $this->disk);
-        $validated['ktp_photo_selfie'] = $this->imageServiceV2->upload(name: 'ktp_photo_selfie', path: $this->ktpPhotoSelfiePath, disk: $this->disk);
-        $validated['photo_toko_tampak_depan'] = $this->imageServiceV2->upload(name: 'photo_toko_tampak_depan', path: $this->photoTokoPath, disk: $this->disk);
+        $validated['logo'] = $this->imageServiceV2->upload(
+            name: 'logo',
+            path: $this->logoPath,
+            defaultImage: null,
+            disk: $this->disk
+        );
+        $validated['ktp'] = $this->imageServiceV2->upload(
+            name: 'ktp',
+            path: $this->ktpPath,
+            defaultImage: null,
+            disk: $this->disk
+        );
+        $validated['ktp_lembar_verifikasi'] = $this->imageServiceV2->upload(
+            name: 'ktp_lembar_verifikasi',
+            path: $this->ktpLembarVerifikasiPath,
+            defaultImage: null,
+            disk: $this->disk
+        );
+        $validated['ktp_photo_selfie'] = $this->imageServiceV2->upload(
+            name: 'ktp_photo_selfie',
+            path: $this->ktpPhotoSelfiePath,
+            defaultImage: null,
+            disk: $this->disk
+        );
+        $validated['photo_toko_tampak_depan'] = $this->imageServiceV2->upload(
+            name: 'photo_toko_tampak_depan',
+            path: $this->photoTokoPath,
+            defaultImage: null,
+            disk: $this->disk
+        );
 
         Merchant::create(attributes: $validated);
 
@@ -118,11 +157,36 @@ class MerchantController extends Controller implements HasMiddleware
         // Exclude kode_merchant from update (should never be updated)
         unset($validated['kode_merchant']);
 
-        $validated['logo'] = $this->imageServiceV2->upload(name: 'logo', path: $this->logoPath, defaultImage: $merchant?->logo, disk: $this->disk);
-        $validated['ktp'] = $this->imageServiceV2->upload(name: 'ktp', path: $this->ktpPath, defaultImage: $merchant?->getRawOriginal('ktp'), disk: $this->disk);
-        $validated['ktp_lembar_verifikasi'] = $this->imageServiceV2->upload(name: 'ktp_lembar_verifikasi', path: $this->ktpLembarVerifikasiPath, defaultImage: $merchant?->getRawOriginal('ktp_lembar_verifikasi'), disk: $this->disk);
-        $validated['ktp_photo_selfie'] = $this->imageServiceV2->upload(name: 'ktp_photo_selfie', path: $this->ktpPhotoSelfiePath, defaultImage: $merchant?->getRawOriginal('ktp_photo_selfie'), disk: $this->disk);
-        $validated['photo_toko_tampak_depan'] = $this->imageServiceV2->upload(name: 'photo_toko_tampak_depan', path: $this->photoTokoPath, defaultImage: $merchant?->getRawOriginal('photo_toko_tampak_depan'), disk: $this->disk);
+        $validated['logo'] = $this->imageServiceV2->upload(
+            name: 'logo',
+            path: $this->logoPath,
+            defaultImage: $merchant->getRawOriginal('logo'),
+            disk: $this->disk
+        );
+        $validated['ktp'] = $this->imageServiceV2->upload(
+            name: 'ktp',
+            path: $this->ktpPath,
+            defaultImage: $merchant->getRawOriginal('ktp'),
+            disk: $this->disk
+        );
+        $validated['ktp_lembar_verifikasi'] = $this->imageServiceV2->upload(
+            name: 'ktp_lembar_verifikasi',
+            path: $this->ktpLembarVerifikasiPath,
+            defaultImage: $merchant->getRawOriginal('ktp_lembar_verifikasi'),
+            disk: $this->disk
+        );
+        $validated['ktp_photo_selfie'] = $this->imageServiceV2->upload(
+            name: 'ktp_photo_selfie',
+            path: $this->ktpPhotoSelfiePath,
+            defaultImage: $merchant->getRawOriginal('ktp_photo_selfie'),
+            disk: $this->disk
+        );
+        $validated['photo_toko_tampak_depan'] = $this->imageServiceV2->upload(
+            name: 'photo_toko_tampak_depan',
+            path: $this->photoTokoPath,
+            defaultImage: $merchant->getRawOriginal('photo_toko_tampak_depan'),
+            disk: $this->disk
+        );
 
         $merchant->update(attributes: $validated);
 
@@ -136,13 +200,19 @@ class MerchantController extends Controller implements HasMiddleware
     public function destroy(Merchant $merchant): RedirectResponse
     {
         try {
-            $logo = $merchant->logo;
-            $ktp = $merchant->ktp;
+            $logo = $merchant->getRawOriginal('logo');
+            $ktp = $merchant->getRawOriginal('ktp');
+            $ktpLembarVerifikasi = $merchant->getRawOriginal('ktp_lembar_verifikasi');
+            $ktpPhotoSelfie = $merchant->getRawOriginal('ktp_photo_selfie');
+            $photoToko = $merchant->getRawOriginal('photo_toko_tampak_depan');
 
             $merchant->delete();
 
             $this->imageServiceV2->delete(path: $this->logoPath, image: $logo, disk: $this->disk);
             $this->imageServiceV2->delete(path: $this->ktpPath, image: $ktp, disk: $this->disk);
+            $this->imageServiceV2->delete(path: $this->ktpLembarVerifikasiPath, image: $ktpLembarVerifikasi, disk: $this->disk);
+            $this->imageServiceV2->delete(path: $this->ktpPhotoSelfiePath, image: $ktpPhotoSelfie, disk: $this->disk);
+            $this->imageServiceV2->delete(path: $this->photoTokoPath, image: $photoToko, disk: $this->disk);
 
             Alert::success('Berhasil', 'Merchant berhasil dihapus.');
             return redirect()->route('merchants.index');

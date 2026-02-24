@@ -53,7 +53,7 @@
                 <label class="form-label">KTP <span class="text-danger">*</span></label>
                 <div class="d-flex flex-column gap-1">
                     <img src="{{ isset($merchant) && $merchant->ktp ? $merchant->ktp : 'https://placehold.co/120x80?text=KTP' }}" alt="KTP" class="doc-preview align-self-start" id="ktp-preview" role="button" tabindex="0" data-preview-title="KTP" data-fallback="https://placehold.co/120x80?text=KTP" />
-                    <input type="file" name="ktp" accept=".jpg,.jpeg,.png" class="form-control form-control-sm @error('ktp') is-invalid @enderror" {{ !isset($merchant) ? 'required' : '' }} />
+                    <input type="file" name="ktp" id="ktp" accept=".jpg,.jpeg,.png" class="form-control form-control-sm @error('ktp') is-invalid @enderror" {{ !isset($merchant) ? 'required' : '' }} />
                     @error('ktp') <span class="text-danger small">{{ $message }}</span> @enderror
                 </div>
             </div>
