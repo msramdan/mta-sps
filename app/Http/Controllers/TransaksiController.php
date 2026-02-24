@@ -266,6 +266,7 @@ class TransaksiController extends Controller implements HasMiddleware
 
     /**
      * Resend callback to merchant's url_callback.
+     * Hit Nobu query-payment-status dulu; hanya jika status Success baru kirim callback ke merchant.
      */
     public function resendCallback(Transaksi $transaksi): JsonResponse
     {
@@ -286,6 +287,57 @@ class TransaksiController extends Controller implements HasMiddleware
             ], 400);
         }
 
+        if (empty($transaksi->no_ref_merchant)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Transaksi tidak memiliki no_ref_merchant untuk query status ke Nobu.',
+            ], 400);
+        }
+
+        // 1. Hit Nobu query-payment-status dulu
+        $qrinBaseUrl = config('services.qrin.base_url');
+        $nobuPayload = [
+            'token_qrin' => $merchant->token_qrin,
+            'request_payload_qris' => [
+                'no_ref_merchant' => $transaksi->no_ref_merchant,
+            ],
+        ];
+
+        try {
+            $nobuResponse = Http::timeout(30)
+                ->post($qrinBaseUrl . '/v1.0/query-payment-status', $nobuPayload);
+            $nobuResult = $nobuResponse->json();
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal menghubungi Nobu: ' . $e->getMessage(),
+            ], 502);
+        }
+
+        if (empty($nobuResult['success']) || $nobuResult['success'] !== true) {
+            return response()->json([
+                'success' => false,
+                'message' => $nobuResult['message'] ?? 'Nobu mengembalikan respons gagal.',
+                'data' => $nobuResult['data'] ?? null,
+            ], 400);
+        }
+
+        $data = $nobuResult['data'] ?? [];
+        $latestStatus = $data['latestTransactionStatus'] ?? null;
+        $statusDesc = $data['transactionStatusDesc'] ?? null;
+
+        if ($latestStatus !== '00' || $statusDesc !== 'Success') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Status transaksi di Nobu bukan Success. Tidak mengirim callback ke merchant.',
+                'data' => [
+                    'latestTransactionStatus' => $latestStatus,
+                    'transactionStatusDesc' => $statusDesc,
+                ],
+            ], 400);
+        }
+
+        // 2. Nobu success → ambil data transaksi dan kirim callback ke merchant
         $payload = [
             'id' => $transaksi->id,
             'tanggal_transaksi' => $transaksi->tanggal_transaksi->format('Y-m-d\TH:i:sP'),

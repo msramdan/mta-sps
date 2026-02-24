@@ -87,7 +87,7 @@ class SimulatorController extends Controller implements HasMiddleware
                 'request_payload_qris' => $requestPayloadQris,
             ];
 
-            $qrinUrl = config('services.qrin.url');
+            $qrinUrl = config('services.qrin.base_url') . '/v1.0/generate-qris';
             $response = Http::timeout(30)->post($qrinUrl, $payload);
             $result = $response->json();
 

@@ -36,7 +36,7 @@ return [
     ],
 
     'qrin' => [
-        'url' => env('QRIN_API_URL', 'http://localhost:8080/v1.0/generate-qris'),
+        'base_url' => rtrim(env('QRIN_API_URL', 'http://localhost:8080'), '/'),
     ],
 
 ];
