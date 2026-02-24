@@ -19,7 +19,7 @@ class LogQueryPaymentStatusController extends Controller implements HasMiddlewar
     {
         return [
             new Middleware(middleware: 'permission:log query payment status view', only: ['index', 'show']),
-            new Middleware(middleware: 'permission:log query payment status delete', only: ['destroy', 'bulkDestroy']),
+            new Middleware(middleware: 'permission:log query payment status delete', only: ['destroy', 'bulkDestroy', 'truncate']),
         ];
     }
 
@@ -109,6 +109,13 @@ class LogQueryPaymentStatusController extends Controller implements HasMiddlewar
         if ($request->wantsJson()) {
             return response()->json(['success' => true, 'message' => count($ids) . ' log berhasil dihapus.']);
         }
+        return redirect()->route('log-query-payment-status.index');
+    }
+
+    public function truncate(): RedirectResponse
+    {
+        LogQueryPaymentStatus::query()->delete();
+        Alert::success('Berhasil', 'Semua data Log Query Payment Status telah dikosongkan.');
         return redirect()->route('log-query-payment-status.index');
     }
 }

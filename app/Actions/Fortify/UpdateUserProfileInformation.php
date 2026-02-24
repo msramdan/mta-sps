@@ -11,9 +11,13 @@ use Laravel\Fortify\Contracts\UpdatesUserProfileInformation;
 
 class UpdateUserProfileInformation implements UpdatesUserProfileInformation
 {
-    public function __construct(public string $avatarPath = 'avatars', public string $disk = 'storage.public')
+    public string $avatarPath;
+    public string $disk;
+
+    public function __construct(string $avatarPath = 'avatars', string $disk = 's3')
     {
-        //
+        $this->avatarPath = $avatarPath;
+        $this->disk = $disk;
     }
 
     /**
@@ -35,7 +39,12 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
         ])->validateWithBag(errorBag: 'updateProfileInformation');
 
         if (isset($input['avatar']) && $input['avatar']->isValid()) {
-            $filename = (new ImageServiceV2)->upload(name: 'avatar', path: $this->avatarPath, defaultImage: $user?->avatar);
+            $filename = (new ImageServiceV2)->upload(
+                name: 'avatar',
+                path: $this->avatarPath,
+                defaultImage: $user->getRawOriginal('avatar'),
+                disk: $this->disk
+            );
 
             $user->forceFill(attributes: ['avatar' => $filename])->save();
         }

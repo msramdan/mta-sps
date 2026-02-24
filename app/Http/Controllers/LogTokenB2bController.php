@@ -18,7 +18,7 @@ class LogTokenB2bController extends Controller implements HasMiddleware
     {
         return [
             new Middleware(middleware: 'permission:log token b2b view', only: ['index', 'show']),
-            new Middleware(middleware: 'permission:log token b2b delete', only: ['destroy', 'bulkDestroy']),
+            new Middleware(middleware: 'permission:log token b2b delete', only: ['destroy', 'bulkDestroy', 'truncate']),
         ];
     }
 
@@ -113,6 +113,13 @@ class LogTokenB2bController extends Controller implements HasMiddleware
         if ($request->wantsJson()) {
             return response()->json(['success' => true, 'message' => count($ids) . ' log berhasil dihapus.']);
         }
+        return redirect()->route('log-token-b2b.index');
+    }
+
+    public function truncate(): RedirectResponse
+    {
+        LogTokenB2b::query()->delete();
+        Alert::success('Berhasil', 'Semua data Log Token B2B telah dikosongkan.');
         return redirect()->route('log-token-b2b.index');
     }
 }

@@ -19,7 +19,7 @@ class LogGenerateQrController extends Controller implements HasMiddleware
     {
         return [
             new Middleware(middleware: 'permission:log generate qr view', only: ['index', 'show']),
-            new Middleware(middleware: 'permission:log generate qr delete', only: ['destroy', 'bulkDestroy']),
+            new Middleware(middleware: 'permission:log generate qr delete', only: ['destroy', 'bulkDestroy', 'truncate']),
         ];
     }
 
@@ -109,6 +109,13 @@ class LogGenerateQrController extends Controller implements HasMiddleware
         if ($request->wantsJson()) {
             return response()->json(['success' => true, 'message' => count($ids) . ' log berhasil dihapus.']);
         }
+        return redirect()->route('log-generate-qrs.index');
+    }
+
+    public function truncate(): RedirectResponse
+    {
+        LogGenerateQr::query()->delete();
+        Alert::success('Berhasil', 'Semua data Log Generate QR telah dikosongkan.');
         return redirect()->route('log-generate-qrs.index');
     }
 }

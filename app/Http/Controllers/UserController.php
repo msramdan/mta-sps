@@ -19,8 +19,11 @@ use RealRashid\SweetAlert\Facades\Alert;
 
 class UserController extends Controller implements HasMiddleware
 {
-    public function __construct(public ImageServiceV2 $imageServiceV2, public string $avatarPath = 'avatars', public string $disk = 'storage.public')
-    {
+    public function __construct(
+        public ImageServiceV2 $imageServiceV2,
+        public string $avatarPath = 'avatars',
+        public string $disk = 's3'
+    ) {
         //
     }
 
@@ -44,6 +47,7 @@ class UserController extends Controller implements HasMiddleware
             $users = User::with(relations: ['roles:id,name', 'assignedMerchants'])->orderByDesc('created_at');
 
             return Datatables::of(source: $users)
+                ->addColumn(name: 'avatar', content: fn($row) => $row->avatar)
                 ->addColumn(name: 'action', content: 'users.include.action')
                 ->addColumn(name: 'role', content: fn($row) => $row->getRoleNames()->toArray() !== [] ? $row->getRoleNames()[0] : '-')
                 ->addColumn(name: 'merchants', content: fn($row) => $row->assignedMerchants->pluck('nama_merchant')->implode(', ') ?: '-')
@@ -71,7 +75,12 @@ class UserController extends Controller implements HasMiddleware
     {
         return DB::transaction(callback: function () use ($request): RedirectResponse {
             $validated = $request->validated();
-            $validated['avatar'] = $this->imageServiceV2->upload(name: 'avatar', path: $this->avatarPath);
+            $validated['avatar'] = $this->imageServiceV2->upload(
+                name: 'avatar',
+                path: $this->avatarPath,
+                defaultImage: null,
+                disk: $this->disk
+            );
             $validated['password'] = bcrypt(value: $request->password);
             $validated['log_otp'] = ($request->log_otp ?? 'No') === 'Yes' ? 'Yes' : 'No';
 
@@ -129,7 +138,12 @@ class UserController extends Controller implements HasMiddleware
     {
         return DB::transaction(callback: function () use ($request, $user): RedirectResponse {
             $validated = $request->validated();
-            $validated['avatar'] = $this->imageServiceV2->upload(name: 'avatar', path: $this->avatarPath, defaultImage: $user?->avatar);
+            $validated['avatar'] = $this->imageServiceV2->upload(
+                name: 'avatar',
+                path: $this->avatarPath,
+                defaultImage: $user->getRawOriginal('avatar'),
+                disk: $this->disk
+            );
             $validated['log_otp'] = ($request->log_otp ?? 'No') === 'Yes' ? 'Yes' : 'No';
 
             if (! $request->password) {
@@ -169,7 +183,7 @@ class UserController extends Controller implements HasMiddleware
     {
         try {
             return DB::transaction(callback: function () use ($user): RedirectResponse {
-                $avatar = $user->avatar;
+                $avatar = $user->getRawOriginal('avatar');
 
                 // Delete merchant assignments first
                 DB::table('assign_merchants')->where('user_id', $user->id)->delete();

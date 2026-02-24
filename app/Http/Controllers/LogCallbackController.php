@@ -19,7 +19,7 @@ class LogCallbackController extends Controller implements HasMiddleware
     {
         return [
             new Middleware(middleware: 'permission:log callback view', only: ['index', 'show']),
-            new Middleware(middleware: 'permission:log callback delete', only: ['destroy', 'bulkDestroy']),
+            new Middleware(middleware: 'permission:log callback delete', only: ['destroy', 'bulkDestroy', 'truncate']),
         ];
     }
 
@@ -129,6 +129,13 @@ class LogCallbackController extends Controller implements HasMiddleware
         if ($request->wantsJson()) {
             return response()->json(['success' => true, 'message' => count($ids) . ' log berhasil dihapus.']);
         }
+        return redirect()->route('log-callbacks.index');
+    }
+
+    public function truncate(): RedirectResponse
+    {
+        LogCallback::query()->delete();
+        Alert::success('Berhasil', 'Semua data Log Callback telah dikosongkan.');
         return redirect()->route('log-callbacks.index');
     }
 }

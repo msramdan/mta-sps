@@ -61,10 +61,15 @@ class User extends Authenticatable
     {
         $path = 'avatars';
         $imageService = new ImageServiceV2;
-        $disk = $imageService->setDiskName(disk: 'storage.public');
+        $disk = $imageService->setDiskName(disk: 's3');
 
         if (! $value) {
             return $imageService->getPlaceholderImage();
+        }
+
+        // Jika sudah berupa URL penuh, kembalikan apa adanya (untuk data lama / URL eksternal)
+        if (str_starts_with($value, 'http://') || str_starts_with($value, 'https://')) {
+            return $value;
         }
 
         return match (true) {

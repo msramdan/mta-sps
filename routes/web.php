@@ -54,25 +54,33 @@ Route::middleware(['auth', 'web'])->group(function () {
     Route::get('/log-generate-qrs/{logGenerateQr}', [LogGenerateQrController::class, 'show'])->name('log-generate-qrs.show');
     Route::delete('/log-generate-qrs/{logGenerateQr}', [LogGenerateQrController::class, 'destroy'])->name('log-generate-qrs.destroy');
     Route::post('/log-generate-qrs/bulk-destroy', [LogGenerateQrController::class, 'bulkDestroy'])->name('log-generate-qrs.bulk-destroy');
+    Route::post('/log-generate-qrs/truncate', [LogGenerateQrController::class, 'truncate'])->name('log-generate-qrs.truncate');
     Route::get('/log-callbacks', [LogCallbackController::class, 'index'])->name('log-callbacks.index');
     Route::get('/log-callbacks/{logCallback}', [LogCallbackController::class, 'show'])->name('log-callbacks.show');
     Route::delete('/log-callbacks/{logCallback}', [LogCallbackController::class, 'destroy'])->name('log-callbacks.destroy');
     Route::post('/log-callbacks/bulk-destroy', [LogCallbackController::class, 'bulkDestroy'])->name('log-callbacks.bulk-destroy');
+    Route::post('/log-callbacks/truncate', [LogCallbackController::class, 'truncate'])->name('log-callbacks.truncate');
     Route::get('/log-resend-callbacks', [LogResendCallbackController::class, 'index'])->name('log-resend-callbacks.index');
     Route::get('/log-resend-callbacks/{logResendCallback}', [LogResendCallbackController::class, 'show'])->name('log-resend-callbacks.show');
     Route::delete('/log-resend-callbacks/{logResendCallback}', [LogResendCallbackController::class, 'destroy'])->name('log-resend-callbacks.destroy');
     Route::post('/log-resend-callbacks/bulk-destroy', [LogResendCallbackController::class, 'bulkDestroy'])->name('log-resend-callbacks.bulk-destroy');
+    Route::post('/log-resend-callbacks/truncate', [LogResendCallbackController::class, 'truncate'])->name('log-resend-callbacks.truncate');
     Route::get('/log-query-payment-status', [LogQueryPaymentStatusController::class, 'index'])->name('log-query-payment-status.index');
     Route::get('/log-query-payment-status/{logQueryPaymentStatus}', [LogQueryPaymentStatusController::class, 'show'])->name('log-query-payment-status.show');
     Route::delete('/log-query-payment-status/{logQueryPaymentStatus}', [LogQueryPaymentStatusController::class, 'destroy'])->name('log-query-payment-status.destroy');
     Route::post('/log-query-payment-status/bulk-destroy', [LogQueryPaymentStatusController::class, 'bulkDestroy'])->name('log-query-payment-status.bulk-destroy');
+    Route::post('/log-query-payment-status/truncate', [LogQueryPaymentStatusController::class, 'truncate'])->name('log-query-payment-status.truncate');
     Route::get('/log-token-b2b', [LogTokenB2bController::class, 'index'])->name('log-token-b2b.index');
     Route::get('/log-token-b2b/{logTokenB2b}', [LogTokenB2bController::class, 'show'])->name('log-token-b2b.show');
     Route::delete('/log-token-b2b/{logTokenB2b}', [LogTokenB2bController::class, 'destroy'])->name('log-token-b2b.destroy');
     Route::post('/log-token-b2b/bulk-destroy', [LogTokenB2bController::class, 'bulkDestroy'])->name('log-token-b2b.bulk-destroy');
+    Route::post('/log-token-b2b/truncate', [LogTokenB2bController::class, 'truncate'])->name('log-token-b2b.truncate');
 
     Route::get('/activity-logs', [ActivityLogController::class, 'index'])->name('activity-logs.index');
     Route::get('/activity-logs/{activityLog}', [ActivityLogController::class, 'show'])->name('activity-logs.show');
+    Route::delete('/activity-logs/{activityLog}', [ActivityLogController::class, 'destroy'])->name('activity-logs.destroy');
+    Route::post('/activity-logs/bulk-destroy', [ActivityLogController::class, 'bulkDestroy'])->name('activity-logs.bulk-destroy');
+    Route::post('/activity-logs/truncate', [ActivityLogController::class, 'truncate'])->name('activity-logs.truncate');
 
     // Bank Management
     Route::resource('banks', BankController::class);

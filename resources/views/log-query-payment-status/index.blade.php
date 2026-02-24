@@ -72,6 +72,9 @@
                             <button type="button" id="btn-bulk-delete-log" class="btn btn-danger btn-sm" data-url="{{ route('log-query-payment-status.bulk-destroy') }}" title="{{ __('Hapus data terpilih') }}">
                                 <i class="ti ti-trash"></i> {{ __('Hapus terpilih') }}
                             </button>
+                            <button type="button" id="btn-truncate-log" class="btn btn-outline-danger btn-sm ms-1" data-url="{{ route('log-query-payment-status.truncate') }}" data-name="Log Query Payment Status" title="{{ __('Kosongkan semua data log') }}">
+                                <i class="ti ti-trash-off"></i> {{ __('Truncate data') }}
+                            </button>
                         </div>
                         @endcan
                         <div class="card-body p-0">
@@ -163,6 +166,27 @@
                     ids.forEach(function(id) {
                         form.append($('<input>').attr({ type: 'hidden', name: 'ids[]', value: id }));
                     });
+                    $('body').append(form);
+                    form.submit();
+                }
+            });
+        });
+
+        $(document).on('click', '#btn-truncate-log', function() {
+            var url = $(this).data('url');
+            var name = $(this).data('name');
+            Swal.fire({
+                icon: 'warning',
+                title: 'Konfirmasi',
+                text: 'Apakah anda benar ingin hapus/mengosongkan data log ' + name + '? Semua data akan terhapus dan tidak dapat dikembalikan.',
+                showCancelButton: true,
+                confirmButtonText: 'Ya, kosongkan',
+                cancelButtonText: 'Batal',
+                confirmButtonColor: '#d33'
+            }).then(function(result) {
+                if (result.isConfirmed) {
+                    var form = $('<form>').attr({ method: 'POST', action: url }).css('display', 'none');
+                    form.append($('<input>').attr({ type: 'hidden', name: '_token', value: '{{ csrf_token() }}' }));
                     $('body').append(form);
                     form.submit();
                 }

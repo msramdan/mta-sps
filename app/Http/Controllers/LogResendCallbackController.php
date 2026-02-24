@@ -20,7 +20,7 @@ class LogResendCallbackController extends Controller implements HasMiddleware
     {
         return [
             new Middleware(middleware: 'permission:log resend callback view', only: ['index', 'show']),
-            new Middleware(middleware: 'permission:log resend callback delete', only: ['destroy', 'bulkDestroy']),
+            new Middleware(middleware: 'permission:log resend callback delete', only: ['destroy', 'bulkDestroy', 'truncate']),
         ];
     }
 
@@ -115,6 +115,13 @@ class LogResendCallbackController extends Controller implements HasMiddleware
         if ($request->wantsJson()) {
             return response()->json(['success' => true, 'message' => count($ids) . ' log berhasil dihapus.']);
         }
+        return redirect()->route('log-resend-callbacks.index');
+    }
+
+    public function truncate(): RedirectResponse
+    {
+        LogResendCallback::query()->delete();
+        Alert::success('Berhasil', 'Semua data Log Resend Callback telah dikosongkan.');
         return redirect()->route('log-resend-callbacks.index');
     }
 }

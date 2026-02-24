@@ -278,8 +278,18 @@ class ImageServiceV2 implements ImageServiceInterfaceV2
             return null;
         }
 
-        $image = last(array: explode(separator: '/', string: $name));
-        $cleanImg = str_contains(haystack: $image, needle: '?expires') ? str(string: $image)->before(search: '?expires')->toString() : $image;
+        // Jika $name berupa URL penuh (http/https), ambil path-nya saja
+        if (str_starts_with($name, 'http://') || str_starts_with($name, 'https://')) {
+            $pathFromUrl = parse_url($name, PHP_URL_PATH) ?: '';
+            $image = last(array: explode(separator: '/', string: $pathFromUrl));
+        } else {
+            $image = last(array: explode(separator: '/', string: $name));
+        }
+
+        // Bersihkan query string secara umum (bukan hanya ?expires)
+        $cleanImg = str_contains(haystack: $image, needle: '?')
+            ? str(string: $image)->before(search: '?')->toString()
+            : $image;
         $fullPath = "$path/$cleanImg";
         $actualDisk = $this->setDiskName(disk: $disk);
 

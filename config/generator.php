@@ -204,7 +204,8 @@ return [
                 'log query payment status delete',
                 'log token b2b view',
                 'log token b2b delete',
-                'activity log view'
+                'activity log view',
+                'activity log delete'
             ],
             'menus' => [
                 [
@@ -222,7 +223,8 @@ return [
                         'log query payment status delete',
                         'log token b2b view',
                         'log token b2b delete',
-                        'activity log view'
+                        'activity log view',
+                        'activity log delete'
                     ],
                     'submenus' => [
                         [
