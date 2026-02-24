@@ -72,15 +72,15 @@
                     render: function(data, type, full, meta) {
                         if (data) {
                             return `<div class="d-flex align-items-center">
-                            <div class="h-30 w-30 d-flex-center b-r-50 overflow-hidden text-bg-info">
-                                <img alt="${full.nama || 'User'}" class="img-fluid" src="${data}">
+                            <div class="h-30 w-30 d-flex-center rounded-circle overflow-hidden bg-transparent border">
+                                <img alt="${full.nama || 'User'}" class="img-fluid" src="${data}" style="object-fit: cover; width: 100%; height: 100%;">
                             </div>
                             <p class="mb-0 ps-2">${full.name || 'Unknown'}</p>
                         </div>`;
                         } else {
                             return `<div class="d-flex align-items-center">
-                            <div class="h-30 w-30 d-flex-center b-r-50 overflow-hidden text-bg-info">
-                                <i class="fas fa-user"></i>
+                            <div class="h-30 w-30 d-flex-center rounded-circle overflow-hidden bg-transparent border">
+                                <i class="fas fa-user text-muted"></i>
                             </div>
                             <p class="mb-0 ps-2">${full.name || 'Unknown'}</p>
                         </div>`;

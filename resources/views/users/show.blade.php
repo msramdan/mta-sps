@@ -29,53 +29,101 @@
             </div>
 
             <div class="row">
-                <div class="col-12">
-                    <div class="card">
+                <div class="col-lg-4 mb-3">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body text-center d-flex flex-column align-items-center">
+                            <div class="mb-3">
+                                <img src="{{ $user->avatar }}" alt="Avatar"
+                                    class="rounded-3 img-fluid shadow-sm"
+                                    style="object-fit: cover; width: 260px; height: 150px;">
+                            </div>
+                            <h5 class="mb-1">{{ $user->name }}</h5>
+                            <p class="text-muted mb-1">{{ $user->email }}</p>
+                            <span class="badge bg-primary mb-2">
+                                {{ $user->getRoleNames()->toArray() !== [] ? $user->getRoleNames()[0] : '-' }}
+                            </span>
+                            <span class="badge bg-secondary">
+                                {{ $user->no_wa ?? '-' }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-8 mb-3">
+                    <div class="card shadow-sm mb-3">
+                        <div class="card-header border-0 bg-transparent">
+                            <h5 class="mb-0">{{ __(key: 'User Information') }}</h5>
+                        </div>
                         <div class="card-body">
-                            <div class="table-responsive">
-                                <table class="table table-hover table-striped">
-                                    <tr>
-                                        <td colspan="2" class="text-center">
-                                            <div class="avatar avatar-xl">
-                                                <img src="{{ $user->avatar }}" alt="Avatar" class="rounded img-fluid"
-                                                    style="object-fit: cover; width: 350px; height: 200px;">
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="fw-bold">{{ __(key: 'Name') }}</td>
-                                        <td>{{ $user->name }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="fw-bold">{{ __(key: 'Email') }}</td>
-                                        <td>{{ $user->email }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="fw-bold">No. WhatsApp</td>
-                                        <td>{{ $user->no_wa ?? '-' }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="fw-bold">{{ __(key: 'Role') }}</td>
-                                        <td>{{ $user->getRoleNames()->toArray() !== [] ? $user->getRoleNames()[0] : '-' }}
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="fw-bold">{{ __(key: 'Email verified at') }}</td>
-                                        <td>{{ $user->email_verified_at ? $user->email_verified_at->format('Y-m-d H:i:s') : '-' }}
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="fw-bold">{{ __(key: 'Created at') }}</td>
-                                        <td>{{ $user->created_at->format('Y-m-d H:i:s') }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="fw-bold">{{ __(key: 'Updated at') }}</td>
-                                        <td>{{ $user->updated_at->format('Y-m-d H:i:s') }}</td>
-                                    </tr>
-                                </table>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <div class="border rounded-3 p-3 h-100">
+                                        <div class="text-muted small mb-1">{{ __(key: 'Name') }}</div>
+                                        <div class="fw-semibold">{{ $user->name }}</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="border rounded-3 p-3 h-100">
+                                        <div class="text-muted small mb-1">{{ __(key: 'Email') }}</div>
+                                        <div class="fw-semibold">{{ $user->email }}</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="border rounded-3 p-3 h-100">
+                                        <div class="text-muted small mb-1">No. WhatsApp</div>
+                                        <div class="fw-semibold">{{ $user->no_wa ?? '-' }}</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="border rounded-3 p-3 h-100">
+                                        <div class="text-muted small mb-1">{{ __(key: 'Role') }}</div>
+                                        <div class="fw-semibold">
+                                            {{ $user->getRoleNames()->toArray() !== [] ? $user->getRoleNames()[0] : '-' }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card shadow-sm">
+                        <div class="card-header border-0 bg-transparent">
+                            <h5 class="mb-0">{{ __(key: 'System Info') }}</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <div class="border rounded-3 p-3 h-100">
+                                        <div class="text-muted small mb-1">{{ __(key: 'Email verified at') }}</div>
+                                        <div class="fw-semibold">
+                                            {{ $user->email_verified_at ? $user->email_verified_at->format('Y-m-d H:i:s') : '-' }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="border rounded-3 p-3 h-100">
+                                        <div class="text-muted small mb-1">{{ __(key: 'Created at') }}</div>
+                                        <div class="fw-semibold">{{ $user->created_at->format('Y-m-d H:i:s') }}</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="border rounded-3 p-3 h-100">
+                                        <div class="text-muted small mb-1">{{ __(key: 'Updated at') }}</div>
+                                        <div class="fw-semibold">{{ $user->updated_at->format('Y-m-d H:i:s') }}</div>
+                                    </div>
+                                </div>
                             </div>
 
-                            <a href="{{ route(name: 'users.index') }}" class="btn btn-secondary">{{ __(key: 'Kembali') }}</a>
+                            <div class="mt-4 d-flex justify-content-between">
+                                <a href="{{ route(name: 'users.index') }}" class="btn btn-outline-secondary">
+                                    <i class="ti ti-arrow-left me-1"></i>{{ __(key: 'Kembali') }}
+                                </a>
+                                @can('user edit')
+                                    <a href="{{ route('users.edit', $user) }}" class="btn btn-primary">
+                                        <i class="ti ti-edit me-1"></i>{{ __(key: 'Edit User') }}
+                                    </a>
+                                @endcan
+                            </div>
                         </div>
                     </div>
                 </div>
