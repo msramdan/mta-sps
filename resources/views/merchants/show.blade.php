@@ -48,45 +48,34 @@
                                                 </tr>
                                                 <tr>
                                                     <td class="fw-bold">Kode Merchant</td>
-                                                    <td>
-                                                        <span class="badge bg-primary">{{ $merchant->kode_merchant }}</span>
-                                                    </td>
+                                                    <td>{{ $merchant->kode_merchant }}</td>
                                                 </tr>
                                                 <tr>
                                                     <td class="fw-bold">Balance</td>
                                                     <td>
-                                                        <span class="badge bg-success fs-6">Rp {{ number_format($merchant->balance ?? 0, 0, ',', '.') }}</span>
+                                                        <span class="badge bg-success fs-6">
+                                                            Rp {{ number_format($merchant->balance ?? 0, 0, ',', '.') }}
+                                                        </span>
                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <td class="fw-bold">Status</td>
                                                     <td>
                                                         @php
-                                                            $statusMap = [
-                                                                'approved' => ['success', 'Disetujui'],
-                                                                'pending' => ['warning', 'Menunggu'],
-                                                                'rejected' => ['danger', 'Ditolak'],
-                                                                'suspended' => ['secondary', 'Ditangguhkan'],
+                                                            $statusLabelMap = [
+                                                                'approved' => 'Disetujui',
+                                                                'pending' => 'Menunggu',
+                                                                'rejected' => 'Ditolak',
+                                                                'suspended' => 'Ditangguhkan',
                                                             ];
-
-                                                            [$badge, $label] = $statusMap[$merchant->status] ?? [
-                                                                'light',
-                                                                'Unknown',
-                                                            ];
+                                                            $label = $statusLabelMap[$merchant->status] ?? 'Unknown';
                                                         @endphp
-                                                        <span
-                                                            class="badge bg-{{ $badge }}">{{ $label }}</span>
+                                                        {{ $label }}
                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <td class="fw-bold">Beban Biaya</td>
-                                                    <td>
-                                                        @if($merchant->beban_biaya === 'Pelanggan')
-                                                            <span class="badge bg-info">Pelanggan</span>
-                                                        @else
-                                                            <span class="badge bg-primary">Merchant</span>
-                                                        @endif
-                                                    </td>
+                                                    <td>{{ $merchant->beban_biaya === 'Pelanggan' ? 'Pelanggan' : 'Merchant' }}</td>
                                                 </tr>
                                                 <tr>
                                                     <td class="fw-bold">Dibuat</td>
@@ -201,14 +190,14 @@
                                                     <td class="fw-bold" style="width: 40%">Token QRIN</td>
                                                     <td>
                                                         @if ($merchant->token_qrin)
-                                                            <div class="d-flex align-items-center">
+                                                            <div class="d-flex align-items-center token-qrin-wrapper">
                                                                 <span id="tokenQrinText" class="me-2 text-truncate"
                                                                     style="max-width: 200px;">
                                                                     {{ str_repeat('•', 32) }}
                                                                 </span>
                                                                 <button type="button"
-                                                                    class="btn btn-sm btn-outline-secondary flex-shrink-0"
-                                                                    onclick="toggleTokenQrin()">
+                                                                    class="btn btn-sm btn-outline-secondary flex-shrink-0 token-qrin-toggle"
+                                                                    onclick="toggleTokenQrin(this)">
                                                                     <i class="fas fa-eye"></i>
                                                                 </button>
                                                             </div>
@@ -287,15 +276,15 @@
                                                 <!-- Client Secret -->
                                                 <div class="col-md-12">
                                                     <label class="small fw-bold text-muted mb-1">Client Secret</label>
-                                                    <div class="d-flex align-items-center p-2">
+                                                    <div class="d-flex align-items-center p-2 client-secret-wrapper">
                                                         @if ($merchant->nobu_client_secret)
                                                             <span id="clientSecretText" class="flex-grow-1 text-truncate"
                                                                 style="max-width: 300px;">
                                                                 {{ str_repeat('•', 32) }}
                                                             </span>
                                                             <button type="button"
-                                                                class="btn btn-sm btn-outline-secondary flex-shrink-0"
-                                                                onclick="toggleClientSecret()">
+                                                                class="btn btn-sm btn-outline-secondary flex-shrink-0 client-secret-toggle"
+                                                                onclick="toggleClientSecret(this)">
                                                                 <i class="fas fa-eye"></i>
                                                             </button>
                                                         @else
@@ -472,9 +461,9 @@
         const tokenQrinValue = "{{ $merchant->token_qrin }}";
         const clientSecretValue = "{{ $merchant->nobu_client_secret }}";
 
-        function toggleTokenQrin() {
+        function toggleTokenQrin(buttonEl) {
             const tokenQrinText = document.getElementById('tokenQrinText');
-            const button = event.currentTarget;
+            const button = buttonEl;
 
             if (tokenQrinVisible) {
                 tokenQrinText.textContent = '••••••••••••••••••••••••••••••••';
@@ -497,9 +486,9 @@
             tokenQrinVisible = !tokenQrinVisible;
         }
 
-        function toggleClientSecret() {
+        function toggleClientSecret(buttonEl) {
             const clientSecretText = document.getElementById('clientSecretText');
-            const button = event.currentTarget;
+            const button = buttonEl;
 
             if (clientSecretVisible) {
                 clientSecretText.textContent = '••••••••••••••••••••••••••••••••';
@@ -595,6 +584,18 @@
             .btn {
                 width: 100%;
                 margin-bottom: 0.5rem;
+            }
+
+            .token-qrin-wrapper,
+            .client-secret-wrapper {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.4rem;
+            }
+
+            .token-qrin-toggle,
+            .client-secret-toggle {
+                width: auto;
             }
 
             .text-truncate {
