@@ -266,7 +266,7 @@ class TransaksiController extends Controller implements HasMiddleware
 
     /**
      * Resend callback to merchant's url_callback.
-     * Hit Nobu query-payment-status dulu; hanya jika status Success baru kirim callback ke merchant.
+     * Hit Core Service query-payment-status dulu; hanya jika status Success baru kirim callback ke merchant.
      */
     public function resendCallback(Transaksi $transaksi): JsonResponse
     {
@@ -290,11 +290,11 @@ class TransaksiController extends Controller implements HasMiddleware
         if (empty($transaksi->no_ref_merchant)) {
             return response()->json([
                 'success' => false,
-                'message' => 'Transaksi tidak memiliki no_ref_merchant untuk query status ke Nobu.',
+                'message' => 'Transaksi tidak memiliki no_ref_merchant untuk query status.',
             ], 400);
         }
 
-        // 1. Hit Nobu query-payment-status dulu
+        // 1. Hit Core Service query-payment-status dulu
         $qrinBaseUrl = config('services.qrin.base_url');
         $nobuPayload = [
             'token_qrin' => $merchant->token_qrin,
@@ -310,14 +310,14 @@ class TransaksiController extends Controller implements HasMiddleware
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Gagal menghubungi Nobu: ' . $e->getMessage(),
+                'message' => 'Gagal menghubungi Core Service: ' . str_replace('Nobu', 'Core Service', $e->getMessage()),
             ], 502);
         }
 
         if (empty($nobuResult['success']) || $nobuResult['success'] !== true) {
             return response()->json([
                 'success' => false,
-                'message' => $nobuResult['message'] ?? 'Nobu mengembalikan respons gagal.',
+                'message' => str_replace('Nobu', 'Core Service', $nobuResult['message'] ?? 'Core Service mengembalikan respons gagal.'),
                 'data' => $nobuResult['data'] ?? null,
             ], 400);
         }
@@ -329,7 +329,7 @@ class TransaksiController extends Controller implements HasMiddleware
         if ($latestStatus !== '00' || $statusDesc !== 'Success') {
             return response()->json([
                 'success' => false,
-                'message' => 'Status transaksi di Nobu bukan Success. Tidak mengirim callback ke merchant.',
+                'message' => 'Status transaksi di Core Service bukan Success. Tidak mengirim callback ke merchant.',
                 'data' => [
                     'latestTransactionStatus' => $latestStatus,
                     'transactionStatusDesc' => $statusDesc,
@@ -337,7 +337,7 @@ class TransaksiController extends Controller implements HasMiddleware
             ], 400);
         }
 
-        // 2. Nobu success → ambil data transaksi dan kirim callback ke merchant
+        // 2. Core Service success → ambil data transaksi dan kirim callback ke merchant
         $payload = [
             'id' => $transaksi->id,
             'tanggal_transaksi' => $transaksi->tanggal_transaksi->format('Y-m-d\TH:i:sP'),
