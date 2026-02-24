@@ -11,6 +11,7 @@ trait PasswordValidationRules
      */
     protected function passwordRules(): array
     {
+        // Minimal 8 karakter berlaku di semua environment
         $validations = ['confirmed'];
 
         if (app()->isProduction()) {
@@ -20,6 +21,8 @@ trait PasswordValidationRules
                 ->numbers()
                 ->symbols()
                 ->uncompromised();
+        } else {
+            $validations[] = Password::min(size: 8);
         }
 
         return $validations;

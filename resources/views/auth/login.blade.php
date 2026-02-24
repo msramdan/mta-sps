@@ -41,6 +41,13 @@
                                                     aria-label="Close"></button>
                                             </div>
                                         @endif
+                                        @if (session('status'))
+                                            <div class="alert alert-success alert-dismissible show fade">
+                                                {{ session('status') }}
+                                                <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                                    aria-label="Close"></button>
+                                            </div>
+                                        @endif
 
                                         <div class="mb-3">
                                             <label class="form-label" for="email">Alamat Email</label>
@@ -61,9 +68,12 @@
                                                 </button>
                                             </div>
                                         </div>
-                                        <div class="mb-3 form-check">
-                                            <input type="checkbox" class="form-check-input" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
-                                            <label class="form-check-label" for="remember">Ingat saya</label>
+                                        <div class="mb-3 d-flex justify-content-between align-items-center">
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
+                                                <label class="form-check-label" for="remember">Ingat saya</label>
+                                            </div>
+                                            <a href="{{ route('password.request') }}" class="text-primary small">Lupa kata sandi?</a>
                                         </div>
                                         @if (config('app.show_captcha') === 'Yes')
                                             <div class="mb-3">
