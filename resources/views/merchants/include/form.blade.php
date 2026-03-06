@@ -9,6 +9,19 @@
         .doc-preview { max-width: 100px; height: 70px; }
         .doc-label-with-badge { justify-content: space-between; }
     }
+    .nobu-loading-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(255, 255, 255, 0.85);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10;
+        border-radius: 8px;
+    }
 </style>
 <div class="row mb-2">
     <!-- 1. Informasi Merchant -->
@@ -180,6 +193,15 @@
                     <label class="form-check-label" for="use-tecanusa-credential">Use Credential Tecanusa</label>
                 </div>
             </div>
+        </div>
+        <div class="position-relative" id="nobu-fields-container">
+            <div class="nobu-loading-overlay d-none" id="nobu-loading-overlay">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <span class="ms-2">Memuat kredensial...</span>
+            </div>
+        <div class="row g-2">
             <div class="col-12 col-md-6">
                 <label for="nobu-client-id" class="form-label">Client ID</label>
                 <input type="text" name="nobu_client_id" id="nobu-client-id" class="form-control form-control-sm @error('nobu_client_id') is-invalid @enderror"
@@ -225,6 +247,7 @@
                 @error('nobu_private_key') <span class="text-danger small">{{ $message }}</span> @enderror
                 <small class="form-text text-muted" id="nobu-private-key-count">0 chars</small>
             </div>
+        </div>
         </div>
     </div>
 </div>
@@ -275,7 +298,13 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 document.getElementById('use-tecanusa-credential')?.addEventListener('change', function() {
+    const switchEl = this;
+    const overlay = document.getElementById('nobu-loading-overlay');
+
     if (this.checked) {
+        switchEl.disabled = true;
+        overlay.classList.remove('d-none');
+
         fetch('{{ route("merchants.tecanusa-credential") }}')
             .then(res => res.json())
             .then(data => {
@@ -290,13 +319,26 @@ document.getElementById('use-tecanusa-credential')?.addEventListener('change', f
                     document.getElementById('nobu-private-key-count').textContent = (data.data.nobu_private_key || '').length + ' chars';
                 } else {
                     alert(data.message || 'Gagal mengambil kredensial Tecanusa');
-                    this.checked = false;
+                    switchEl.checked = false;
                 }
             })
             .catch(err => {
                 alert('Terjadi kesalahan saat mengambil kredensial Tecanusa');
-                this.checked = false;
+                switchEl.checked = false;
+            })
+            .finally(() => {
+                switchEl.disabled = false;
+                overlay.classList.add('d-none');
             });
+    } else {
+        document.getElementById('nobu-client-id').value = '';
+        document.getElementById('nobu-partner-id').value = '';
+        document.getElementById('nobu-client-secret').value = '';
+        document.getElementById('nobu-merchant-id').value = '';
+        document.getElementById('nobu-sub-merchant-id').value = '';
+        document.getElementById('nobu-store-id').value = '';
+        document.getElementById('nobu-private-key').value = '';
+        document.getElementById('nobu-private-key-count').textContent = '0 chars';
     }
 });
 var ALLOWED_TYPES = ['image/jpeg', 'image/jpg', 'image/png'];
