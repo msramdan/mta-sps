@@ -55,9 +55,6 @@
                                                 @endfor
                                             </div>
                                             <input type="hidden" name="otp" id="otp" value="{{ old('otp') }}">
-                                            @error('otp')
-                                                <div class="invalid-feedback d-block">{{ $message }}</div>
-                                            @enderror
                                             <div class="form-text">Kode berlaku selama 5 menit.</div>
                                         </div>
 
@@ -93,6 +90,10 @@
             height: 52px;
             font-size: 1.5rem;
             font-weight: 600;
+        }
+        .otp-inputs .otp-digit.is-invalid {
+            background-image: none;
+            border-color: #dc3545;
         }
     </style>
 @endpush

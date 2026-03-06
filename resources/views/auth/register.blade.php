@@ -49,10 +49,21 @@
                                             <div class="col-md-12 mb-3">
                                                 <label class="form-label">Nama Lengkap <span
                                                         class="text-danger">*</span></label>
-                                                <input class="form-control" name="nama_pemilik" type="text"
-                                                    value="{{ old('nama_pemilik') }}" required
-                                                    placeholder="Contoh: Muhammad Saeful Ramdan">
-                                                <small class="text-muted">Harus sesuai dengan nama di KTP</small>
+                                                <input class="form-control @error('nama_pemilik') is-invalid @enderror"
+                                                       name="nama_pemilik"
+                                                       type="text"
+                                                       value="{{ old('nama_pemilik') }}"
+                                                       required
+                                                       minlength="5"
+                                                       maxlength="100"
+                                                       pattern="[a-zA-Z0-9\s]+"
+                                                       placeholder="Contoh: Muhammad Saeful Ramdan">
+                                                @error('nama_pemilik')
+                                                    <div class="invalid-feedback">
+                                                        {{ $message }}
+                                                    </div>
+                                                @enderror
+                                                <small class="text-muted">Harus sesuai dengan nama di KTP (5-100 karakter, hanya huruf, angka, dan spasi)</small>
                                             </div>
                                         </div>
 
@@ -60,9 +71,21 @@
                                             <div class="col-md-12 mb-3">
                                                 <label class="form-label">Nama Merchant/Perusahaan <span
                                                         class="text-danger">*</span></label>
-                                                <input class="form-control" name="nama_perusahaan" type="text"
-                                                    value="{{ old('nama_perusahaan') }}" required
-                                                    placeholder="Contoh: PT Tecanusa">
+                                                <input class="form-control @error('nama_perusahaan') is-invalid @enderror"
+                                                       name="nama_perusahaan"
+                                                       type="text"
+                                                       value="{{ old('nama_perusahaan') }}"
+                                                       required
+                                                       minlength="5"
+                                                       maxlength="100"
+                                                       pattern="[a-zA-Z0-9\s]+"
+                                                       placeholder="Contoh: PT Tecanusa">
+                                                @error('nama_perusahaan')
+                                                    <div class="invalid-feedback">
+                                                        {{ $message }}
+                                                    </div>
+                                                @enderror
+                                                <small class="text-muted">5-100 karakter, hanya huruf, angka, dan spasi</small>
                                             </div>
                                         </div>
 

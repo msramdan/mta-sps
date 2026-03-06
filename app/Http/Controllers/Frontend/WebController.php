@@ -32,14 +32,20 @@ class WebController extends Controller
     {
         // Validasi input
         $validator = Validator::make($request->all(), [
-            'nama_pemilik' => 'required|string|max:255',
-            'nama_perusahaan' => 'required|string|max:150|unique:merchants,nama_merchant',
+            'nama_pemilik' => ['required', 'string', 'min:5', 'max:100', 'regex:/^[a-zA-Z0-9\s]+$/'],
+            'nama_perusahaan' => ['required', 'string', 'min:5', 'max:100', 'regex:/^[a-zA-Z0-9\s]+$/', 'unique:merchants,nama_merchant'],
             'no_wa' => 'required|string|max:14|starts_with:62|unique:users,no_wa',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|confirmed|min:8',
         ], [
+            'nama_pemilik.required' => 'Nama lengkap harus diisi.',
+            'nama_pemilik.min' => 'Nama lengkap minimal 5 karakter.',
+            'nama_pemilik.max' => 'Nama lengkap maksimal 100 karakter.',
+            'nama_pemilik.regex' => 'Nama lengkap hanya boleh berisi huruf, angka, dan spasi.',
             'nama_perusahaan.required' => 'Nama merchant/perusahaan harus diisi.',
-            'nama_perusahaan.max' => 'Nama merchant maksimal 150 karakter.',
+            'nama_perusahaan.min' => 'Nama merchant/perusahaan minimal 5 karakter.',
+            'nama_perusahaan.max' => 'Nama merchant/perusahaan maksimal 100 karakter.',
+            'nama_perusahaan.regex' => 'Nama merchant/perusahaan hanya boleh berisi huruf, angka, dan spasi.',
             'nama_perusahaan.unique' => 'Nama merchant/perusahaan sudah terdaftar.',
             'no_wa.starts_with' => 'Nomor WhatsApp harus diawali dengan 62.',
             'no_wa.max' => 'Nomor WhatsApp maksimal 14 digit.',
