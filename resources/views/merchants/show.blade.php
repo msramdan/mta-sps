@@ -249,12 +249,20 @@
                                 <div class="col-lg-6 col-md-12">
                                     <!-- 4. Konfigurasi Nobu -->
                                     <div class="card border mb-4">
-                                        <div class="card-header py-2">
+                                        <div class="card-header py-2 d-flex justify-content-between align-items-center">
                                             <h6 class="mb-0 fw-bold">
                                                 <i class="fas fa-credit-card me-1"></i> Konfigurasi Nobu
                                             </h6>
+                                            @can('merchant edit')
+                                            <div class="form-check form-switch mb-0">
+                                                <input class="form-check-input" type="checkbox" role="switch" id="use-tecanusa-credential-show"
+                                                    aria-checked="{{ $isUsingTecanusaCredential ? 'true' : 'false' }}"
+                                                    {{ $isUsingTecanusaCredential ? 'checked' : '' }}>
+                                                <label class="form-check-label small" for="use-tecanusa-credential-show">Use Credential Tecanusa</label>
+                                            </div>
+                                            @endcan
                                         </div>
-                                        <div class="card-body p-3">
+                                        <div class="card-body p-3 position-relative" id="nobu-config-body">
                                             <div class="row g-3">
                                                 <!-- Client ID -->
                                                 <div class="col-md-6">
@@ -465,6 +473,110 @@
 
         const tokenQrinValue = "{{ $merchant->token_qrin }}";
         const clientSecretValue = "{{ $merchant->nobu_client_secret }}";
+        const merchantId = "{{ $merchant->id }}";
+
+        // Use Credential Tecanusa Switch Handler
+        @can('merchant edit')
+        document.getElementById('use-tecanusa-credential-show')?.addEventListener('change', function(e) {
+            const switchEl = this;
+            const isChecked = switchEl.checked;
+            const actionText = isChecked ? 'menggunakan Credential Tecanusa' : 'menghapus Credential Nobu';
+
+            Swal.fire({
+                title: 'Konfirmasi',
+                text: `Apakah Anda yakin ingin ${actionText}?`,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Ya, Lanjutkan',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Show loading
+                    switchEl.disabled = true;
+                    const bodyEl = document.getElementById('nobu-config-body');
+                    bodyEl.insertAdjacentHTML('beforeend', '<div class="nobu-loading-overlay" id="nobu-loading"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></div>');
+
+                    if (isChecked) {
+                        // Fetch Tecanusa credentials and update
+                        fetch("{{ route('merchants.tecanusa-credential') }}")
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    // Update merchant with credentials
+                                    return fetch("{{ route('merchants.update-nobu', $merchant->id) }}", {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                        },
+                                        body: JSON.stringify(data.data)
+                                    });
+                                } else {
+                                    throw new Error(data.message || 'Kredensial tidak ditemukan');
+                                }
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    Swal.fire('Berhasil', 'Credential Tecanusa berhasil diterapkan.', 'success')
+                                        .then(() => location.reload());
+                                } else {
+                                    throw new Error(data.message || 'Gagal menyimpan');
+                                }
+                            })
+                            .catch(error => {
+                                switchEl.checked = false;
+                                Swal.fire('Gagal', error.message, 'error');
+                            })
+                            .finally(() => {
+                                switchEl.disabled = false;
+                                document.getElementById('nobu-loading')?.remove();
+                            });
+                    } else {
+                        // Clear credentials
+                        fetch("{{ route('merchants.update-nobu', $merchant->id) }}", {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            },
+                            body: JSON.stringify({
+                                nobu_client_id: null,
+                                nobu_partner_id: null,
+                                nobu_client_secret: null,
+                                nobu_merchant_id: null,
+                                nobu_sub_merchant_id: null,
+                                nobu_store_id: null,
+                                nobu_private_key: null
+                            })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                Swal.fire('Berhasil', 'Credential Nobu berhasil dihapus.', 'success')
+                                    .then(() => location.reload());
+                            } else {
+                                throw new Error(data.message || 'Gagal menghapus');
+                            }
+                        })
+                        .catch(error => {
+                            switchEl.checked = true;
+                            Swal.fire('Gagal', error.message, 'error');
+                        })
+                        .finally(() => {
+                            switchEl.disabled = false;
+                            document.getElementById('nobu-loading')?.remove();
+                        });
+                    }
+                } else {
+                    // User cancelled, revert switch
+                    switchEl.checked = !isChecked;
+                }
+            });
+        });
+        @endcan
 
         function toggleTokenQrin(buttonEl) {
             const tokenQrinText = document.getElementById('tokenQrinText');
@@ -533,6 +645,24 @@
 
 @push('css')
     <style>
+        .nobu-loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.85);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            border-radius: 8px;
+        }
+        [data-theme="dark"] .nobu-loading-overlay,
+        .dark .nobu-loading-overlay {
+            background: rgba(30, 33, 36, 0.85);
+        }
+
         .card {
             height: 100%;
             box-shadow: none !important;

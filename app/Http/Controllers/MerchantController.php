@@ -49,7 +49,7 @@ class MerchantController extends Controller implements HasMiddleware
             'auth',
             new Middleware(middleware: 'permission:merchant view', only: ['index', 'show']),
             new Middleware(middleware: 'permission:merchant create', only: ['create', 'store']),
-            new Middleware(middleware: 'permission:merchant edit', only: ['edit', 'update']),
+            new Middleware(middleware: 'permission:merchant edit', only: ['edit', 'update', 'updateNobu']),
             new Middleware(middleware: 'permission:merchant delete', only: ['destroy']),
             new Middleware(middleware: 'permission:merchant review', only: ['review']),
         ];
@@ -80,7 +80,8 @@ class MerchantController extends Controller implements HasMiddleware
      */
     public function create(): View
     {
-        return view(view: 'merchants.create');
+        $isUsingTecanusaCredential = false;
+        return view(view: 'merchants.create', data: compact('isUsingTecanusaCredential'));
     }
 
     /**
@@ -134,7 +135,19 @@ class MerchantController extends Controller implements HasMiddleware
     {
         $merchant->load(relations: ['bank:id,nama_bank']);
 
-        return view(view: 'merchants.show', data: compact(var_name: 'merchant'));
+        // Check if merchant is using Tecanusa credential (compare with first merchant)
+        $isUsingTecanusaCredential = false;
+        $tecanusa = Merchant::orderBy('created_at', 'asc')->first();
+        if ($tecanusa && $tecanusa->id !== $merchant->id && $tecanusa->nobu_client_id) {
+            $isUsingTecanusaCredential = (
+                $merchant->nobu_client_id === $tecanusa->nobu_client_id &&
+                $merchant->nobu_partner_id === $tecanusa->nobu_partner_id &&
+                $merchant->nobu_client_secret === $tecanusa->nobu_client_secret &&
+                $merchant->nobu_merchant_id === $tecanusa->nobu_merchant_id
+            );
+        }
+
+        return view(view: 'merchants.show', data: compact('merchant', 'isUsingTecanusaCredential'));
     }
 
     /**
@@ -144,7 +157,19 @@ class MerchantController extends Controller implements HasMiddleware
     {
         $merchant->load(relations: ['bank:id,nama_bank']);
 
-        return view(view: 'merchants.edit', data: compact(var_name: 'merchant'));
+        // Check if merchant is using Tecanusa credential (compare with first merchant)
+        $isUsingTecanusaCredential = false;
+        $tecanusa = Merchant::orderBy('created_at', 'asc')->first();
+        if ($tecanusa && $tecanusa->id !== $merchant->id && $tecanusa->nobu_client_id) {
+            $isUsingTecanusaCredential = (
+                $merchant->nobu_client_id === $tecanusa->nobu_client_id &&
+                $merchant->nobu_partner_id === $tecanusa->nobu_partner_id &&
+                $merchant->nobu_client_secret === $tecanusa->nobu_client_secret &&
+                $merchant->nobu_merchant_id === $tecanusa->nobu_merchant_id
+            );
+        }
+
+        return view(view: 'merchants.edit', data: compact('merchant', 'isUsingTecanusaCredential'));
     }
 
     /**
@@ -332,6 +357,29 @@ class MerchantController extends Controller implements HasMiddleware
             'pagination' => [
                 'more' => ($page * $perPage) < $total
             ]
+        ]);
+    }
+
+    /**
+     * Update Nobu credentials for a merchant (AJAX).
+     */
+    public function updateNobu(Request $request, Merchant $merchant): JsonResponse
+    {
+        $validated = $request->validate([
+            'nobu_client_id' => 'nullable|string|max:255',
+            'nobu_partner_id' => 'nullable|string|max:255',
+            'nobu_client_secret' => 'nullable|string|max:255',
+            'nobu_merchant_id' => 'nullable|string|max:255',
+            'nobu_sub_merchant_id' => 'nullable|string|max:255',
+            'nobu_store_id' => 'nullable|string|max:255',
+            'nobu_private_key' => 'nullable|string',
+        ]);
+
+        $merchant->update($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Konfigurasi Nobu berhasil diperbarui.'
         ]);
     }
 }

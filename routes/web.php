@@ -93,6 +93,8 @@ Route::middleware(['auth', 'web'])->group(function () {
         ->name('merchants.search');
     Route::get('/merchants-tecanusa-credential', [MerchantController::class, 'tecanusaCredential'])
         ->name('merchants.tecanusa-credential');
+    Route::post('/merchants/{merchant}/update-nobu', [MerchantController::class, 'updateNobu'])
+        ->name('merchants.update-nobu');
 
     Route::get('/setting-merchant', [SettingMerchantController::class, 'index'])
         ->name('setting-merchant.index');

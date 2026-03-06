@@ -190,7 +190,9 @@
         <div class="row g-2">
             <div class="col-12 mb-2">
                 <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" role="switch" id="use-tecanusa-credential">
+                    <input class="form-check-input" type="checkbox" role="switch" id="use-tecanusa-credential"
+                        aria-checked="{{ isset($isUsingTecanusaCredential) && $isUsingTecanusaCredential ? 'true' : 'false' }}"
+                        {{ isset($isUsingTecanusaCredential) && $isUsingTecanusaCredential ? 'checked' : '' }}>
                     <label class="form-check-label" for="use-tecanusa-credential">Use Credential Tecanusa</label>
                 </div>
             </div>
