@@ -18,9 +18,12 @@ class LogQueryPaymentStatus extends Model
     protected $fillable = [
         'transaksi_id',
         'merchant_id',
+        'url_query_payment',
         'payload_merchant_to_qrin',
+        'header_qrin_to_nobu',
         'payload_qrin_to_nobu',
-        'response_generate_qr',
+        'response_from_nobu_to_qrin',
+        'response_from_qrin_to_merchant',
         'is_success',
         'processing_time',
     ];

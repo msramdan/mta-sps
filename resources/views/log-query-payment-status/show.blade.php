@@ -14,9 +14,12 @@
         $d = json_decode($str);
         return $d ? json_encode($d, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) : e($str);
     };
+
     $payloadMerchantPretty = $prettyJson($logQueryPaymentStatus->payload_merchant_to_qrin);
+    $headerQrinToNobuPretty = $prettyJson($logQueryPaymentStatus->header_qrin_to_nobu);
     $payloadQrinPretty = $prettyJson($logQueryPaymentStatus->payload_qrin_to_nobu);
-    $responsePretty = $prettyJson($logQueryPaymentStatus->response_generate_qr);
+    $responseFromNobuPretty = $prettyJson($logQueryPaymentStatus->response_from_nobu_to_qrin);
+    $responseFromQrinToMerchantPretty = $prettyJson($logQueryPaymentStatus->response_from_qrin_to_merchant);
 @endphp
 
 @section('content')
@@ -98,12 +101,28 @@
                             <h6 class="mb-0 fw-bold"><i class="ti ti-send me-1"></i> Payload & Response Query Payment Status</h6>
                         </div>
                         <div class="card-body p-3">
+                            {{-- URL Query Payment --}}
+                            <p class="small fw-bold text-muted mb-1">URL Query Payment</p>
+                            <pre class="rounded border p-3 mb-3">{{ $logQueryPaymentStatus->url_query_payment ?? '-' }}</pre>
+
+                            {{-- Payload Merchant → QRIN --}}
                             <p class="small fw-bold text-muted mb-1">Payload Merchant → QRIN</p>
                             <pre class="rounded border p-3 mb-3">{{ $payloadMerchantPretty ?: '-' }}</pre>
+
+                            {{-- Header & Payload QRIN → Nobu --}}
+                            <p class="small fw-bold text-muted mb-1">Header QRIN → Nobu</p>
+                            <pre class="rounded border p-3 mb-3">{{ $headerQrinToNobuPretty ?: '-' }}</pre>
+
                             <p class="small fw-bold text-muted mb-1">Payload QRIN → Nobu</p>
                             <pre class="rounded border p-3 mb-3">{{ $payloadQrinPretty ?: '-' }}</pre>
-                            <p class="small fw-bold text-muted mb-1">Response</p>
-                            <pre class="rounded border p-3 mb-0">{{ $responsePretty ?: '-' }}</pre>
+
+                            {{-- Response Nobu → QRIN --}}
+                            <p class="small fw-bold text-muted mb-1">Response Nobu → QRIN</p>
+                            <pre class="rounded border p-3 mb-3">{{ $responseFromNobuPretty ?: '-' }}</pre>
+
+                            {{-- Response QRIN → Merchant --}}
+                            <p class="small fw-bold text-muted mb-1">Response QRIN → Merchant</p>
+                            <pre class="rounded border p-3 mb-0">{{ $responseFromQrinToMerchantPretty ?: '-' }}</pre>
                         </div>
                     </div>
                 </div>
