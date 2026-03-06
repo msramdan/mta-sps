@@ -28,114 +28,46 @@
                     <div class="card">
                         <div class="card-body">
                             <!-- Alert Status Pengajuan Merchant -->
-                            @if(in_array($merchant->status, ['pending', 'approved', 'rejected', 'suspended']))
-                                @php
-                                    $statusConfig = [
-                                        'pending' => [
-                                            'title' => 'Menunggu Persetujuan',
-                                            'badge' => 'warning',
-                                            'icon' => 'fas fa-clock',
-                                            'alert' => 'warning',
-                                            'message' => 'Pengajuan merchant Anda sedang dalam proses review oleh admin.'
-                                        ],
-                                        'approved' => [
-                                            'title' => 'Disetujui',
-                                            'badge' => 'success',
-                                            'icon' => 'fas fa-check-circle',
-                                            'alert' => 'success',
-                                            'message' => 'Pengajuan merchant Anda telah disetujui. Anda dapat mulai menggunakan layanan kami.'
-                                        ],
-                                        'rejected' => [
-                                            'title' => 'Ditolak',
-                                            'badge' => 'danger',
-                                            'icon' => 'fas fa-times-circle',
-                                            'alert' => 'danger',
-                                            'message' => 'Pengajuan merchant Anda ditolak oleh admin.'
-                                        ],
-                                        'suspended' => [
-                                            'title' => 'Ditangguhkan',
-                                            'badge' => 'danger',
-                                            'icon' => 'fas fa-ban',
-                                            'alert' => 'danger',
-                                            'message' => 'Akun merchant Anda ditangguhkan sementara.'
-                                        ]
-                                    ];
+                            @php
+                                $statusConfig = [
+                                    'pending' => ['title' => 'Pending', 'badge' => 'secondary', 'icon' => 'ti ti-clock'],
+                                    'waiting_review' => ['title' => 'Menunggu Review', 'badge' => 'warning', 'icon' => 'ti ti-hourglass'],
+                                    'approved' => ['title' => 'Aktif', 'badge' => 'success', 'icon' => 'ti ti-circle-check'],
+                                    'rejected' => ['title' => 'Ditolak', 'badge' => 'danger', 'icon' => 'ti ti-circle-x'],
+                                    'suspended' => ['title' => 'Ditangguhkan', 'badge' => 'dark', 'icon' => 'ti ti-ban'],
+                                ];
+                                $config = $statusConfig[$merchant->status] ?? $statusConfig['pending'];
+                            @endphp
 
-                                    $config = $statusConfig[$merchant->status];
-                                @endphp
+                            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3 pb-2 border-bottom">
+                                <div class="d-flex align-items-center gap-2">
+                                    <i class="{{ $config['icon'] }} fs-5 text-{{ $config['badge'] }}"></i>
+                                    <span class="fw-medium">Status:</span>
+                                    <span class="badge bg-{{ $config['badge'] }}">{{ $config['title'] }}</span>
+                                </div>
+                                @if($merchant->catatan)
+                                    <small class="text-muted">
+                                        <i class="ti ti-message-dots me-1"></i>
+                                        @if($merchant->status == 'rejected')Alasan: @elseif($merchant->status == 'suspended')Alasan: @else Catatan: @endif
+                                        {{ Str::limit($merchant->catatan, 50) }}
+                                    </small>
+                                @endif
+                            </div>
 
-                                <div class="alert alert-{{ $config['alert'] }} d-flex align-items-center mb-4" role="alert">
-                                    <div class="flex-shrink-0">
-                                        <i class="{{ $config['icon'] }} fa-2x me-3"></i>
-                                    </div>
-                                    <div class="flex-grow-1 ms-3">
-                                        <h5 class="alert-heading mb-1">Status Pengajuan Merchant:
-                                            <span class="badge bg-{{ $config['badge'] }}">{{ $config['title'] }}</span>
-                                        </h5>
-
-                                        <p class="mb-0">
-                                            <i class="fas fa-info-circle me-1"></i>
-                                            {{ $config['message'] }}
-                                            @if($merchant->catatan)
-                                                <br><strong>
-                                                    @if($merchant->status == 'rejected')
-                                                        Alasan Penolakan:
-                                                    @elseif($merchant->status == 'suspended')
-                                                        Alasan Penangguhan:
-                                                    @else
-                                                        Catatan Admin:
-                                                    @endif
-                                                </strong> {{ $merchant->catatan }}
-                                            @else
-                                                @if($merchant->status == 'pending')
-                                                    <br>Silakan lengkapi form data merchant di bawah ini untuk mempercepat proses verifikasi.
-                                                @endif
-                                            @endif
-                                        </p>
-
-                                        <!-- Instruksi khusus untuk status pending -->
-                                        @if($merchant->status == 'pending')
-                                            <div class="mt-2">
-                                                <small class="text-muted">
-                                                    <i class="fas fa-exclamation-triangle me-1"></i>
-                                                    <strong>Perhatian:</strong> Mohon pastikan semua data yang diisi benar dan lengkap.
-                                                    Pastikan juga:
-                                                    <ul class="mb-0 mt-1 ps-3">
-                                                        <li>Nama pemilik rekening sama dengan nama di KTP</li>
-                                                        <li>File KTP jelas dan dapat terbaca</li>
-                                                        <li>Logo merchant sesuai dengan merek/perusahaan</li>
-                                                        <li>URL callback valid dan dapat diakses</li>
-                                                    </ul>
-                                                </small>
-                                            </div>
-                                        @elseif($merchant->status == 'rejected')
-                                            <div class="mt-2">
-                                                <small class="text-muted">
-                                                    <i class="fas fa-exclamation-triangle me-1"></i>
-                                                    Untuk mengajukan kembali, silakan perbaiki data sesuai catatan di atas dan kirim ulang.
-                                                </small>
-                                            </div>
-                                        @elseif($merchant->status == 'suspended')
-                                            <div class="mt-2">
-                                                <small class="text-muted">
-                                                    <i class="fas fa-exclamation-triangle me-1"></i>
-                                                    Anda tidak dapat melakukan transaksi selama akun dalam status ditangguhkan.
-                                                </small>
-                                            </div>
-                                        @elseif($merchant->status == 'approved')
-                                            <div class="mt-2">
-                                                <small class="text-muted">
-                                                    <i class="fas fa-check-circle me-1"></i>
-                                                    Merchant Anda aktif dan siap digunakan.
-                                                </small>
-                                            </div>
-                                        @endif
-                                    </div>
+                            @if($merchant->status == 'pending')
+                                <div class="alert alert-secondary py-2 px-3 small mb-3">
+                                    <i class="ti ti-alert-triangle me-1"></i>
+                                    Lengkapi data dengan benar. Pastikan nama rekening sesuai KTP dan dokumen dapat terbaca.
+                                </div>
+                            @elseif($merchant->status == 'waiting_review')
+                                <div class="alert alert-warning py-2 px-3 small mb-3">
+                                    <i class="ti ti-hourglass me-1"></i>
+                                    Pengajuan Anda sedang dalam proses review oleh admin. Mohon tunggu.
                                 </div>
                             @endif
 
                             @php
-                                $readonly = in_array($merchant->status, ['approved', 'rejected', 'suspended']);
+                                $readonly = in_array($merchant->status, ['waiting_review', 'approved', 'rejected', 'suspended']);
                             @endphp
                             <form action="{{ route('setting-merchant.update') }}" method="POST" enctype="multipart/form-data">
                                 @csrf
@@ -377,7 +309,21 @@
                                         <button type="submit" class="btn btn-primary btn-sm"><i class="ti ti-send me-1"></i> Kirim Pengajuan</button>
                                     </div>
                                 @else
-                                    <button type="submit" class="btn btn-primary btn-sm mt-3" disabled>{{ __(key: 'Update') }}</button>
+                                    <div class="mt-3 p-3 bg-light rounded border">
+                                        <div class="d-flex align-items-start gap-2">
+                                            <i class="ti ti-info-circle text-muted fs-5"></i>
+                                            <div>
+                                                <p class="mb-2 small text-muted">
+                                                    Data tidak dapat diubah setelah disetujui. Jika ingin mengubah data, silakan hubungi admin.
+                                                </p>
+                                                <a href="https://wa.me/6283874731480?text={{ urlencode('Halo Admin, saya ingin mengajukan perubahan data merchant ' . $merchant->nama_merchant . ' (' . $merchant->kode_merchant . ')') }}"
+                                                   target="_blank"
+                                                   class="btn btn-success btn-sm">
+                                                    <i class="ti ti-brand-whatsapp me-1"></i> Hubungi Admin via WhatsApp
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
                                 @endif
                             </form>
                         </div>

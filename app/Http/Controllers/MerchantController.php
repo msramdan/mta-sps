@@ -243,7 +243,7 @@ class MerchantController extends Controller implements HasMiddleware
     public function review(Request $request, Merchant $merchant): RedirectResponse
     {
         $request->validate([
-            'status' => 'required|in:pending,approved,rejected,suspended',
+            'status' => 'required|in:pending,waiting_review,approved,rejected,suspended',
             'catatan' => 'nullable|string|max:1000',
         ]);
 
@@ -254,10 +254,11 @@ class MerchantController extends Controller implements HasMiddleware
 
         // Text human readable
         $statusText = match ($request->status) {
-            'pending'   => 'diset ke status pending',
-            'approved'  => 'disetujui',
-            'rejected'  => 'ditolak',
-            'suspended' => 'ditangguhkan',
+            'pending'        => 'diset ke status pending',
+            'waiting_review' => 'diset ke status menunggu review',
+            'approved'       => 'disetujui',
+            'rejected'       => 'ditolak',
+            'suspended'      => 'ditangguhkan',
         };
 
         Alert::success('Berhasil', "Merchant berhasil {$statusText}.");

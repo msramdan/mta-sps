@@ -69,6 +69,11 @@ class SettingMerchantController extends Controller implements HasMiddleware
 
         $validated = $request->validated();
 
+        // Jika status pending, ubah ke waiting_review saat user submit
+        if ($merchant->status === 'pending') {
+            $validated['status'] = 'waiting_review';
+        }
+
         // Tidak ada upload → skip, tetap pakai berkas lama. Ada upload baru → replace.
         $validated['logo'] = $this->uploadOrKeep($request, 'logo', $this->logoPath, $merchant->getRawOriginal('logo'));
         $validated['ktp'] = $this->uploadOrKeep($request, 'ktp', $this->ktpPath, $merchant->getRawOriginal('ktp'));
@@ -78,7 +83,11 @@ class SettingMerchantController extends Controller implements HasMiddleware
 
         $merchant->update(attributes: $validated);
 
-        Alert::success('Berhasil', 'Merchant berhasil diperbarui.');
+        $message = $merchant->status === 'waiting_review'
+            ? 'Pengajuan merchant berhasil dikirim. Silakan tunggu proses review oleh admin.'
+            : 'Merchant berhasil diperbarui.';
+
+        Alert::success('Berhasil', $message);
         return redirect()->route('setting-merchant.index');
     }
 

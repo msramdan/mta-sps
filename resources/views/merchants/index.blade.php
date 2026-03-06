@@ -194,13 +194,16 @@
                                     return '<span class="badge bg-success">Approved</span>';
 
                                 case 'pending':
-                                    return '<span class="badge bg-warning text-dark">Pending</span>';
+                                    return '<span class="badge bg-secondary">Pending</span>';
+
+                                case 'waiting_review':
+                                    return '<span class="badge bg-warning text-dark">Menunggu Review</span>';
 
                                 case 'rejected':
                                     return '<span class="badge bg-danger">Rejected</span>';
 
                                 case 'suspended':
-                                    return '<span class="badge bg-secondary">Suspended</span>';
+                                    return '<span class="badge bg-dark">Suspended</span>';
 
                                 default:
                                     return '<span class="badge bg-light text-dark">Unknown</span>';

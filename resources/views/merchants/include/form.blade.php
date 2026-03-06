@@ -50,6 +50,7 @@
                 <select class="form-select form-select-sm @error('status') is-invalid @enderror" name="status" id="status" required>
                     <option value="">-- Pilih --</option>
                     <option value="pending" {{ (isset($merchant) ? $merchant->status : old('status')) === 'pending' ? 'selected' : '' }}>Pending</option>
+                    <option value="waiting_review" {{ (isset($merchant) ? $merchant->status : old('status')) === 'waiting_review' ? 'selected' : '' }}>Menunggu Review</option>
                     <option value="approved" {{ (isset($merchant) ? $merchant->status : old('status')) === 'approved' ? 'selected' : '' }}>Approved</option>
                     <option value="rejected" {{ (isset($merchant) ? $merchant->status : old('status')) === 'rejected' ? 'selected' : '' }}>Rejected</option>
                     <option value="suspended" {{ (isset($merchant) ? $merchant->status : old('status')) === 'suspended' ? 'selected' : '' }}>Suspended</option>

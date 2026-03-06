@@ -36,7 +36,7 @@ return new class extends Migration
             $table->string('ktp_photo_selfie')->nullable();
             $table->string('photo_toko_tampak_depan')->nullable();
             $table->text('catatan')->nullable();
-            $table->enum('status', ['pending', 'approved', 'rejected', 'suspended'])->default('pending');
+            $table->enum('status', ['pending', 'waiting_review', 'approved', 'rejected', 'suspended'])->default('pending');
             $table->string('beban_biaya', 20)->default('Merchant')
                 ->comment('Merchant = biaya ditanggung merchant, Pelanggan = biaya ditanggung pelanggan');
             $table->timestamps();

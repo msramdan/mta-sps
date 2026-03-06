@@ -63,8 +63,9 @@
                                                     <td>
                                                         @php
                                                             $statusLabelMap = [
+                                                                'pending' => 'Pending',
+                                                                'waiting_review' => 'Menunggu Review',
                                                                 'approved' => 'Disetujui',
-                                                                'pending' => 'Menunggu',
                                                                 'rejected' => 'Ditolak',
                                                                 'suspended' => 'Ditangguhkan',
                                                             ];
@@ -414,7 +415,11 @@
                                 <option value="" disabled>-- Pilih Status --</option>
 
                                 <option value="pending" {{ $merchant->status === 'pending' ? 'selected' : '' }}>
-                                    Pending (Menunggu Verifikasi)
+                                    Pending (Belum Submit)
+                                </option>
+
+                                <option value="waiting_review" {{ $merchant->status === 'waiting_review' ? 'selected' : '' }}>
+                                    Menunggu Review
                                 </option>
 
                                 <option value="approved" {{ $merchant->status === 'approved' ? 'selected' : '' }}>

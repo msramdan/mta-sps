@@ -27,7 +27,7 @@ class UpdateMerchantRequest extends FormRequest
             'bank_id' => 'required|exists:App\Models\Bank,id',
             'pemilik_rekening' => 'required|string|max:100',
             'nomor_rekening' => 'required|string|max:50',
-            'status' => 'required|in:pending,approved,rejected,suspended',
+            'status' => 'required|in:pending,waiting_review,approved,rejected,suspended',
             'beban_biaya' => 'required|in:Merchant,Pelanggan',
             'ktp' => 'nullable|image|mimes:jpeg,jpg,png|max:1024',
             'ktp_lembar_verifikasi' => 'nullable|image|mimes:jpeg,jpg,png|max:1024',
