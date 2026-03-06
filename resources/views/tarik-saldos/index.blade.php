@@ -114,13 +114,13 @@
                             <div class="col-6">
                                 <div class="border rounded p-2 text-center">
                                     <small class="text-muted d-block">Saldo Tersedia</small>
-                                    <h5 class="text-primary mb-0" id="merchant-balance">Rp 0</h5>
+                                    <span class="text-primary fw-bold fs-5" id="merchant-balance">Rp 0</span>
                                 </div>
                             </div>
                             <div class="col-6">
                                 <div class="border rounded p-2 text-center">
                                     <small class="text-muted d-block">Biaya Admin</small>
-                                    <h5 class="text-danger mb-0">Rp 7.500</h5>
+                                    <span class="text-danger fw-bold fs-5">Rp 7.500</span>
                                 </div>
                             </div>
                         </div>
@@ -139,44 +139,38 @@
                                     required />
                             </div>
                             <div class="form-text" id="jumlah-error" style="color: #dc3545; display: none;"></div>
-                            <small class="form-text text-muted">Minimal Rp 20.000, Maksimal Rp 50.000.000</small>
+                            <small class="text-muted">Min Rp 20.000 - Max Rp 50.000.000</small>
                         </div>
 
                         <!-- Simulasi Penarikan -->
-                        <div class="border rounded p-3 mb-3 bg-light" id="simulasi-box" style="display: none;">
-                            <h6 class="mb-2"><i class="ti ti-calculator me-2"></i>Simulasi Penarikan</h6>
-                            <table class="table table-sm table-borderless mb-0">
-                                <tr>
-                                    <td class="text-muted">Jumlah Penarikan</td>
-                                    <td class="text-end fw-bold" id="sim-jumlah">Rp 0</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-muted">Biaya Admin</td>
-                                    <td class="text-end text-danger" id="sim-biaya">- Rp 7.500</td>
-                                </tr>
-                                <tr class="border-top">
-                                    <td class="fw-bold">Diterima</td>
-                                    <td class="text-end fw-bold text-success" id="sim-diterima">Rp 0</td>
-                                </tr>
-                            </table>
+                        <div class="border rounded p-2 mb-3 bg-light" id="simulasi-box" style="display: none;">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span class="text-muted">Jumlah Penarikan</span>
+                                <span class="fw-bold" id="sim-jumlah">Rp 0</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-1">
+                                <span class="text-muted">Biaya Admin</span>
+                                <span class="text-danger" id="sim-biaya">- Rp 7.500</span>
+                            </div>
+                            <hr class="my-1">
+                            <div class="d-flex justify-content-between">
+                                <span class="fw-bold">Diterima</span>
+                                <span class="fw-bold text-success fs-5" id="sim-diterima">Rp 0</span>
+                            </div>
                         </div>
 
                         <!-- Rekening Tujuan -->
-                        <div class="border rounded p-3 mb-3">
-                            <h6 class="mb-2"><i class="ti ti-building-bank me-2"></i>Rekening Tujuan</h6>
-                            <div class="row g-2">
-                                <div class="col-12">
-                                    <small class="text-muted">Bank:</small>
-                                    <div class="fw-bold" id="merchant-bank">-</div>
-                                </div>
-                                <div class="col-6">
-                                    <small class="text-muted">No. Rekening:</small>
-                                    <div class="fw-bold" id="merchant-rekening">-</div>
-                                </div>
-                                <div class="col-6">
-                                    <small class="text-muted">Atas Nama:</small>
-                                    <div class="fw-bold" id="merchant-pemilik">-</div>
-                                </div>
+                        <div class="border rounded p-2 mb-3">
+                            <div class="d-flex align-items-center mb-1">
+                                <i class="ti ti-building-bank me-2"></i>
+                                <span class="fw-bold">Rekening Tujuan</span>
+                            </div>
+                            <div>
+                                <span class="fw-bold" id="merchant-bank">-</span>
+                                <span class="text-muted mx-1">|</span>
+                                <span id="merchant-rekening">-</span>
+                                <span class="text-muted mx-1">a.n.</span>
+                                <span id="merchant-pemilik">-</span>
                             </div>
                         </div>
 
