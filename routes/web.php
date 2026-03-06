@@ -91,6 +91,8 @@ Route::middleware(['auth', 'web'])->group(function () {
         ->name('merchants.review');
     Route::get('/merchants-search', [MerchantController::class, 'search'])
         ->name('merchants.search');
+    Route::get('/merchants-tecanusa-credential', [MerchantController::class, 'tecanusaCredential'])
+        ->name('merchants.tecanusa-credential');
 
     Route::get('/setting-merchant', [SettingMerchantController::class, 'index'])
         ->name('setting-merchant.index');

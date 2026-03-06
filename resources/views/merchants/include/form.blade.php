@@ -169,6 +169,64 @@
             </div>
         </div>
     </div>
+
+    <!-- 5. Konfigurasi Nobu -->
+    <div class="col-12 form-section">
+        <h5 class="form-section-title"><i class="ti ti-credit-card me-1"></i> Konfigurasi Nobu</h5>
+        <div class="row g-2">
+            <div class="col-12 mb-2">
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" role="switch" id="use-tecanusa-credential">
+                    <label class="form-check-label" for="use-tecanusa-credential">Use Credential Tecanusa</label>
+                </div>
+            </div>
+            <div class="col-12 col-md-6">
+                <label for="nobu-client-id" class="form-label">Client ID</label>
+                <input type="text" name="nobu_client_id" id="nobu-client-id" class="form-control form-control-sm @error('nobu_client_id') is-invalid @enderror"
+                    value="{{ isset($merchant) ? $merchant->nobu_client_id : old('nobu_client_id') }}" placeholder="Client ID" />
+                @error('nobu_client_id') <span class="text-danger small">{{ $message }}</span> @enderror
+            </div>
+            <div class="col-12 col-md-6">
+                <label for="nobu-partner-id" class="form-label">Partner ID</label>
+                <input type="text" name="nobu_partner_id" id="nobu-partner-id" class="form-control form-control-sm @error('nobu_partner_id') is-invalid @enderror"
+                    value="{{ isset($merchant) ? $merchant->nobu_partner_id : old('nobu_partner_id') }}" placeholder="Partner ID" />
+                @error('nobu_partner_id') <span class="text-danger small">{{ $message }}</span> @enderror
+            </div>
+            <div class="col-12 col-md-6">
+                <label for="nobu-client-secret" class="form-label">Client Secret</label>
+                <div class="input-group input-group-sm">
+                    <input type="password" name="nobu_client_secret" id="nobu-client-secret" class="form-control @error('nobu_client_secret') is-invalid @enderror"
+                        value="{{ isset($merchant) ? $merchant->nobu_client_secret : old('nobu_client_secret') }}" placeholder="Client Secret" />
+                    <button type="button" class="btn btn-outline-secondary" onclick="togglePassword('nobu-client-secret')"><i class="ti ti-eye" id="nobu-client-secret-icon"></i></button>
+                </div>
+                @error('nobu_client_secret') <span class="text-danger small">{{ $message }}</span> @enderror
+            </div>
+            <div class="col-12 col-md-6">
+                <label for="nobu-merchant-id" class="form-label">Merchant ID</label>
+                <input type="text" name="nobu_merchant_id" id="nobu-merchant-id" class="form-control form-control-sm @error('nobu_merchant_id') is-invalid @enderror"
+                    value="{{ isset($merchant) ? $merchant->nobu_merchant_id : old('nobu_merchant_id') }}" placeholder="Merchant ID" />
+                @error('nobu_merchant_id') <span class="text-danger small">{{ $message }}</span> @enderror
+            </div>
+            <div class="col-12 col-md-6">
+                <label for="nobu-sub-merchant-id" class="form-label">Sub Merchant ID</label>
+                <input type="text" name="nobu_sub_merchant_id" id="nobu-sub-merchant-id" class="form-control form-control-sm @error('nobu_sub_merchant_id') is-invalid @enderror"
+                    value="{{ isset($merchant) ? $merchant->nobu_sub_merchant_id : old('nobu_sub_merchant_id') }}" placeholder="Sub Merchant ID" />
+                @error('nobu_sub_merchant_id') <span class="text-danger small">{{ $message }}</span> @enderror
+            </div>
+            <div class="col-12 col-md-6">
+                <label for="nobu-store-id" class="form-label">Store ID</label>
+                <input type="text" name="nobu_store_id" id="nobu-store-id" class="form-control form-control-sm @error('nobu_store_id') is-invalid @enderror"
+                    value="{{ isset($merchant) ? $merchant->nobu_store_id : old('nobu_store_id') }}" placeholder="Store ID" />
+                @error('nobu_store_id') <span class="text-danger small">{{ $message }}</span> @enderror
+            </div>
+            <div class="col-12">
+                <label for="nobu-private-key" class="form-label">Private Key</label>
+                <textarea name="nobu_private_key" id="nobu-private-key" rows="4" class="form-control form-control-sm @error('nobu_private_key') is-invalid @enderror" placeholder="Private Key">{{ isset($merchant) ? $merchant->nobu_private_key : old('nobu_private_key') }}</textarea>
+                @error('nobu_private_key') <span class="text-danger small">{{ $message }}</span> @enderror
+                <small class="form-text text-muted" id="nobu-private-key-count">0 chars</small>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div class="modal fade" id="docPreviewModal" tabindex="-1" aria-hidden="true">
@@ -193,6 +251,54 @@ function generateTokenQrin() {
     for (let i = 0; i < 64; i++) r += chars.charAt(Math.floor(Math.random() * chars.length));
     document.getElementById('token_qrin').value = r;
 }
+
+function togglePassword(inputId) {
+    const input = document.getElementById(inputId);
+    const icon = document.getElementById(inputId + '-icon');
+    if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.remove('ti-eye');
+        icon.classList.add('ti-eye-off');
+    } else {
+        input.type = 'password';
+        icon.classList.remove('ti-eye-off');
+        icon.classList.add('ti-eye');
+    }
+}
+
+document.getElementById('nobu-private-key')?.addEventListener('input', function() {
+    document.getElementById('nobu-private-key-count').textContent = this.value.length + ' chars';
+});
+document.addEventListener('DOMContentLoaded', function() {
+    const pk = document.getElementById('nobu-private-key');
+    if (pk) document.getElementById('nobu-private-key-count').textContent = pk.value.length + ' chars';
+});
+
+document.getElementById('use-tecanusa-credential')?.addEventListener('change', function() {
+    if (this.checked) {
+        fetch('{{ route("merchants.tecanusa-credential") }}')
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('nobu-client-id').value = data.data.nobu_client_id || '';
+                    document.getElementById('nobu-partner-id').value = data.data.nobu_partner_id || '';
+                    document.getElementById('nobu-client-secret').value = data.data.nobu_client_secret || '';
+                    document.getElementById('nobu-merchant-id').value = data.data.nobu_merchant_id || '';
+                    document.getElementById('nobu-sub-merchant-id').value = data.data.nobu_sub_merchant_id || '';
+                    document.getElementById('nobu-store-id').value = data.data.nobu_store_id || '';
+                    document.getElementById('nobu-private-key').value = data.data.nobu_private_key || '';
+                    document.getElementById('nobu-private-key-count').textContent = (data.data.nobu_private_key || '').length + ' chars';
+                } else {
+                    alert(data.message || 'Gagal mengambil kredensial Tecanusa');
+                    this.checked = false;
+                }
+            })
+            .catch(err => {
+                alert('Terjadi kesalahan saat mengambil kredensial Tecanusa');
+                this.checked = false;
+            });
+    }
+});
 var ALLOWED_TYPES = ['image/jpeg', 'image/jpg', 'image/png'];
 var MAX_SIZE_MB = 1;
 function validateBerkas(file) {

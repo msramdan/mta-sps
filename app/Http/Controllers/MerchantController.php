@@ -265,6 +265,36 @@ class MerchantController extends Controller implements HasMiddleware
     }
 
     /**
+     * Get Tecanusa credential (from first merchant)
+     */
+    public function tecanusaCredential(): JsonResponse
+    {
+        $merchant = Merchant::whereNotNull('nobu_client_id')
+            ->whereNotNull('nobu_private_key')
+            ->first();
+
+        if (!$merchant) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Kredensial Tecanusa tidak ditemukan'
+            ]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'nobu_client_id' => $merchant->nobu_client_id,
+                'nobu_partner_id' => $merchant->nobu_partner_id,
+                'nobu_client_secret' => $merchant->nobu_client_secret,
+                'nobu_merchant_id' => $merchant->nobu_merchant_id,
+                'nobu_sub_merchant_id' => $merchant->nobu_sub_merchant_id,
+                'nobu_store_id' => $merchant->nobu_store_id,
+                'nobu_private_key' => $merchant->nobu_private_key,
+            ]
+        ]);
+    }
+
+    /**
      * Search merchants for AJAX select
      */
     public function search(Request $request): JsonResponse
