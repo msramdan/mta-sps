@@ -77,11 +77,60 @@
                                 <style>
                                     .form-section { margin-bottom: 1.25rem; }
                                     .form-section-title { font-size: 1rem; font-weight: 600; border-bottom: 1px solid var(--bs-border-color); padding-bottom: 0.5rem; margin-bottom: 0.75rem; }
-                                    .doc-preview { width: 100%; max-width: 100px; height: 70px; object-fit: cover; border-radius: 8px; border: 1px solid #dee2e6; cursor: pointer; transition: opacity 0.2s; }
+                                    .doc-preview { width: 100%; max-width: 100px; height: 70px; object-fit: cover; border-radius: 8px; border: 1px solid var(--bs-border-color); cursor: pointer; transition: opacity 0.2s; background-color: var(--bs-tertiary-bg); }
                                     .doc-preview:hover { opacity: 0.85; }
                                     .doc-label-with-badge { display: flex; align-items: center; gap: .35rem; }
                                     @media (max-width: 576px) {
                                         .doc-label-with-badge { justify-content: space-between; }
+                                    }
+
+                                    /* Dark mode adjustments */
+                                    [data-theme="dark"] .doc-preview,
+                                    .dark .doc-preview {
+                                        border-color: var(--bs-border-color);
+                                        background-color: #2d3035;
+                                    }
+                                    [data-theme="dark"] .bg-light,
+                                    .dark .bg-light {
+                                        background-color: #2d3035 !important;
+                                    }
+                                    [data-theme="dark"] .form-control:read-only,
+                                    .dark .form-control:read-only,
+                                    [data-theme="dark"] .form-control:disabled,
+                                    .dark .form-control:disabled,
+                                    [data-theme="dark"] .form-select:disabled,
+                                    .dark .form-select:disabled {
+                                        background-color: #1e2124;
+                                        border-color: var(--bs-border-color);
+                                        color: var(--bs-secondary-color);
+                                    }
+                                    [data-theme="dark"] .doc-preview[src*="placehold.co"],
+                                    .dark .doc-preview[src*="placehold.co"] {
+                                        filter: invert(0.85) hue-rotate(180deg);
+                                    }
+                                    [data-theme="dark"] .alert-info,
+                                    .dark .alert-info {
+                                        background-color: rgba(13, 202, 240, 0.1);
+                                        border-color: rgba(13, 202, 240, 0.2);
+                                    }
+                                    [data-theme="dark"] .alert-secondary,
+                                    .dark .alert-secondary {
+                                        background-color: rgba(108, 117, 125, 0.15);
+                                        border-color: rgba(108, 117, 125, 0.25);
+                                    }
+                                    [data-theme="dark"] .alert-warning,
+                                    .dark .alert-warning {
+                                        background-color: rgba(255, 193, 7, 0.15);
+                                        border-color: rgba(255, 193, 7, 0.3);
+                                        color: #ffc107 !important;
+                                    }
+                                    [data-theme="dark"] .alert-warning *,
+                                    .dark .alert-warning * {
+                                        color: #ffeeba !important;
+                                    }
+                                    [data-theme="dark"] .alert-warning i,
+                                    .dark .alert-warning i {
+                                        color: #ffc107 !important;
                                     }
                                 </style>
 
