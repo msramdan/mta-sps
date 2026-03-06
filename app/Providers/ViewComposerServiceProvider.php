@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\Merchant;
 use App\Models\TarikSaldo;
 use Illuminate\Contracts\View\View as ViewContract;
 use Illuminate\Support\Facades\Auth;
@@ -44,14 +45,28 @@ class ViewComposerServiceProvider extends ServiceProvider
 
         View::composer('layouts.header', function (ViewContract $view) {
             $pendingTarikSaldos = collect();
-            if (Auth::check() && Auth::user()->can('konfirmasi tarik saldo')) {
-                $pendingTarikSaldos = TarikSaldo::with('merchant:id,nama_merchant')
-                    ->where('status', 'pending')
-                    ->latest()
-                    ->take(5)
-                    ->get();
+            $pendingMerchants = collect();
+
+            if (Auth::check()) {
+                if (Auth::user()->can('konfirmasi tarik saldo')) {
+                    $pendingTarikSaldos = TarikSaldo::with('merchant:id,nama_merchant')
+                        ->where('status', 'pending')
+                        ->latest()
+                        ->take(5)
+                        ->get();
+                }
+
+                if (Auth::user()->can('merchant review')) {
+                    $pendingMerchants = Merchant::select('id', 'nama_merchant', 'kode_merchant', 'updated_at')
+                        ->where('status', 'waiting_review')
+                        ->latest('updated_at')
+                        ->take(5)
+                        ->get();
+                }
             }
+
             $view->with('pendingTarikSaldos', $pendingTarikSaldos);
+            $view->with('pendingMerchants', $pendingMerchants);
         });
 	}
 }
