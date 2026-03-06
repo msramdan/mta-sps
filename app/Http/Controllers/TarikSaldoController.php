@@ -251,7 +251,7 @@ class TarikSaldoController extends Controller implements HasMiddleware
         $validated['updated_at'] = now();
 
         try {
-            DB::transaction(function () use ($merchantId, $validated, $biaya, $diterima) {
+            DB::transaction(function () use ($merchantId, $validated) {
                 $merchant = DB::table('merchants')->where('id', $merchantId)->lockForUpdate()->first();
                 if (!$merchant) {
                     throw new \RuntimeException('Data merchant tidak ditemukan.');
@@ -266,6 +266,12 @@ class TarikSaldoController extends Controller implements HasMiddleware
                 if ($existingWithdrawal) {
                     throw new \RuntimeException('Anda masih memiliki pengajuan penarikan yang sedang diproses. Tunggu hingga selesai sebelum mengajukan penarikan baru.');
                 }
+
+                // HOLD BALANCE: Kurangi balance saat submit untuk mencegah race condition
+                DB::table('merchants')
+                    ->where('id', $merchantId)
+                    ->decrement('balance', (float) $validated['jumlah']);
+
                 DB::table('tarik_saldos')->insert($validated);
             });
         } catch (\Throwable $e) {
@@ -355,6 +361,11 @@ class TarikSaldoController extends Controller implements HasMiddleware
                     throw new \RuntimeException('Hanya pengajuan dengan status pending yang dapat dibatalkan.');
                 }
                 $tarikSaldo->update(['status' => 'cancel', 'updated_at' => now()]);
+
+                // Kembalikan balance yang sudah di-hold
+                DB::table('merchants')
+                    ->where('id', $merchantId)
+                    ->increment('balance', (float) $tarikSaldo->jumlah);
             });
         } catch (\Throwable $e) {
             $code = $e->getMessage() === 'Data tarik saldo tidak ditemukan.' ? 404
@@ -388,6 +399,13 @@ class TarikSaldoController extends Controller implements HasMiddleware
                     $payload['catatan'] = $validated['catatan'];
                 }
                 $tarikSaldo->update($payload);
+
+                // Jika REJECT, kembalikan balance yang sudah di-hold
+                if ($status === 'reject') {
+                    DB::table('merchants')
+                        ->where('id', $tarikSaldo->merchant_id)
+                        ->increment('balance', (float) $tarikSaldo->jumlah);
+                }
             });
         } catch (\Throwable $e) {
             $message = $e->getMessage();
@@ -406,7 +424,8 @@ class TarikSaldoController extends Controller implements HasMiddleware
     }
 
     /**
-     * Konfirmasi selesai (admin): hanya untuk status process. Upload bukti + catatan, set success, kurangi saldo merchant.
+     * Konfirmasi selesai (admin): hanya untuk status process. Upload bukti + catatan, set success.
+     * Note: Balance sudah di-hold (dikurangi) saat merchant submit pengajuan.
      */
     public function confirm(ConfirmTarikSaldoRequest $request, string $id): JsonResponse|RedirectResponse
     {
@@ -439,8 +458,8 @@ class TarikSaldoController extends Controller implements HasMiddleware
                     'catatan' => $validated['catatan'] ?? null,
                     'updated_at' => now(),
                 ]);
-                DB::table('merchants')->where('id', $row->merchant_id)->lockForUpdate()->first();
-                DB::table('merchants')->where('id', $row->merchant_id)->decrement('balance', (float) $row->jumlah);
+                // Balance sudah di-hold (dikurangi) saat merchant submit pengajuan
+                // Tidak perlu decrement lagi di sini
             });
         } catch (\Throwable $e) {
             $message = $e->getMessage();
@@ -452,9 +471,9 @@ class TarikSaldoController extends Controller implements HasMiddleware
         }
 
         if ($request->ajax() || $request->wantsJson()) {
-            return response()->json(['message' => 'Tarik saldo berhasil dikonfirmasi. Saldo merchant telah dikurangi.'], 200);
+            return response()->json(['message' => 'Tarik saldo berhasil dikonfirmasi.'], 200);
         }
-        Alert::success('Berhasil', 'Tarik saldo berhasil dikonfirmasi. Saldo merchant telah dikurangi.');
+        Alert::success('Berhasil', 'Tarik saldo berhasil dikonfirmasi.');
         return redirect()->route('tarik-saldos.index');
     }
 }

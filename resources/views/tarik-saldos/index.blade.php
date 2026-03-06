@@ -99,7 +99,7 @@
         </div>
     </main>
 
-    <div class="modal fade" id="withdrawalModal" tabindex="-1" aria-labelledby="withdrawalModalLabel" aria-hidden="true">
+    <div class="modal fade" id="withdrawalModal" tabindex="-1" aria-labelledby="withdrawalModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -133,12 +133,32 @@
                                 <input type="number" name="jumlah" id="jumlah"
                                     class="form-control"
                                     placeholder="0"
-                                    min="200000"
+                                    min="20000"
+                                    max="50000000"
                                     step="1000"
                                     required />
                             </div>
                             <div class="form-text" id="jumlah-error" style="color: #dc3545; display: none;"></div>
-                            <small class="form-text text-muted">Minimal penarikan Rp 200.000</small>
+                            <small class="form-text text-muted">Minimal Rp 20.000, Maksimal Rp 50.000.000</small>
+                        </div>
+
+                        <!-- Simulasi Penarikan -->
+                        <div class="border rounded p-3 mb-3 bg-light" id="simulasi-box" style="display: none;">
+                            <h6 class="mb-2"><i class="ti ti-calculator me-2"></i>Simulasi Penarikan</h6>
+                            <table class="table table-sm table-borderless mb-0">
+                                <tr>
+                                    <td class="text-muted">Jumlah Penarikan</td>
+                                    <td class="text-end fw-bold" id="sim-jumlah">Rp 0</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-muted">Biaya Admin</td>
+                                    <td class="text-end text-danger" id="sim-biaya">- Rp 7.500</td>
+                                </tr>
+                                <tr class="border-top">
+                                    <td class="fw-bold">Diterima</td>
+                                    <td class="text-end fw-bold text-success" id="sim-diterima">Rp 0</td>
+                                </tr>
+                            </table>
                         </div>
 
                         <!-- Rekening Tujuan -->
@@ -458,7 +478,27 @@
             $('#withdrawalForm')[0].reset();
             $('#jumlah-error').hide().text('');
             $('#jumlah').removeClass('is-invalid');
+            $('#simulasi-box').hide();
         });
+
+        // Simulasi penarikan - kalkulasi realtime
+        const BIAYA_ADMIN = 7500;
+        function formatRupiah(num) {
+            return 'Rp ' + new Intl.NumberFormat('id-ID').format(num);
+        }
+        function updateSimulasi() {
+            const jumlah = parseInt($('#jumlah').val()) || 0;
+            if (jumlah >= 20000) {
+                const diterima = Math.max(0, jumlah - BIAYA_ADMIN);
+                $('#sim-jumlah').text(formatRupiah(jumlah));
+                $('#sim-biaya').text('- ' + formatRupiah(BIAYA_ADMIN));
+                $('#sim-diterima').text(formatRupiah(diterima));
+                $('#simulasi-box').slideDown(200);
+            } else {
+                $('#simulasi-box').slideUp(200);
+            }
+        }
+        $('#jumlah').on('input keyup change', updateSimulasi);
 
         let statusWithdrawalId = null;
         function resetStatusModalSelection() {

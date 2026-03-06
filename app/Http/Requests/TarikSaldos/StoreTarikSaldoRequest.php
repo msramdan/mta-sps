@@ -3,6 +3,7 @@
 namespace App\Http\Requests\TarikSaldos;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\DB;
 
 class StoreTarikSaldoRequest extends FormRequest
 {
@@ -20,7 +21,18 @@ class StoreTarikSaldoRequest extends FormRequest
     public function rules(): array
     {
         return [
-			'jumlah' => 'required|numeric|min:200000',
+            'jumlah' => 'required|numeric|min:20000|max:50000000',
+        ];
+    }
+
+    /**
+     * Get custom messages for validator errors.
+     */
+    public function messages(): array
+    {
+        return [
+            'jumlah.min' => 'Minimal penarikan adalah Rp 20.000.',
+            'jumlah.max' => 'Maksimal penarikan adalah Rp 50.000.000 per pengajuan.',
         ];
     }
 }
