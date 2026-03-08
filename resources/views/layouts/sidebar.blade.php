@@ -7,7 +7,7 @@
 <nav>
     <div class="app-logo">
         <a class="logo d-inline-block" href="{{ route('dashboard') }}">
-            <img alt="Logo" src="{{ asset('frontend/logo.png') }}" style="width: 110px">
+            <img alt="Logo" src="{{ asset('frontend/logo.png') }}" style="width: 180px">
         </a>
 
         <span class="bg-light-primary toggle-semi-nav d-flex-center">
