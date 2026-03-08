@@ -15,8 +15,8 @@
                                         @csrf
                                         <div class="mb-3 text-center">
                                             <img alt="#" src="{{ asset('frontend/logo.png') }}"
-                                                style="width: 180px; margin-bottom:15px">
-                                            <p class="f-s-12 text-secondary">Masuk untuk mengelola pembayaran QRIS, pantau transaksi, dan akses dashboard lengkap bisnis Anda.</p>
+                                                style="width: 240px; margin-bottom:15px">
+                                            <p class="f-s-12 text-secondary">Masuk untuk mengakses MTA-SPS (MTA Sales Management System) dan dashboard Anda.</p>
                                         </div>
                                         @if ($errors->any())
                                             <div class="alert alert-danger alert-dismissible show fade">
@@ -86,10 +86,7 @@
                                             <button class="btn btn-primary w-100">{{ __('Masuk') }}</button>
                                         </div>
                                         <div class="text-center">
-                                            <p class="mb-0">Belum punya akun?
-                                                <a href="{{ route('register') }}" class="text-primary">Daftar di
-                                                    sini</a>
-                                            </p>
+                                            <p class="mb-0 text-muted small">Belum punya akun? Hubungi administrator.</p>
                                         </div>
                                     </form>
                                 </div>

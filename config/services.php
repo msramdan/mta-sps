@@ -35,8 +35,8 @@ return [
         ],
     ],
 
-    'qrin' => [
-        'base_url' => rtrim(env('QRIN_API_URL', 'http://localhost:8080'), '/'),
+    'mta_sps' => [
+        'base_url' => rtrim(env('MTA_SPS_API_URL', 'http://localhost:8080'), '/'),
     ],
 
 ];

@@ -19,6 +19,9 @@ Route::middleware(['web'])->group(function () {
 // Redirect landing to login
 Route::get('/', fn () => auth()->check() ? redirect()->route('dashboard') : redirect()->route('login'))->name('home');
 
+// Register disabled - redirect to login
+Route::get('/register', fn () => redirect()->route('login'))->name('register');
+
 // Authentication Routes (Protected)
 Route::middleware(['auth', 'web'])->group(function () {
     // Dashboard
