@@ -10,7 +10,7 @@
                     <h4 class="main-title">Users</h4>
                     <ul class="app-line-breadcrumbs mb-3">
                         <li class="">
-                            <a class="f-s-14 f-w-500" href="#">
+                            <a class="f-s-14 f-w-500" href="{{ route('dashboard') }}">
                                 <span>
                                     <i class="ph-duotone ph-newspaper f-s-16"></i> Dashboard
                                 </span>
@@ -43,7 +43,6 @@
                                             <th>{{ __(key: 'Email') }}</th>
                                             <th>{{ __(key: 'No Wa') }}</th>
                                             <th>{{ __(key: 'Role') }}</th>
-                                            <th>{{ __(key: 'Assigned Merchants') }}</th>
                                             <th>{{ __(key: 'Action') }}</th>
                                         </tr>
                                     </thead>
@@ -95,29 +94,11 @@
                     data: 'no_wa',
                     name: 'no_wa'
                 },
-                {
-                    data: 'role',
-                    name: 'role'
-                },
-                {
-                    data: 'merchants',
-                    name: 'merchants',
-                    orderable: false,
-                    searchable: false,
-                    render: function(data, type, full, meta) {
-                        if (data && data.trim() !== '') {
-                            // Jika data terlalu panjang, truncate dan tambahkan tooltip
-                            if (data.length > 50) {
-                                return `<span title="${data}" data-bs-toggle="tooltip" data-bs-placement="top">
-                                    ${data.substring(0, 50)}...
-                                </span>`;
-                            }
-                            return data;
-                        }
-                        return '<span class="text-muted">-</span>';
-                    }
-                },
-                {
+                                {
+                                    data: 'role',
+                                    name: 'role'
+                                },
+                                {
                     data: 'action',
                     name: 'action',
                     orderable: false,

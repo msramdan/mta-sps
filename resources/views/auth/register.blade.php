@@ -1,6 +1,6 @@
 @extends('layouts.auth')
 
-@section('title', __('Daftar Merchant'))
+@section('title', __('Register'))
 
 @push('css')
     <link rel="stylesheet" href="{{ asset('mazer') }}/css/pages/auth.css">
@@ -15,12 +15,12 @@
                         <div class="col-12 p-0">
                             <div class="login-form-container">
                                 <div class="form_container">
-                                    <form class="app-form p-3" method="POST" action="{{ route('web.register.merchant') }}">
+                                    <form class="app-form p-3" method="POST" action="{{ route('register') }}">
                                         @csrf
                                         <div class="mb-3 text-center">
                                             <img alt="#" src="{{ asset('frontend/logo.png') }}"
                                                 style="width: 180px; margin-bottom:15px">
-                                            <p class="f-s-12 text-secondary">Daftarkan merchant Anda dan nikmati integrasi mudah untuk terima pembayaran digital dengan biaya kompetitif.</p>
+                                            <p class="f-s-12 text-secondary">{{ __('Create your account') }}</p>
                                         </div>
 
                                         @if ($errors->any())
@@ -37,116 +37,68 @@
                                             </div>
                                         @endif
 
-                                        @if (session('error'))
-                                            <div class="alert alert-danger alert-dismissible show fade">
-                                                {{ session('error') }}
-                                                <button type="button" class="btn-close" data-bs-dismiss="alert"
-                                                    aria-label="Close"></button>
-                                            </div>
-                                        @endif
-
                                         <div class="row">
                                             <div class="col-md-12 mb-3">
-                                                <label class="form-label">Nama Lengkap <span
-                                                        class="text-danger">*</span></label>
-                                                <input class="form-control @error('nama_pemilik') is-invalid @enderror"
-                                                       name="nama_pemilik"
+                                                <label class="form-label">{{ __('Name') }} <span class="text-danger">*</span></label>
+                                                <input class="form-control @error('name') is-invalid @enderror"
+                                                       name="name"
                                                        type="text"
-                                                       value="{{ old('nama_pemilik') }}"
+                                                       value="{{ old('name') }}"
                                                        required
-                                                       minlength="5"
-                                                       maxlength="100"
-                                                       pattern="[a-zA-Z0-9\s]+"
-                                                       placeholder="Contoh: Muhammad Saeful Ramdan">
-                                                @error('nama_pemilik')
-                                                    <div class="invalid-feedback">
-                                                        {{ $message }}
-                                                    </div>
+                                                       maxlength="255"
+                                                       placeholder="{{ __('Name') }}">
+                                                @error('name')
+                                                    <div class="invalid-feedback">{{ $message }}</div>
                                                 @enderror
-                                                <small class="text-muted">Harus sesuai dengan nama di KTP (5-100 karakter, hanya huruf, angka, dan spasi)</small>
                                             </div>
                                         </div>
 
                                         <div class="row">
                                             <div class="col-md-12 mb-3">
-                                                <label class="form-label">Nama Merchant/Perusahaan <span
-                                                        class="text-danger">*</span></label>
-                                                <input class="form-control @error('nama_perusahaan') is-invalid @enderror"
-                                                       name="nama_perusahaan"
-                                                       type="text"
-                                                       value="{{ old('nama_perusahaan') }}"
-                                                       required
-                                                       minlength="5"
-                                                       maxlength="100"
-                                                       pattern="[a-zA-Z0-9\s]+"
-                                                       placeholder="Contoh: PT Tecanusa">
-                                                @error('nama_perusahaan')
-                                                    <div class="invalid-feedback">
-                                                        {{ $message }}
-                                                    </div>
-                                                @enderror
-                                                <small class="text-muted">5-100 karakter, hanya huruf, angka, dan spasi</small>
-                                            </div>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="col-md-6 mb-3">
-                                                <label class="form-label">No WhatsApp <span
-                                                        class="text-danger">*</span></label>
-                                                <input class="form-control @error('no_wa') is-invalid @enderror"
-                                                       name="no_wa"
-                                                       placeholder="Contoh: 6281234567890"
-                                                       type="text"
-                                                       value="{{ old('no_wa') }}"
-                                                       required>
-                                                @error('no_wa')
-                                                    <div class="invalid-feedback">
-                                                        {{ $message }}
-                                                    </div>
-                                                @enderror
-                                                <small class="text-muted">
-                                                    <i class="fas fa-info-circle"></i>
-                                                    Format harus diawali dengan 62 (contoh: 6281234567890)
-                                                </small>
-                                            </div>
-
-                                            <div class="col-md-6 mb-3">
-                                                <label class="form-label">Email <span class="text-danger">*</span></label>
+                                                <label class="form-label">{{ __('Email') }} <span class="text-danger">*</span></label>
                                                 <input class="form-control @error('email') is-invalid @enderror"
                                                        name="email"
                                                        type="email"
                                                        value="{{ old('email') }}"
                                                        required
-                                                       placeholder="Masukkan email aktif">
+                                                       placeholder="{{ __('Email') }}">
                                                 @error('email')
-                                                    <div class="invalid-feedback">
-                                                        {{ $message }}
-                                                    </div>
+                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                @enderror
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-12 mb-3">
+                                                <label class="form-label">No. WhatsApp</label>
+                                                <input class="form-control @error('no_wa') is-invalid @enderror"
+                                                       name="no_wa"
+                                                       type="text"
+                                                       value="{{ old('no_wa') }}"
+                                                       maxlength="13"
+                                                       placeholder="08xxx atau 62xxx">
+                                                @error('no_wa')
+                                                    <div class="invalid-feedback">{{ $message }}</div>
                                                 @enderror
                                             </div>
                                         </div>
 
                                         <div class="row">
                                             <div class="col-md-6 mb-3">
-                                                <label class="form-label">Password <span
-                                                        class="text-danger">*</span></label>
+                                                <label class="form-label">{{ __('Password') }} <span class="text-danger">*</span></label>
                                                 <input class="form-control @error('password') is-invalid @enderror"
                                                        name="password"
                                                        type="password"
                                                        required
-                                                       placeholder="Minimal 8 karakter">
+                                                       placeholder="{{ __('Password') }}">
                                                 @error('password')
-                                                    <div class="invalid-feedback">
-                                                        {{ $message }}
-                                                    </div>
+                                                    <div class="invalid-feedback">{{ $message }}</div>
                                                 @enderror
                                             </div>
-
                                             <div class="col-md-6 mb-3">
-                                                <label class="form-label">Konfirmasi Password <span
-                                                        class="text-danger">*</span></label>
+                                                <label class="form-label">{{ __('Confirm Password') }} <span class="text-danger">*</span></label>
                                                 <input class="form-control" name="password_confirmation" type="password"
-                                                    required placeholder="Ulangi password">
+                                                    required placeholder="{{ __('Confirm Password') }}">
                                             </div>
                                         </div>
 
@@ -158,12 +110,11 @@
                                         @endif
 
                                         <div class="mb-3 mt-4">
-                                            <button type="submit"
-                                                class="btn btn-primary w-100 py-2 fw-bold">{{ __('Daftar Sekarang') }}</button>
+                                            <button type="submit" class="btn btn-primary w-100 py-2 fw-bold">{{ __('Register') }}</button>
                                         </div>
                                         <div class="text-center">
-                                            <p class="mb-0">Sudah punya akun?
-                                                <a href="{{ route('login') }}" class="text-primary fw-bold">Login di sini</a>
+                                            <p class="mb-0">{{ __('Already have an account?') }}
+                                                <a href="{{ route('login') }}" class="text-primary fw-bold">{{ __('Login') }}</a>
                                             </p>
                                         </div>
                                     </form>

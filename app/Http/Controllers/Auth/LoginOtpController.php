@@ -9,7 +9,6 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\View\View;
 use Illuminate\Validation\ValidationException;
@@ -77,16 +76,9 @@ class LoginOtpController extends Controller
             return redirect()->route('login')->with('error', 'Terjadi kesalahan. Silakan login kembali.');
         }
 
-        $assignMerchant = DB::table('assign_merchants')->where('user_id', $user->id)->first();
-
-        if (! $assignMerchant) {
-            return redirect()->route('login')->with('error', 'Anda tidak memiliki akses ke merchant manapun.');
-        }
-
         $remember = $request->session()->get('login_otp_remember', false);
         $request->session()->forget('login_otp_remember');
 
-        session(['sessionMerchant' => $assignMerchant->merchant_id]);
         Auth::login($user, $remember);
 
         return redirect()->intended(config('fortify.home'));

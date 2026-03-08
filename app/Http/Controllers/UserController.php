@@ -6,7 +6,6 @@ use App\Generators\Services\ImageServiceV2;
 use App\Http\Requests\Users\StoreUserRequest;
 use App\Http\Requests\Users\UpdateUserRequest;
 use App\Models\User;
-use App\Models\Merchant;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -44,13 +43,12 @@ class UserController extends Controller implements HasMiddleware
     public function index(): View|JsonResponse
     {
         if (request()->ajax()) {
-            $users = User::with(relations: ['roles:id,name', 'assignedMerchants'])->orderByDesc('created_at');
+            $users = User::with(relations: ['roles:id,name'])->orderByDesc('created_at');
 
             return Datatables::of(source: $users)
                 ->addColumn(name: 'avatar', content: fn($row) => $row->avatar)
                 ->addColumn(name: 'action', content: 'users.include.action')
                 ->addColumn(name: 'role', content: fn($row) => $row->getRoleNames()->toArray() !== [] ? $row->getRoleNames()[0] : '-')
-                ->addColumn(name: 'merchants', content: fn($row) => $row->assignedMerchants->pluck('nama_merchant')->implode(', ') ?: '-')
                 ->toJson();
         }
 
@@ -63,9 +61,8 @@ class UserController extends Controller implements HasMiddleware
     public function create(): View
     {
         $roles = Role::all();
-        $merchants = Merchant::orderBy('nama_merchant')->get();
 
-        return view(view: 'users.create', data: compact('roles', 'merchants'));
+        return view(view: 'users.create', data: compact('roles'));
     }
 
     /**
@@ -89,18 +86,6 @@ class UserController extends Controller implements HasMiddleware
             $role = Role::select(columns: ['id', 'name'])->find(id: $request->role);
             $user->assignRole(roles: $role->name);
 
-            // Assign merchants to user jika ada
-            if ($request->has('merchants') && is_array($request->merchants)) {
-                foreach ($request->merchants as $merchantId) {
-                    DB::table('assign_merchants')->insert([
-                        'user_id' => $user->id,
-                        'merchant_id' => $merchantId,
-                        'created_at' => now(),
-                        'updated_at' => now(),
-                    ]);
-                }
-            }
-
             Alert::success('Berhasil', 'User berhasil dibuat.');
             return redirect()->route('users.index');
         });
@@ -111,7 +96,7 @@ class UserController extends Controller implements HasMiddleware
      */
     public function show(User $user): View
     {
-        $user->load(relations: ['roles:id,name', 'assignedMerchants']);
+        $user->load(relations: ['roles:id,name']);
 
         return view(view: 'users.show', data: compact('user'));
     }
@@ -121,14 +106,10 @@ class UserController extends Controller implements HasMiddleware
      */
     public function edit(User $user): View
     {
-        $user->load(relations: ['roles:id,name', 'assignedMerchants']);
+        $user->load(relations: ['roles:id,name']);
         $roles = Role::all();
-        $merchants = Merchant::orderBy('nama_merchant')->get();
 
-        // Get assigned merchant IDs
-        $assignedMerchantIds = $user->assignedMerchants->pluck('id')->toArray();
-
-        return view(view: 'users.edit', data: compact('user', 'roles', 'merchants', 'assignedMerchantIds'));
+        return view(view: 'users.edit', data: compact('user', 'roles'));
     }
 
     /**
@@ -139,8 +120,6 @@ class UserController extends Controller implements HasMiddleware
         return DB::transaction(callback: function () use ($request, $user): RedirectResponse {
             $validated = $request->validated();
 
-            // Tidak ada upload gambar → skip, tetap pakai avatar lama
-            // Ada upload gambar baru → upload ke RustFS dan replace (hapus file lama)
             if ($request->hasFile('avatar') && $request->file('avatar')->isValid()) {
                 $validated['avatar'] = $this->imageServiceV2->upload(
                     name: 'avatar',
@@ -165,20 +144,6 @@ class UserController extends Controller implements HasMiddleware
             $role = Role::select(columns: ['id', 'name'])->find(id: $request->role);
             $user->syncRoles(roles: $role->name);
 
-            // Update merchant assignments
-            DB::table('assign_merchants')->where('user_id', $user->id)->delete();
-
-            if ($request->has('merchants') && is_array($request->merchants)) {
-                foreach ($request->merchants as $merchantId) {
-                    DB::table('assign_merchants')->insert([
-                        'user_id' => $user->id,
-                        'merchant_id' => $merchantId,
-                        'created_at' => now(),
-                        'updated_at' => now(),
-                    ]);
-                }
-            }
-
             Alert::success('Berhasil', 'User berhasil diperbarui.');
             return redirect()->route('users.index');
         });
@@ -192,9 +157,6 @@ class UserController extends Controller implements HasMiddleware
         try {
             return DB::transaction(callback: function () use ($user): RedirectResponse {
                 $avatar = $user->getRawOriginal('avatar');
-
-                // Delete merchant assignments first
-                DB::table('assign_merchants')->where('user_id', $user->id)->delete();
 
                 $user->delete();
 

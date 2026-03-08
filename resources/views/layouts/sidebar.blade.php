@@ -6,8 +6,8 @@
 </style>
 <nav>
     <div class="app-logo">
-        <a class="logo d-inline-block" href="/dashboard">
-            <img alt="QRIN Logo" src="{{ asset('frontend/logo.png') }}" style="width: 110px">
+        <a class="logo d-inline-block" href="{{ route('dashboard') }}">
+            <img alt="Logo" src="{{ asset('frontend/logo.png') }}" style="width: 110px">
         </a>
 
         <span class="bg-light-primary toggle-semi-nav d-flex-center">
@@ -56,56 +56,12 @@
 
     <div class="app-nav" id="app-simple-bar">
         <ul class="main-nav p-0 mt-2">
-            @php
-                $userId = Auth::id();
-                $assignMerchants = DB::table('assign_merchants')
-                    ->join('merchants', 'assign_merchants.merchant_id', '=', 'merchants.id')
-                    ->where('assign_merchants.user_id', $userId)
-                    ->select('merchants.id', 'merchants.nama_merchant', 'merchants.kode_merchant')
-                    ->get();
-                $currentMerchantId = session('sessionMerchant');
-            @endphp
-
-            @if ($assignMerchants->count() > 1)
-                <li class="no-sub mb-2">
-                    <div class="px-3 py-2">
-                        <label class="text-muted small mb-1"><i class="ti ti-building-store me-1"></i> Pilih
-                            Merchant</label>
-                        <select class="form-select" id="merchant-selector">
-                            @foreach ($assignMerchants as $merchant)
-                                <option value="{{ $merchant->id }}"
-                                    {{ $currentMerchantId == $merchant->id ? 'selected' : '' }}>
-                                    {{ $merchant->nama_merchant }} ({{ $merchant->kode_merchant }})
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-                </li>
-            @endif
-
             <li class="no-sub{{ request()->routeIs('dashboard.*') || request()->is('dashboard') ? ' active' : '' }}">
                 <a href="{{ route('dashboard') }}">
                     <i class="ti ti-layout-dashboard fs-5 me-2"></i>
                     Dashboard
                 </a>
             </li>
-
-            @can('setting merchant')
-                @if (Auth::user()->hasRole('User Merchant'))
-                    @php
-                        $merchantId = session('sessionMerchant');
-                    @endphp
-
-                    @if ($merchantId)
-                        <li class="no-sub">
-                            <a href="{{ route('setting-merchant.index') }}">
-                                <i class="ti ti-building-store fs-5 me-2"></i>
-                                Setting Merchant
-                            </a>
-                        </li>
-                    @endif
-                @endif
-            @endcan
 
             @foreach (config('generator.sidebars') as $sidebar)
                 @if (isset($sidebar['permissions']))
@@ -190,13 +146,6 @@
                     @endcanany
                 @endif
             @endforeach
-
-            <li class="no-sub{{ request()->routeIs('api-documentation.*') || request()->is('api-documentation') ? ' active' : '' }}">
-                <a href="{{ route('api-documentation.index') }}">
-                    <i class="ti ti-code fs-5 me-2"></i>
-                    Dokumentasi API
-                </a>
-            </li>
         </ul>
     </div>
 
@@ -205,35 +154,3 @@
         <span class="menu-next"><i class="ti ti-chevron-right"></i></span>
     </div>
 </nav>
-
-@push('js')
-    <script>
-    $(document).ready(function() {
-        $('#merchant-selector').on('change', function() {
-            switchMerchant($(this).val());
-        });
-    });
-
-    function switchMerchant(merchantId) {
-        if (!merchantId) return;
-
-        fetch('{{ route('switch-merchant') }}', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                },
-                body: JSON.stringify({
-                    merchant_id: merchantId
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    window.location.reload();
-                }
-            })
-            .catch(error => console.error('Error:', error));
-    }
-</script>
-@endpush

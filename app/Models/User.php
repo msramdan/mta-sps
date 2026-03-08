@@ -88,9 +88,4 @@ class User extends Authenticatable
         };
     }
 
-    public function assignedMerchants()
-    {
-        return $this->belongsToMany(Merchant::class, 'assign_merchants', 'user_id', 'merchant_id')
-            ->withTimestamps();
-    }
 }

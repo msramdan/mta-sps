@@ -19,7 +19,6 @@ use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\DB;
 
 class FortifyServiceProvider extends ServiceProvider
 {
@@ -69,17 +68,6 @@ class FortifyServiceProvider extends ServiceProvider
                 ]);
             }
 
-            // 🔍 CEK ASSIGN MERCHANT
-            $assignMerchant = DB::table('assign_merchants')
-                ->where('user_id', $user->id)
-                ->first();
-
-            if (! $assignMerchant) {
-                throw ValidationException::withMessages([
-                    'email' => ['Anda tidak memiliki akses ke merchant manapun. Silakan hubungi admin.'],
-                ]);
-            }
-
             // 🔍 CEK LOG OTP - jika aktif, kirim OTP dan redirect ke halaman verifikasi
             if (($user->log_otp ?? 'No') === 'Yes') {
                 $otp = str_pad((string) random_int(0, 999999), 6, '0', STR_PAD_LEFT);
@@ -96,10 +84,6 @@ class FortifyServiceProvider extends ServiceProvider
                         ->with('success', 'Kode OTP telah dikirim ke email Anda. Silakan verifikasi untuk melanjutkan login.')
                 );
             }
-
-            session([
-                'sessionMerchant' => $assignMerchant->merchant_id
-            ]);
 
             return $user;
         });
