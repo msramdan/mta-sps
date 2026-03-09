@@ -246,5 +246,14 @@ return [
                 'sph delete',
             ],
         ],
+        [
+            'group' => 'jadwal teknisi',
+            'access' => [
+                'jadwal teknisi view',
+                'jadwal teknisi create',
+                'jadwal teknisi edit',
+                'jadwal teknisi delete',
+            ],
+        ],
     ],
 ];

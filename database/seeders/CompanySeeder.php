@@ -16,10 +16,13 @@ class CompanySeeder extends Seeder
         Company::firstOrCreate(['name' => 'PT. Mitra Tera Akurasi']);
         Company::firstOrCreate(['name' => 'Dummy Perusahaan']);
 
-        // Assign admin (user id 1) ke kedua perusahaan
-        $admin = User::find(1);
-        if ($admin) {
-            $admin->companies()->sync(Company::pluck('id')->toArray());
-        }
+        $companyIds = Company::pluck('id')->toArray();
+
+        // Assign semua user ke PT. Mitra Tera Akurasi (minimal 1 company agar bisa login)
+        User::all()->each(function (User $user) use ($companyIds) {
+            if ($user->companies()->count() === 0) {
+                $user->companies()->sync($companyIds);
+            }
+        });
     }
 }

@@ -29,6 +29,15 @@ class User extends Authenticatable
     }
 
     /**
+     * Jadwal yang melibatkan user sebagai teknisi.
+     */
+    public function jadwalTeknisi(): BelongsToMany
+    {
+        return $this->belongsToMany(JadwalTeknisi::class, 'jadwal_teknisi_users')
+            ->withTimestamps();
+    }
+
+    /**
      * Kirim notifikasi reset password dengan template custom (email Indonesia).
      */
     public function sendPasswordResetNotification(mixed $token): void

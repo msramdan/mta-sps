@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\LoginOtpController;
 use App\Http\Controllers\{
     CompanyController,
     DashboardController,
+    JadwalTeknisiController,
     KunjunganSalesController,
     ProfileController,
     RoleAndPermissionController,
@@ -45,6 +46,9 @@ Route::middleware(['auth', 'web'])->group(function () {
 
     // Kunjungan Sales
     Route::resource('kunjungan-sales', KunjunganSalesController::class);
+
+    // Jadwal Teknisi
+    Route::resource('jadwal-teknisi', JadwalTeknisiController::class);
 
     // SPH (custom routes first agar tidak tertimpa resource)
     Route::get('sph/{sph}/revision', [SphController::class, 'revision'])->name('sph.revision');

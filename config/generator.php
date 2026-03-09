@@ -25,7 +25,7 @@ return [
     'sidebars' => [
         [
             'header' => 'Progress Penjualan',
-            'permissions' => ['kunjungan sales view', 'sph view'],
+            'permissions' => ['kunjungan sales view', 'sph view', 'jadwal teknisi view'],
             'menus' => [
                 [
                     'title' => 'Kunjungan Sales',
@@ -41,6 +41,14 @@ return [
                     'route' => 'sph',
                     'permission' => 'sph view',
                     'permissions' => ['sph view'],
+                    'submenus' => []
+                ],
+                [
+                    'title' => 'Jadwal Teknisi',
+                    'icon' => '<i class="ti ti-calendar-time fs-5 me-2"></i>',
+                    'route' => 'jadwal-teknisi',
+                    'permission' => 'jadwal teknisi view',
+                    'permissions' => ['jadwal teknisi view'],
                     'submenus' => []
                 ]
             ]

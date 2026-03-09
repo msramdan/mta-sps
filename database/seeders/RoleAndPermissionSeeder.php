@@ -50,6 +50,24 @@ class RoleAndPermissionSeeder extends Seeder
             ]);
         }
 
+        // Jadwal Teknisi: full akses hanya Manager Teknik & Super Admin; lainnya view only
+        $managerTeknikRole = Role::where('name', 'Manager Teknik')->first();
+        if ($managerTeknikRole) {
+            $managerTeknikRole->givePermissionTo([
+                'jadwal teknisi view',
+                'jadwal teknisi create',
+                'jadwal teknisi edit',
+                'jadwal teknisi delete',
+            ]);
+        }
+
+        $administrasi = Role::where('name', 'Administrasi')->first();
+        if ($administrasi) {
+            $administrasi->givePermissionTo([
+                'jadwal teknisi view',
+            ]);
+        }
+
         // Kunjungan Sales: create, edit, delete hanya Sales Marketing & Super Admin; lainnya view only
         $kunjunganPermissions = ['kunjungan sales view', 'kunjungan sales create', 'kunjungan sales edit', 'kunjungan sales delete'];
         $salesRole = Role::where('name', 'Sales Marketing')->first();
@@ -72,6 +90,46 @@ class RoleAndPermissionSeeder extends Seeder
         $firstUser = User::first();
         if ($firstUser && $superAdmin) {
             $firstUser->syncRoles([$superAdmin]);
+        }
+
+        $this->assignUserRoles();
+    }
+
+    /**
+     * Assign roles to users based on email.
+     */
+    protected function assignUserRoles(): void
+    {
+        $salesMarketing = Role::where('name', 'Sales Marketing')->first();
+        $teknisRole = Role::where('name', 'Teknisi')->first();
+        $financeRole = Role::where('name', 'Finance')->first();
+        $managerTeknikRole = Role::where('name', 'Manager Teknik')->first();
+        $administrasi = Role::where('name', 'Administrasi')->first();
+
+        $superAdminRole = Role::where('name', 'Super Admin')->first();
+        $roleMap = [
+            'admin@example.com' => [$superAdminRole],
+            'udin.wahidin@mta.local' => [$salesMarketing],
+            'anne.putri.rifana@mta.local' => [$salesMarketing],
+            'riyan.hendryana@mta.local' => [$salesMarketing, $managerTeknikRole],
+            'yudi.susanto@mta.local' => [$salesMarketing],
+            'andri.febriana@mta.local' => [$teknisRole],
+            'niken@mta.local' => [$teknisRole],
+            'rere@mta.local' => [$teknisRole],
+            'leli@mta.local' => [$teknisRole],
+            'eka.agustina.rahayu@mta.local' => [$financeRole],
+            'ria.fitriani@mta.local' => [$administrasi],
+        ];
+
+        foreach ($roleMap as $email => $roles) {
+            $roles = array_filter($roles);
+            if (empty($roles)) {
+                continue;
+            }
+            $user = User::where('email', $email)->first();
+            if ($user) {
+                $user->syncRoles($roles);
+            }
         }
     }
 }
