@@ -48,6 +48,7 @@ Route::middleware(['auth', 'web'])->group(function () {
     Route::resource('kunjungan-sales', KunjunganSalesController::class);
 
     // Jadwal Teknisi
+    Route::get('jadwal-teknisi/events', [JadwalTeknisiController::class, 'events'])->name('jadwal-teknisi.events');
     Route::resource('jadwal-teknisi', JadwalTeknisiController::class);
 
     // SPH (custom routes first agar tidak tertimpa resource)

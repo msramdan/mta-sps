@@ -25,7 +25,7 @@ class JadwalTeknisiController extends Controller implements HasMiddleware
     {
         return [
             'auth',
-            new Middleware(middleware: 'permission:jadwal teknisi view', only: ['index', 'show']),
+            new Middleware(middleware: 'permission:jadwal teknisi view', only: ['index', 'show', 'events']),
             new Middleware(middleware: 'permission:jadwal teknisi create', only: ['create', 'store']),
             new Middleware(middleware: 'permission:jadwal teknisi edit', only: ['edit', 'update']),
             new Middleware(middleware: 'permission:jadwal teknisi delete', only: ['destroy']),
@@ -63,6 +63,47 @@ class JadwalTeknisiController extends Controller implements HasMiddleware
         }
 
         return view('jadwal-teknisi.index');
+    }
+
+    public function events(): JsonResponse
+    {
+        $companyId = $this->companyId();
+        if (! $companyId) {
+            return response()->json([]);
+        }
+
+        $jadwal = JadwalTeknisi::with('teknisi:id,name')
+            ->where('company_id', $companyId)
+            ->orderBy('tanggal_mulai')
+            ->get();
+
+        $events = $jadwal->map(function (JadwalTeknisi $j) {
+            $end = $j->tanggal_selesai ?? $j->tanggal_mulai;
+            $title = $j->judul ?: 'Jadwal';
+            $teknisis = $j->teknisi->pluck('name')->implode(', ');
+            if ($teknisis) {
+                $title .= ' — ' . $teknisis;
+            }
+            $endExclusive = $end->copy()->addDay()->format('Y-m-d');
+
+            return [
+                'id' => $j->id,
+                'title' => $title,
+                'start' => $j->tanggal_mulai->format('Y-m-d'),
+                'end' => $endExclusive,
+                'url' => route('jadwal-teknisi.show', $j->id),
+                'extendedProps' => [
+                    'judul' => $j->judul ?: '-',
+                    'tanggal_mulai' => $j->tanggal_mulai->format('d/m/Y'),
+                    'tanggal_selesai' => $j->tanggal_selesai?->format('d/m/Y') ?? '-',
+                    'teknisi' => $teknisis ?: '-',
+                    'total_estimasi' => number_format($j->total_estimasi, 2, ',', '.'),
+                    'keterangan' => $j->keterangan ?: '-',
+                ],
+            ];
+        });
+
+        return response()->json($events);
     }
 
     public function create(): View|RedirectResponse
