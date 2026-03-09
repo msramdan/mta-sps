@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Visitors;
+namespace App\Http\Requests\KunjunganSales;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateVisitorRequest extends FormRequest
+class StoreKunjunganSalesRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -20,6 +20,17 @@ class UpdateVisitorRequest extends FormRequest
             'no_telp_pic' => ['required', 'string', 'max:50'],
             'tanggal_visit' => ['required', 'date'],
             'keterangan' => ['nullable', 'string'],
+            'evidence' => ['nullable', 'image', 'mimes:jpeg,jpg,png', 'max:5120'],
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'nama_rs.required' => 'Nama RS wajib diisi.',
+            'pic_rs.required' => 'Nama PIC RS wajib diisi.',
+            'no_telp_pic.required' => 'No. Telepon PIC wajib diisi.',
+            'tanggal_visit.required' => 'Tanggal kunjungan wajib diisi.',
         ];
     }
 }

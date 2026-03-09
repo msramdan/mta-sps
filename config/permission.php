@@ -229,12 +229,12 @@ return [
             ],
         ],
         [
-            'group' => 'visitor sales',
+            'group' => 'kunjungan sales',
             'access' => [
-                'visitor view',
-                'visitor create',
-                'visitor edit',
-                'visitor delete',
+                'kunjungan sales view',
+                'kunjungan sales create',
+                'kunjungan sales edit',
+                'kunjungan sales delete',
             ],
         ],
     ],

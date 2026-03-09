@@ -25,14 +25,14 @@ return [
     'sidebars' => [
         [
             'header' => 'Progress Penjualan',
-            'permissions' => ['visitor view'],
+            'permissions' => ['kunjungan sales view'],
             'menus' => [
                 [
-                    'title' => 'Visitor Sales',
+                    'title' => 'Kunjungan Sales',
                     'icon' => '<i class="ti ti-report-search fs-5 me-2"></i>',
-                    'route' => 'visitors',
-                    'permission' => 'visitor view',
-                    'permissions' => ['visitor view'],
+                    'route' => 'kunjungan-sales',
+                    'permission' => 'kunjungan sales view',
+                    'permissions' => ['kunjungan sales view'],
                     'submenus' => []
                 ]
             ]

@@ -8,11 +8,11 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
-     * Visitor Sales / Kunjungan Sales - by company (session).
+     * Kunjungan Sales - by company (session).
      */
     public function up(): void
     {
-        Schema::create('visitors', function (Blueprint $table) {
+        Schema::create('kunjungan_sales', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('company_id')->constrained()->cascadeOnDelete();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete()->comment('Sales Marketing yang kunjungan');
@@ -31,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('visitors');
+        Schema::dropIfExists('kunjungan_sales');
     }
 };

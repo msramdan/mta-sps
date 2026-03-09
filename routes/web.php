@@ -5,11 +5,11 @@ use App\Http\Controllers\Auth\LoginOtpController;
 use App\Http\Controllers\{
     CompanyController,
     DashboardController,
+    KunjunganSalesController,
     ProfileController,
     RoleAndPermissionController,
     SwitchCompanyController,
     UserController,
-    VisitorController,
 };
 
 // Login OTP verification (before auth)
@@ -42,8 +42,8 @@ Route::middleware(['auth', 'web'])->group(function () {
     // Company (Multi-company)
     Route::resource('companies', CompanyController::class);
 
-    // Visitor Sales / Kunjungan Sales
-    Route::resource('visitors', VisitorController::class);
+    // Kunjungan Sales
+    Route::resource('kunjungan-sales', KunjunganSalesController::class);
 
     // Switch perusahaan (session)
     Route::post('/switch-company', SwitchCompanyController::class)->name('switch-company');

@@ -1,26 +1,26 @@
 @extends('layouts.app')
 
-@section('title', __('Visitor Sales'))
+@section('title', __('Kunjungan Sales'))
 
 @section('content')
     <main>
         <div class="container-fluid">
             <div class="row m-1">
                 <div class="col-12">
-                    <h4 class="main-title">{{ __('Visitor Sales') }} / Kunjungan Sales</h4>
+                    <h4 class="main-title">{{ __('Kunjungan Sales') }}</h4>
                     <ul class="app-line-breadcrumbs mb-3">
                         <li>
                             <a class="f-s-14 f-w-500" href="{{ route('dashboard') }}">{{ __('Dashboard') }}</a>
                         </li>
                         <li class="active">
-                            <a class="f-s-14 f-w-500" href="#">{{ __('Visitor Sales') }}</a>
+                            <a class="f-s-14 f-w-500" href="#">{{ __('Kunjungan Sales') }}</a>
                         </li>
                     </ul>
                 </div>
             </div>
-            @can('visitor create')
+            @can('kunjungan sales create')
                 <div class="d-flex justify-content-end">
-                    <a href="{{ route('visitors.create') }}" class="btn btn-primary mb-3">
+                    <a href="{{ route('kunjungan-sales.create') }}" class="btn btn-primary mb-3">
                         <i class="fas fa-plus"></i> {{ __('Tambah') }}
                     </a>
                 </div>
@@ -57,7 +57,7 @@
     $('#data-table').DataTable({
         processing: true,
         serverSide: true,
-        ajax: "{{ route('visitors.index') }}",
+        ajax: "{{ route('kunjungan-sales.index') }}",
         columns: [
             { data: 'sales_name', name: 'user.name' },
             { data: 'nama_rs', name: 'nama_rs' },
