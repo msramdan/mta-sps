@@ -24,4 +24,17 @@ return [
         'invoice' => 'Invoice',
         'faktur' => 'Faktur Pajak',
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Jenis Pengeluaran Operational Khusus (Fee)
+    |--------------------------------------------------------------------------
+    */
+    'jenis_fee' => [
+        'cashback' => 'Cashback',
+        'kickback' => 'Kickback',
+        'uang_saku' => 'Uang Saku',
+        'fee_operasional' => 'Fee Operasional',
+        'lainnya' => 'Lainnya',
+    ],
 ];

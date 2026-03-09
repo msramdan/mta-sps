@@ -52,6 +52,16 @@ class Penagihan extends Model
         return $this->hasMany(PenagihanDokumen::class)->orderBy('jenis_dokumen');
     }
 
+    public function fee(): HasMany
+    {
+        return $this->hasMany(PenagihanFee::class)->orderBy('created_at');
+    }
+
+    public function getTotalFeeAttribute(): float
+    {
+        return (float) $this->fee()->sum('nominal');
+    }
+
     public function getStatusLabelAttribute(): string
     {
         return config("penagihan.status.{$this->status}", $this->status);

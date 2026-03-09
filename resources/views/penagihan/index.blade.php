@@ -30,7 +30,7 @@
                             @else
                                 <div class="table-responsive">
                                     <table class="table table-bordered table-hover align-middle">
-                                        <thead class="table-light">
+                                        <thead>
                                             <tr>
                                                 <th>{{ __('No. SPK/PO') }}</th>
                                                 <th>{{ __('No. SPH') }}</th>
@@ -68,7 +68,7 @@
                                                             @endphp
                                                             <span class="badge {{ $badgeClass }}">{{ $p->status_label }}</span>
                                                         @else
-                                                            <span class="badge bg-light text-dark">{{ __('Belum dibuat') }}</span>
+                                                            <span class="badge bg-secondary">{{ __('Belum dibuat') }}</span>
                                                         @endif
                                                     </td>
                                                     <td>

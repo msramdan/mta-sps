@@ -87,7 +87,7 @@
                                     </div>
                                     <div class="col-12">
                                         <label class="form-label">{{ __('Dokumen Lengkap (centang jika sudah ada)') }}</label>
-                                        <div class="border rounded-3 p-3 bg-light">
+                                        <div class="border rounded-3 p-3">
                                             <div class="row g-2">
                                                 @foreach($penagihan->dokumen as $d)
                                                     <div class="col-md-6">
@@ -98,6 +98,37 @@
                                                         </div>
                                                     </div>
                                                 @endforeach
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label">{{ __('Pengeluaran Operational Khusus (Fee)') }}</label>
+                                        <div class="border rounded-3 p-3">
+                                            <div id="fee-rows">
+                                                @foreach($penagihan->fee as $idx => $f)
+                                                    <div class="row g-2 mb-2 fee-row align-items-center">
+                                                        <div class="col-md-5">
+                                                            <input type="text" name="fee[{{ $idx }}][keterangan]" class="form-control form-control-sm"
+                                                                   value="{{ old("fee.{$idx}.keterangan", $f->keterangan) }}" placeholder="Contoh: Cashback, Uang saku">
+                                                            <input type="hidden" name="fee[{{ $idx }}][id]" value="{{ $f->id }}">
+                                                        </div>
+                                                        <div class="col-md-5">
+                                                            <input type="number" name="fee[{{ $idx }}][nominal]" step="0.01" min="0"
+                                                                   class="form-control form-control-sm fee-nominal" value="{{ old("fee.{$idx}.nominal", $f->nominal) }}" placeholder="0">
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            <button type="button" class="btn btn-sm btn-outline-danger fee-remove" title="{{ __('Hapus') }}"><i class="ti ti-trash"></i></button>
+                                                        </div>
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                            <button type="button" id="fee-add" class="btn btn-sm btn-outline-primary mt-2">
+                                                <i class="ti ti-plus me-1"></i>{{ __('Tambah') }}
+                                            </button>
+                                            <div id="fee-total" class="mt-2 pt-2 border-top">
+                                                @if($penagihan->fee->isNotEmpty())
+                                                    <strong>{{ __('Total') }}:</strong> Rp <span class="fee-sum">{{ number_format($penagihan->total_fee, 2, ',', '.') }}</span>
+                                                @endif
                                             </div>
                                         </div>
                                     </div>
@@ -123,6 +154,43 @@
                     </div>
                     @endcan
 
+                    {{-- Pengeluaran Fee (View Only) --}}
+                    @cannot('penagihan edit')
+                    @if($penagihan->fee->isNotEmpty() && $penagihan->fee->sum('nominal') > 0)
+                    <div class="card shadow-sm mb-3">
+                        <div class="card-header border-0 bg-transparent py-3">
+                            <h5 class="mb-0"><i class="ti ti-cash me-2"></i>{{ __('Pengeluaran Operational Khusus (Fee)') }}</h5>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-hover align-middle mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>{{ __('Keterangan') }}</th>
+                                            <th class="text-end">{{ __('Nominal') }}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($penagihan->fee->where('nominal', '>', 0) as $f)
+                                            <tr>
+                                                <td>{{ $f->keterangan ?? '-' }}</td>
+                                                <td class="text-end">Rp {{ number_format($f->nominal, 2, ',', '.') }}</td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                    <tfoot class="table-secondary fw-semibold">
+                                        <tr>
+                                            <td>{{ __('Total') }}</td>
+                                            <td class="text-end">Rp {{ number_format($penagihan->total_fee, 2, ',', '.') }}</td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    @endif
+                    @endcan
+
                     {{-- Dokumen + Upload --}}
                     <div class="card shadow-sm mb-3">
                         <div class="card-header border-0 bg-transparent py-3">
@@ -131,7 +199,7 @@
                         <div class="card-body p-0">
                             <div class="table-responsive">
                                 <table class="table table-hover align-middle mb-0">
-                                    <thead class="table-light">
+                                    <thead>
                                         <tr>
                                             <th style="width: 35%;">{{ __('Jenis Dokumen') }}</th>
                                             <th class="text-center" style="width: 15%;">{{ __('Checklist') }}</th>
@@ -233,4 +301,66 @@
             </div>
         </div>
     </main>
+
+    @push('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const container = document.getElementById('fee-rows');
+            const addBtn = document.getElementById('fee-add');
+            if (!container || !addBtn) return;
+
+            let idx = container.querySelectorAll('.fee-row').length;
+
+            function updateNames() {
+                container.querySelectorAll('.fee-row').forEach((row, i) => {
+                    row.querySelector('[name*="[keterangan]"]').name = 'fee[' + i + '][keterangan]';
+                    row.querySelector('[name*="[nominal]"]').name = 'fee[' + i + '][nominal]';
+                    const idInput = row.querySelector('[name*="[id]"]');
+                    if (idInput) idInput.name = 'fee[' + i + '][id]';
+                });
+                recalcTotal();
+            }
+
+            function recalcTotal() {
+                let sum = 0;
+                container.querySelectorAll('.fee-nominal').forEach(function(inp) {
+                    sum += parseFloat(inp.value) || 0;
+                });
+                const el = document.querySelector('.fee-sum');
+                if (el) {
+                    el.textContent = sum.toLocaleString('id-ID', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                } else {
+                    const total = document.getElementById('fee-total');
+                    if (total && container.querySelectorAll('.fee-row').length > 0) {
+                        total.innerHTML = '<strong>{{ __("Total") }}:</strong> Rp <span class="fee-sum">' + sum.toLocaleString('id-ID', {minimumFractionDigits: 2}) + '</span>';
+                    }
+                }
+            }
+
+            container.addEventListener('input', function(e) {
+                if (e.target.classList.contains('fee-nominal')) recalcTotal();
+            });
+
+            addBtn.addEventListener('click', function() {
+                const row = document.createElement('div');
+                row.className = 'row g-2 mb-2 fee-row align-items-center';
+                row.innerHTML = '<div class="col-md-5"><input type="text" name="fee[' + idx + '][keterangan]" class="form-control form-control-sm" placeholder="Contoh: Cashback, Uang saku"></div><div class="col-md-5"><input type="number" name="fee[' + idx + '][nominal]" step="0.01" min="0" class="form-control form-control-sm fee-nominal" placeholder="0" value="0"></div><div class="col-md-2"><button type="button" class="btn btn-sm btn-outline-danger fee-remove" title="{{ __("Hapus") }}"><i class="ti ti-trash"></i></button></div>';
+                container.appendChild(row);
+                idx++;
+                updateNames();
+                row.querySelector('.fee-remove').addEventListener('click', function() {
+                    row.remove();
+                    updateNames();
+                });
+            });
+
+            container.querySelectorAll('.fee-remove').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    this.closest('.fee-row').remove();
+                    updateNames();
+                });
+            });
+        });
+    </script>
+    @endpush
 @endsection

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Penagihan;
 use App\Models\PenagihanDokumen;
+use App\Models\PenagihanFee;
 use App\Models\Spk;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -70,7 +71,7 @@ class PenagihanController extends Controller implements HasMiddleware
             $penagihan = $this->initPenagihan($spk);
         }
 
-        $penagihan->load(['dokumen.uploader', 'spk.sph']);
+        $penagihan->load(['dokumen.uploader', 'fee', 'spk.sph']);
         $jenisDokumen = config('penagihan.jenis_dokumen', []);
         $statusList = config('penagihan.status', []);
 
@@ -95,7 +96,7 @@ class PenagihanController extends Controller implements HasMiddleware
                 ]);
             }
 
-            return $penagihan->fresh(['dokumen']);
+            return $penagihan->fresh(['dokumen', 'fee']);
         });
     }
 
@@ -108,6 +109,10 @@ class PenagihanController extends Controller implements HasMiddleware
             'keterangan' => ['nullable', 'string', 'max:1000'],
             'check' => ['nullable', 'array'],
             'check.*' => ['in:0,1'],
+            'fee' => ['nullable', 'array'],
+            'fee.*.id' => ['nullable', 'string', 'uuid'],
+            'fee.*.keterangan' => ['nullable', 'string', 'max:255'],
+            'fee.*.nominal' => ['nullable', 'numeric', 'min:0'],
         ]);
 
         DB::transaction(function () use ($penagihan, $validated): void {
@@ -120,6 +125,37 @@ class PenagihanController extends Controller implements HasMiddleware
             $checks = $validated['check'] ?? [];
             foreach ($penagihan->dokumen as $d) {
                 $d->update(['is_checked' => ! empty($checks[$d->id])]);
+            }
+
+            $feeData = $validated['fee'] ?? [];
+            $submittedIds = collect($feeData)->pluck('id')->filter()->unique()->toArray();
+
+            // Delete fee rows not in submitted data
+            $penagihan->fee()->whereNotIn('id', $submittedIds)->delete();
+
+            foreach ($feeData as $item) {
+                $keterangan = trim((string) ($item['keterangan'] ?? ''));
+                $nominal = (float) ($item['nominal'] ?? 0);
+                if ($keterangan === '' && $nominal <= 0) {
+                    continue;
+                }
+
+                $id = $item['id'] ?? null;
+                if ($id && $penagihan->fee()->where('id', $id)->exists()) {
+                    PenagihanFee::where('id', $id)->update([
+                        'keterangan' => $keterangan ?: null,
+                        'nominal' => $nominal,
+                        'updated_by' => auth()->id(),
+                    ]);
+                } else {
+                    PenagihanFee::create([
+                        'penagihan_id' => $penagihan->id,
+                        'keterangan' => $keterangan ?: null,
+                        'nominal' => $nominal,
+                        'created_by' => auth()->id(),
+                        'updated_by' => auth()->id(),
+                    ]);
+                }
             }
         });
 
