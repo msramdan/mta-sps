@@ -75,6 +75,10 @@
                             <h5 class="mb-0"><i class="ti ti-currency-dollar me-2"></i>{{ __('Detail Estimasi Biaya') }}</h5>
                         </div>
                         <div class="card-body">
+                            <div class="alert alert-warning py-2 mb-3">
+                                <i class="ti ti-info-circle me-1"></i>
+                                {{ __('Data yang ditampilkan merupakan estimasi belaka, bukan nilai final.') }}
+                            </div>
                             @if($jadwal->estimasiBiaya->isEmpty())
                                 <p class="text-muted mb-0">{{ __('Belum ada data estimasi biaya.') }}</p>
                             @else
@@ -96,6 +100,13 @@
                                             </tr>
                                             @endforeach
                                         </tbody>
+                                        <tfoot>
+                                            <tr class="table-secondary fw-semibold">
+                                                <td class="text-end">{{ __('Total Estimasi') }}</td>
+                                                <td class="text-end">Rp {{ number_format($jadwal->total_estimasi, 2, ',', '.') }}</td>
+                                                <td></td>
+                                            </tr>
+                                        </tfoot>
                                     </table>
                                 </div>
                             @endif

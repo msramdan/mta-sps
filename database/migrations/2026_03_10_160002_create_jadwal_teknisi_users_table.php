@@ -12,8 +12,6 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('jadwal_teknisi_users', function (Blueprint $table) {
-            $table->uuid('id')->primary();
-
             $table->foreignUuid('jadwal_teknisi_id')
                 ->constrained('jadwal_teknisi')
                 ->cascadeOnDelete();
@@ -24,6 +22,8 @@ return new class extends Migration
                 ->cascadeOnDelete();
 
             $table->timestamps();
+
+            $table->primary(['jadwal_teknisi_id', 'user_id']);
         });
     }
 

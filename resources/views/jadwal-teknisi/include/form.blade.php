@@ -65,6 +65,10 @@
 
     <div class="col-12 mb-2">
         <label class="form-label">{{ __('Estimasi Biaya') }}</label>
+        <p class="form-text text-warning mb-2">
+            <i class="ti ti-info-circle me-1"></i>
+            {{ __('Data yang diinput merupakan estimasi belaka, bukan nilai final.') }}
+        </p>
         <div class="table-responsive">
             <table class="table table-bordered align-middle" id="biaya-table">
                 <thead>
@@ -95,7 +99,7 @@
                                        step="0.01"
                                        min="0"
                                        name="biaya[{{ $index }}][estimasi_total]"
-                                       class="form-control text-end"
+                                       class="form-control text-end biaya-input"
                                        value="{{ $row['estimasi_total'] ?? '' }}"
                                        placeholder="0">
                             </td>
@@ -107,6 +111,13 @@
                         </tr>
                     @endforeach
                 </tbody>
+                <tfoot>
+                    <tr class="table-secondary fw-semibold">
+                        <td class="text-end">{{ __('Total Estimasi') }}</td>
+                        <td class="text-end" id="biaya-total-display">Rp 0</td>
+                        <td></td>
+                    </tr>
+                </tfoot>
             </table>
         </div>
         <button type="button" class="btn btn-light-primary btn-sm" id="btn-add-biaya">
@@ -120,6 +131,19 @@
     (function() {
         const tableBody = document.querySelector('#biaya-table tbody');
         const addButton = document.getElementById('btn-add-biaya');
+        const totalDisplay = document.getElementById('biaya-total-display');
+
+        function updateTotal() {
+            let total = 0;
+            tableBody?.querySelectorAll('input[name*="[estimasi_total]"]').forEach(function (inp) {
+                total += parseFloat(inp.value) || 0;
+            });
+            const formatted = new Intl.NumberFormat('id-ID', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }).format(total);
+            if (totalDisplay) totalDisplay.textContent = 'Rp ' + formatted;
+        }
 
         function addRow(keterangan = '', total = '') {
             const index = tableBody.children.length;
@@ -131,7 +155,7 @@
                 </td>
                 <td>
                     <input type="number" step="0.01" min="0" name="biaya[${index}][estimasi_total]"
-                           class="form-control text-end" value="${total}" placeholder="0">
+                           class="form-control text-end biaya-input" value="${total}" placeholder="0">
                 </td>
                 <td class="text-center">
                     <button type="button" class="btn btn-light-danger icon-btn b-r-4 btn-remove-row">
@@ -140,6 +164,8 @@
                 </td>
             `;
             tableBody.appendChild(tr);
+            tr.querySelector('.biaya-input')?.addEventListener('input', updateTotal);
+            updateTotal();
         }
 
         addButton?.addEventListener('click', function () {
@@ -151,13 +177,19 @@
                 const rows = tableBody.querySelectorAll('tr');
                 if (rows.length > 1) {
                     e.target.closest('tr').remove();
+                    updateTotal();
                 }
             }
+        });
+
+        tableBody?.addEventListener('input', function (e) {
+            if (e.target.matches('input[name*="[estimasi_total]"]')) updateTotal();
         });
 
         if (tableBody && tableBody.children.length === 0) {
             addRow();
         }
+        updateTotal();
     })();
 </script>
 @endpush
