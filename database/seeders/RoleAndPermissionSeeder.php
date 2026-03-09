@@ -16,7 +16,8 @@ class RoleAndPermissionSeeder extends Seeder
         'Teknisi',
         'Finance',
         'Manager Teknik',
-        'Admin',
+        'Administrasi',
+        'Super Admin',
     ];
 
     /**
@@ -36,12 +37,20 @@ class RoleAndPermissionSeeder extends Seeder
             Role::firstOrCreate(['name' => $roleName]);
         }
 
-        $admin = Role::where('name', 'Admin')->first();
-        if ($admin) {
-            $admin->givePermissionTo(Permission::all());
+        $superAdmin = Role::where('name', 'Super Admin')->first();
+        if ($superAdmin) {
+            $superAdmin->givePermissionTo(Permission::all());
         }
 
-        // Kunjungan Sales: create, edit, delete hanya Sales Marketing & Admin; lainnya view only
+        // SPH: hanya Super Admin & Administrasi
+        $administrasi = Role::where('name', 'Administrasi')->first();
+        if ($administrasi) {
+            $administrasi->givePermissionTo([
+                'sph view', 'sph create', 'sph edit', 'sph delete',
+            ]);
+        }
+
+        // Kunjungan Sales: create, edit, delete hanya Sales Marketing & Super Admin; lainnya view only
         $kunjunganPermissions = ['kunjungan sales view', 'kunjungan sales create', 'kunjungan sales edit', 'kunjungan sales delete'];
         $salesRole = Role::where('name', 'Sales Marketing')->first();
         if ($salesRole) {
@@ -60,12 +69,9 @@ class RoleAndPermissionSeeder extends Seeder
             $managerTeknikRole->givePermissionTo(['kunjungan sales view']);
         }
 
-        // SPH: hanya Admin (via Permission::all() di atas)
-        // Tidak perlu assign ke role lain - Admin saja
-
         $firstUser = User::first();
-        if ($firstUser && $admin) {
-            $firstUser->syncRoles([$admin]);
+        if ($firstUser && $superAdmin) {
+            $firstUser->syncRoles([$superAdmin]);
         }
     }
 }
