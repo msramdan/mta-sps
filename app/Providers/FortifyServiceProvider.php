@@ -68,6 +68,14 @@ class FortifyServiceProvider extends ServiceProvider
                 ]);
             }
 
+            // 🔍 Cek assign perusahaan (minimal 1 company)
+            $firstCompany = $user->companies()->first();
+            if (! $firstCompany) {
+                throw ValidationException::withMessages([
+                    'email' => ['Anda tidak memiliki akses ke perusahaan manapun. Silakan hubungi admin.'],
+                ]);
+            }
+
             // 🔍 CEK LOG OTP - jika aktif, kirim OTP dan redirect ke halaman verifikasi
             if (($user->log_otp ?? 'No') === 'Yes') {
                 $otp = str_pad((string) random_int(0, 999999), 6, '0', STR_PAD_LEFT);
@@ -84,6 +92,9 @@ class FortifyServiceProvider extends ServiceProvider
                         ->with('success', 'Kode OTP telah dikirim ke email Anda. Silakan verifikasi untuk melanjutkan login.')
                 );
             }
+
+            // Set session perusahaan (company) saat login
+            session(['session_company_id' => $firstCompany->id]);
 
             return $user;
         });

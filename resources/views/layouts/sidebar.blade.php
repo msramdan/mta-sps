@@ -56,6 +56,26 @@
 
     <div class="app-nav" id="app-simple-bar">
         <ul class="main-nav p-0 mt-2">
+            @php
+                $userCompanies = auth()->user()?->companies ?? collect();
+                $currentCompanyId = session('session_company_id');
+            @endphp
+
+            @if ($userCompanies->count() > 1)
+                <li class="no-sub mb-2">
+                    <div class="px-3 py-2">
+                        <label class="text-muted small mb-1"><i class="ti ti-building me-1"></i> Pilih Perusahaan</label>
+                        <select class="form-select form-select-sm" id="company-selector">
+                            @foreach ($userCompanies as $company)
+                                <option value="{{ $company->id }}" {{ $currentCompanyId == $company->id ? 'selected' : '' }}>
+                                    {{ $company->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                </li>
+            @endif
+
             <li class="no-sub{{ request()->routeIs('dashboard.*') || request()->is('dashboard') ? ' active' : '' }}">
                 <a href="{{ route('dashboard') }}">
                     <i class="ti ti-layout-dashboard fs-5 me-2"></i>
@@ -154,3 +174,32 @@
         <span class="menu-next"><i class="ti ti-chevron-right"></i></span>
     </div>
 </nav>
+
+@push('js')
+<script>
+(function() {
+    document.addEventListener('DOMContentLoaded', function() {
+        var sel = document.getElementById('company-selector');
+        if (!sel) return;
+        sel.addEventListener('change', function() {
+            var companyId = this.value;
+            if (!companyId) return;
+            fetch('{{ route('switch-company') }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({ company_id: companyId })
+            })
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                if (data.success) window.location.reload();
+            })
+            .catch(function(err) { console.error('Error:', err); });
+        });
+    });
+})();
+</script>
+@endpush

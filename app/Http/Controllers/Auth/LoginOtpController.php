@@ -81,6 +81,12 @@ class LoginOtpController extends Controller
 
         Auth::login($user, $remember);
 
+        // Set session perusahaan (company) setelah OTP berhasil
+        $firstCompany = $user->companies()->first();
+        if ($firstCompany) {
+            session(['session_company_id' => $firstCompany->id]);
+        }
+
         return redirect()->intended(config('fortify.home'));
     }
 
