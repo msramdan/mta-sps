@@ -74,6 +74,14 @@ return [
                     'permission' => 'penagihan view',
                     'permissions' => ['penagihan view'],
                     'submenus' => []
+                ],
+                [
+                    'title' => 'Cetak Laporan',
+                    'icon' => '<i class="ti ti-file-export fs-5 me-2"></i>',
+                    'route' => 'laporan',
+                    'permission' => 'penagihan view',
+                    'permissions' => ['penagihan view'],
+                    'submenus' => []
                 ]
             ]
         ],

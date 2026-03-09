@@ -9,6 +9,7 @@ use App\Models\Spk;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\DB;
@@ -31,7 +32,7 @@ class PenagihanController extends Controller implements HasMiddleware
     {
         return [
             'auth',
-            new Middleware(middleware: 'permission:penagihan view', only: ['index', 'show']),
+            new Middleware(middleware: 'permission:penagihan view', only: ['index', 'show', 'laporan']),
             new Middleware(middleware: 'permission:penagihan create', only: ['store', 'init']),
             new Middleware(middleware: 'permission:penagihan edit', only: ['update', 'upload']),
         ];
@@ -199,6 +200,39 @@ class PenagihanController extends Controller implements HasMiddleware
         Alert::success('Berhasil', 'File berhasil diunggah.');
 
         return redirect()->route('penagihan.show', $penagihan->spk);
+    }
+
+    public function laporan(Penagihan $penagihan): Response|RedirectResponse
+    {
+        $this->ensureBelongsToCompany($penagihan);
+
+        $penagihan->load([
+            'spk.sph.kunjunganSale.user',
+            'spk.sph.details',
+            'spk.jadwalTeknisi.teknisi',
+            'spk.jadwalTeknisi.estimasiBiaya',
+            'spk.jadwalTeknisi.workingProgress',
+            'dokumen',
+            'fee',
+        ]);
+
+        $spk = $penagihan->spk;
+        $sph = $spk->sph;
+        $kunjungan = $sph?->kunjunganSale;
+        $jadwalList = $spk->jadwalTeknisi;
+
+        $pdf = app('dompdf.wrapper')->loadView('penagihan.laporan-pdf', [
+            'penagihan' => $penagihan,
+            'spk' => $spk,
+            'sph' => $sph,
+            'kunjungan' => $kunjungan,
+            'jadwalList' => $jadwalList,
+            'jenisDokumen' => config('penagihan.jenis_dokumen', []),
+        ])->setPaper('a4', 'portrait');
+
+        $filename = 'Laporan-' . $spk->no_spk . '-' . now()->format('Ymd') . '.pdf';
+
+        return $pdf->stream($filename);
     }
 
     public function download(Penagihan $penagihan, PenagihanDokumen $dokumen): StreamedResponse|RedirectResponse

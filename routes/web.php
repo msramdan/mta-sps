@@ -7,6 +7,7 @@ use App\Http\Controllers\{
     DashboardController,
     JadwalTeknisiController,
     KunjunganSalesController,
+    LaporanController,
     PenagihanController,
     ProfileController,
     RoleAndPermissionController,
@@ -65,6 +66,10 @@ Route::middleware(['auth', 'web'])->group(function () {
     // Proses Penagihan
     Route::get('penagihan', [PenagihanController::class, 'index'])->name('penagihan.index');
     Route::get('penagihan/spk/{spk}', [PenagihanController::class, 'show'])->name('penagihan.show');
+    Route::get('penagihan/{penagihan}/laporan', [PenagihanController::class, 'laporan'])->name('penagihan.laporan');
+
+    // Cetak Laporan (menu terpisah)
+    Route::get('laporan', [LaporanController::class, 'index'])->name('laporan.index')->middleware('permission:penagihan view');
     Route::put('penagihan/{penagihan}', [PenagihanController::class, 'update'])->name('penagihan.update');
     Route::post('penagihan/{penagihan}/upload/{jenis_dokumen}', [PenagihanController::class, 'upload'])->name('penagihan.upload');
     Route::get('penagihan/{penagihan}/dokumen/{dokumen}/download', [PenagihanController::class, 'download'])->name('penagihan.download');
