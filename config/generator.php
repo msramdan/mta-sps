@@ -25,7 +25,7 @@ return [
     'sidebars' => [
         [
             'header' => 'Progress Penjualan',
-            'permissions' => ['kunjungan sales view', 'sph view', 'jadwal teknisi view'],
+            'permissions' => ['kunjungan sales view', 'sph view', 'spk view', 'jadwal teknisi view'],
             'menus' => [
                 [
                     'title' => 'Kunjungan Sales',
@@ -41,6 +41,14 @@ return [
                     'route' => 'sph',
                     'permission' => 'sph view',
                     'permissions' => ['sph view'],
+                    'submenus' => []
+                ],
+                [
+                    'title' => 'SPK/PO',
+                    'icon' => '<i class="ti ti-file-invoice fs-5 me-2"></i>',
+                    'route' => 'spk',
+                    'permission' => 'spk view',
+                    'permissions' => ['spk view'],
                     'submenus' => []
                 ],
                 [

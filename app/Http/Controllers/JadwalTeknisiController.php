@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\JadwalTeknisi;
 use App\Models\EstimasiBiayaJadwalTeknisi;
+use App\Models\JadwalTeknisi;
+use App\Models\Spk;
 use App\Models\User;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
@@ -44,11 +45,12 @@ class JadwalTeknisiController extends Controller implements HasMiddleware
         }
 
         if (request()->ajax()) {
-            $jadwal = JadwalTeknisi::with(['creator:id,name', 'teknisi:id,name'])
+            $jadwal = JadwalTeknisi::with(['creator:id,name', 'teknisi:id,name', 'spk:id,no_spk'])
                 ->where('company_id', $companyId)
                 ->orderByDesc('tanggal_mulai');
 
             return DataTables::of($jadwal)
+                ->addColumn('spk_no', fn ($row) => $row->spk?->no_spk ?? '-')
                 ->addColumn('creator_name', fn ($row) => $row->creator?->name ?? '-')
                 ->addColumn('teknisi_names', fn ($row) => $row->teknisi->pluck('name')->implode(', ') ?: '-')
                 ->addColumn('tanggal_mulai_formatted', fn ($row) => $row->tanggal_mulai?->format('d/m/Y') ?? '-')
@@ -72,7 +74,7 @@ class JadwalTeknisiController extends Controller implements HasMiddleware
             return response()->json([]);
         }
 
-        $jadwal = JadwalTeknisi::with('teknisi:id,name')
+        $jadwal = JadwalTeknisi::with(['teknisi:id,name', 'spk:id,no_spk'])
             ->where('company_id', $companyId)
             ->orderBy('tanggal_mulai')
             ->get();
@@ -94,6 +96,7 @@ class JadwalTeknisiController extends Controller implements HasMiddleware
                 'url' => route('jadwal-teknisi.show', $j->id),
                 'extendedProps' => [
                     'judul' => $j->judul ?: '-',
+                    'spk_no' => $j->spk?->no_spk ?: '-',
                     'tanggal_mulai' => $j->tanggal_mulai->format('d/m/Y'),
                     'tanggal_selesai' => $j->tanggal_selesai?->format('d/m/Y') ?? '-',
                     'teknisi' => $teknisis ?: '-',
@@ -118,7 +121,11 @@ class JadwalTeknisiController extends Controller implements HasMiddleware
             ->orderBy('name')
             ->get(['id', 'name']);
 
-        return view('jadwal-teknisi.create', compact('teknisi'));
+        $spkList = Spk::where('company_id', $companyId)
+            ->orderByDesc('tanggal_spk')
+            ->get(['id', 'no_spk', 'tanggal_spk', 'sph_id']);
+
+        return view('jadwal-teknisi.create', compact('teknisi', 'spkList'));
     }
 
     public function store(): RedirectResponse
@@ -129,7 +136,9 @@ class JadwalTeknisiController extends Controller implements HasMiddleware
             return redirect()->route('jadwal-teknisi.index');
         }
 
+        request()->merge(['spk_id' => request()->input('spk_id') ?: null]);
         $validated = request()->validate([
+            'spk_id' => ['nullable', 'exists:spk,id'],
             'judul' => ['nullable', 'string', 'max:255'],
             'tanggal_mulai' => ['required', 'date'],
             'tanggal_selesai' => ['nullable', 'date', 'after_or_equal:tanggal_mulai'],
@@ -144,7 +153,7 @@ class JadwalTeknisiController extends Controller implements HasMiddleware
         DB::transaction(function () use ($validated, $companyId): void {
             $jadwal = JadwalTeknisi::create([
                 'company_id' => $companyId,
-                'spk_id' => null,
+                'spk_id' => $validated['spk_id'] ?? null,
                 'judul' => $validated['judul'] ?? null,
                 'tanggal_mulai' => $validated['tanggal_mulai'],
                 'tanggal_selesai' => $validated['tanggal_selesai'] ?? null,
@@ -182,24 +191,35 @@ class JadwalTeknisiController extends Controller implements HasMiddleware
     public function show(JadwalTeknisi $jadwal_teknisi): View
     {
         $this->ensureBelongsToCompany($jadwal_teknisi);
-        $jadwal_teknisi->load(['creator:id,name', 'teknisi:id,name', 'estimasiBiaya']);
+        $jadwal_teknisi->load(['creator:id,name', 'teknisi:id,name', 'estimasiBiaya', 'spk:id,no_spk']);
 
         return view('jadwal-teknisi.show', ['jadwal' => $jadwal_teknisi]);
     }
 
     public function edit(JadwalTeknisi $jadwal_teknisi): View|RedirectResponse
     {
+        $companyId = $this->companyId();
+        if (! $companyId) {
+            Alert::warning('Peringatan', 'Pilih perusahaan terlebih dahulu.');
+            return redirect()->route('jadwal-teknisi.index');
+        }
+
         $this->ensureBelongsToCompany($jadwal_teknisi);
 
         $teknisi = User::role('Teknisi')
             ->orderBy('name')
             ->get(['id', 'name']);
 
+        $spkList = Spk::where('company_id', $companyId)
+            ->orderByDesc('tanggal_spk')
+            ->get(['id', 'no_spk', 'tanggal_spk']);
+
         $jadwal_teknisi->load(['teknisi:id']);
 
         return view('jadwal-teknisi.edit', [
             'jadwal' => $jadwal_teknisi,
             'teknisi' => $teknisi,
+            'spkList' => $spkList,
         ]);
     }
 
@@ -207,7 +227,9 @@ class JadwalTeknisiController extends Controller implements HasMiddleware
     {
         $this->ensureBelongsToCompany($jadwal_teknisi);
 
+        request()->merge(['spk_id' => request()->input('spk_id') ?: null]);
         $validated = request()->validate([
+            'spk_id' => ['nullable', 'exists:spk,id'],
             'judul' => ['nullable', 'string', 'max:255'],
             'tanggal_mulai' => ['required', 'date'],
             'tanggal_selesai' => ['nullable', 'date', 'after_or_equal:tanggal_mulai'],
@@ -221,6 +243,7 @@ class JadwalTeknisiController extends Controller implements HasMiddleware
 
         DB::transaction(function () use ($validated, $jadwal_teknisi): void {
             $jadwal_teknisi->update([
+                'spk_id' => $validated['spk_id'] ?? null,
                 'judul' => $validated['judul'] ?? null,
                 'tanggal_mulai' => $validated['tanggal_mulai'],
                 'tanggal_selesai' => $validated['tanggal_selesai'] ?? null,

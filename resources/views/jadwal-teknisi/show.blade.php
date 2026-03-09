@@ -30,6 +30,16 @@
                                         <div class="fw-semibold">{{ $jadwal->judul ?: '-' }}</div>
                                     </div>
                                 </div>
+                                @if($jadwal->spk)
+                                <div class="col-md-6">
+                                    <div class="border rounded-3 p-3 h-100">
+                                        <div class="text-muted small mb-1">{{ __('SPK/PO') }}</div>
+                                        <div class="fw-semibold">
+                                            <a href="{{ route('spk.show', $jadwal->spk) }}">{{ $jadwal->spk->no_spk }}</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                @endif
                                 <div class="col-md-3">
                                     <div class="border rounded-3 p-3 h-100">
                                         <div class="text-muted small mb-1">{{ __('Tanggal Mulai') }}</div>

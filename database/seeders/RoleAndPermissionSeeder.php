@@ -42,12 +42,25 @@ class RoleAndPermissionSeeder extends Seeder
             $superAdmin->givePermissionTo(Permission::all());
         }
 
-        // SPH: hanya Super Admin & Administrasi
+        // SPH & SPK: Super Admin & Administrasi
         $administrasi = Role::where('name', 'Administrasi')->first();
         if ($administrasi) {
             $administrasi->givePermissionTo([
                 'sph view', 'sph create', 'sph edit', 'sph delete',
+                'spk view', 'spk create', 'spk edit', 'spk delete',
             ]);
+        }
+
+        // SPK: Finance view only (untuk proses penagihan nanti)
+        $financeRole = Role::where('name', 'Finance')->first();
+        if ($financeRole) {
+            $financeRole->givePermissionTo(['spk view']);
+        }
+
+        // SPK: Manager Teknik view (referensi ke Jadwal)
+        $managerTeknikRole = Role::where('name', 'Manager Teknik')->first();
+        if ($managerTeknikRole) {
+            $managerTeknikRole->givePermissionTo(['spk view']);
         }
 
         // Jadwal Teknisi: full akses hanya Manager Teknik & Super Admin; lainnya view only

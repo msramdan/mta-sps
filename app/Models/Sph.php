@@ -60,6 +60,11 @@ class Sph extends Model
         return $this->hasMany(SphDetail::class)->orderBy('version');
     }
 
+    public function spks(): HasMany
+    {
+        return $this->hasMany(Spk::class);
+    }
+
     /** Versi terakhir (tertinggi) */
     public function latestDetail(): ?SphDetail
     {

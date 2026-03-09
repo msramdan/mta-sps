@@ -6,14 +6,13 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class JadwalTeknisi extends Model
+class Spk extends Model
 {
     use HasFactory, HasUuids;
 
-    protected $table = 'jadwal_teknisi';
+    protected $table = 'spk';
 
     protected $keyType = 'string';
 
@@ -21,10 +20,13 @@ class JadwalTeknisi extends Model
 
     protected $fillable = [
         'company_id',
-        'spk_id',
-        'judul',
-        'tanggal_mulai',
-        'tanggal_selesai',
+        'sph_id',
+        'no_spk',
+        'nilai_kontrak',
+        'include_ppn',
+        'jumlah_alat',
+        'tanggal_spk',
+        'tanggal_deadline',
         'keterangan',
         'created_by',
     ];
@@ -32,8 +34,10 @@ class JadwalTeknisi extends Model
     protected function casts(): array
     {
         return [
-            'tanggal_mulai' => 'date',
-            'tanggal_selesai' => 'date',
+            'nilai_kontrak' => 'decimal:2',
+            'include_ppn' => 'boolean',
+            'tanggal_spk' => 'date',
+            'tanggal_deadline' => 'date',
         ];
     }
 
@@ -42,9 +46,9 @@ class JadwalTeknisi extends Model
         return $this->belongsTo(Company::class);
     }
 
-    public function spk(): BelongsTo
+    public function sph(): BelongsTo
     {
-        return $this->belongsTo(Spk::class);
+        return $this->belongsTo(Sph::class);
     }
 
     public function creator(): BelongsTo
@@ -52,20 +56,13 @@ class JadwalTeknisi extends Model
         return $this->belongsTo(User::class, 'created_by');
     }
 
-    public function teknisi(): BelongsToMany
+    public function jadwalTeknisi(): HasMany
     {
-        return $this->belongsToMany(User::class, 'jadwal_teknisi_users')
-            ->withTimestamps();
+        return $this->hasMany(JadwalTeknisi::class);
     }
 
-    public function estimasiBiaya(): HasMany
+    public function getNilaiKontrakFormattedAttribute(): string
     {
-        return $this->hasMany(EstimasiBiayaJadwalTeknisi::class);
-    }
-
-    public function getTotalEstimasiAttribute(): float
-    {
-        return (float) $this->estimasiBiaya()->sum('estimasi_total');
+        return number_format($this->nilai_kontrak, 2, ',', '.');
     }
 }
-

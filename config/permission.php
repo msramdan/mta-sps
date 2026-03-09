@@ -247,6 +247,15 @@ return [
             ],
         ],
         [
+            'group' => 'spk',
+            'access' => [
+                'spk view',
+                'spk create',
+                'spk edit',
+                'spk delete',
+            ],
+        ],
+        [
             'group' => 'jadwal teknisi',
             'access' => [
                 'jadwal teknisi view',

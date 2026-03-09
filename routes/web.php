@@ -10,6 +10,7 @@ use App\Http\Controllers\{
     ProfileController,
     RoleAndPermissionController,
     SphController,
+    SpkController,
     SwitchCompanyController,
     UserController,
 };
@@ -46,6 +47,9 @@ Route::middleware(['auth', 'web'])->group(function () {
 
     // Kunjungan Sales
     Route::resource('kunjungan-sales', KunjunganSalesController::class);
+
+    // SPK/PO
+    Route::resource('spk', SpkController::class);
 
     // Jadwal Teknisi
     Route::get('jadwal-teknisi/events', [JadwalTeknisiController::class, 'events'])->name('jadwal-teknisi.events');

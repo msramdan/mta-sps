@@ -147,6 +147,7 @@ body.dark .swal-dark-popup .swal2-html-container {
                                         <thead>
                                             <tr>
                                                 <th>Judul</th>
+                                                <th>SPK/PO</th>
                                                 <th>Tanggal Mulai</th>
                                                 <th>Tanggal Selesai</th>
                                                 <th>Teknisi</th>
@@ -220,6 +221,7 @@ body.dark .swal-dark-popup .swal2-html-container {
                 var p = info.event.extendedProps || {};
                 var html = '<div class="text-start small">' +
                     '<p class="mb-1"><strong>Judul:</strong> ' + (p.judul || '-') + '</p>' +
+                    '<p class="mb-1"><strong>SPK/PO:</strong> ' + (p.spk_no || '-') + '</p>' +
                     '<p class="mb-1"><strong>Tanggal Mulai:</strong> ' + (p.tanggal_mulai || '-') + '</p>' +
                     '<p class="mb-1"><strong>Tanggal Selesai:</strong> ' + (p.tanggal_selesai || '-') + '</p>' +
                     '<p class="mb-1"><strong>Teknisi:</strong> ' + (p.teknisi || '-') + '</p>' +
@@ -256,6 +258,7 @@ body.dark .swal-dark-popup .swal2-html-container {
         ajax: "{{ route('jadwal-teknisi.index') }}",
         columns: [
             { data: 'judul', name: 'judul' },
+            { data: 'spk_no', name: 'spk.no_spk' },
             { data: 'tanggal_mulai_formatted', name: 'tanggal_mulai' },
             { data: 'tanggal_selesai_formatted', name: 'tanggal_selesai' },
             { data: 'teknisi_names', name: 'teknisi.name', orderable: false },

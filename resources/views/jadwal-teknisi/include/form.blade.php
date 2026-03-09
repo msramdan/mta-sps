@@ -1,6 +1,25 @@
 <div class="row mb-2">
     <div class="col-md-6 mb-3">
         <div class="form-group">
+            <label for="spk_id" class="form-label">{{ __('SPK/PO') }}</label>
+            <select name="spk_id" id="spk_id" class="form-select @error('spk_id') is-invalid @enderror">
+                <option value="">{{ __('-- Pilih SPK/PO (opsional) --') }}</option>
+                @if(isset($spkList))
+                    @foreach($spkList as $s)
+                        <option value="{{ $s->id }}" {{ (isset($jadwal) ? $jadwal->spk_id : old('spk_id')) == $s->id ? 'selected' : '' }}>
+                            {{ $s->no_spk }} ({{ $s->tanggal_spk?->format('d/m/Y') }})
+                        </option>
+                    @endforeach
+                @endif
+            </select>
+            <div class="form-text">Jadwal mengacu pada SPK/PO. Opsional.</div>
+            @error('spk_id')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+        </div>
+    </div>
+    <div class="col-md-6 mb-3">
+        <div class="form-group">
             <label for="judul" class="form-label">{{ __('Judul Jadwal') }}</label>
             <input type="text" name="judul" id="judul"
                    class="form-control @error('judul') is-invalid @enderror"

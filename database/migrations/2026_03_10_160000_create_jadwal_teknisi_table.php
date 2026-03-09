@@ -16,8 +16,7 @@ return new class extends Migration
 
             $table->foreignUuid('company_id')->constrained()->cascadeOnDelete();
 
-            // Relasi ke SPK / PO (akan dihubungkan ke tabel SPK/PO ketika fitur tersebut dibuat)
-            $table->uuid('spk_id')->nullable()->comment('Relasi ke SPK/PO');
+            $table->foreignUuid('spk_id')->nullable()->constrained('spk')->nullOnDelete()->comment('Relasi ke SPK/PO');
 
             // Judul / nama jadwal (opsional)
             $table->string('judul')->nullable();
