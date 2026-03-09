@@ -12,11 +12,21 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
     use HasFactory, HasRoles, LogsActivity, Notifiable, TwoFactorAuthenticatable;
+
+    /**
+     * Companies assigned to this user (multi-company).
+     */
+    public function companies(): BelongsToMany
+    {
+        return $this->belongsToMany(Company::class, 'company_user')
+            ->withTimestamps();
+    }
 
     /**
      * Kirim notifikasi reset password dengan template custom (email Indonesia).

@@ -9,13 +9,22 @@ use Spatie\Permission\Models\{Role, Permission};
 class RoleAndPermissionSeeder extends Seeder
 {
     /**
+     * Role tetap (fixed) - tidak ada create/delete dari UI.
+     */
+    protected array $fixedRoles = [
+        'Sales Marketing',
+        'Teknisi',
+        'Finance',
+        'Manager Teknik',
+        'Admin',
+    ];
+
+    /**
      * Run the database seeds.
      */
     public function run(): void
     {
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
-
-        $admin = Role::firstOrCreate(['name' => 'admin']);
 
         foreach (config('permission.permissions') as $permission) {
             foreach ($permission['access'] as $access) {
@@ -23,11 +32,18 @@ class RoleAndPermissionSeeder extends Seeder
             }
         }
 
-        $firstUser = User::first();
-        if ($firstUser) {
-            $firstUser->assignRole('admin');
+        foreach ($this->fixedRoles as $roleName) {
+            Role::firstOrCreate(['name' => $roleName]);
         }
 
-        $admin->givePermissionTo(Permission::all());
+        $admin = Role::where('name', 'Admin')->first();
+        if ($admin) {
+            $admin->givePermissionTo(Permission::all());
+        }
+
+        $firstUser = User::first();
+        if ($firstUser && $admin) {
+            $firstUser->syncRoles([$admin]);
+        }
     }
 }

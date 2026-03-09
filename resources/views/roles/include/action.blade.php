@@ -11,15 +11,5 @@
         </a>
     @endcan
 
-    @can('role & permission delete')
-        <form action="{{ route('roles.destroy', $model->id) }}" method="post" class="d-inline"
-            onsubmit="return confirm('Are you sure to delete this record?')">
-            @csrf
-            @method('delete')
-
-            <button class="btn btn-light-danger icon-btn b-r-4 delete-btn" type="submit" title="Delete Role">
-                <i class="ti ti-trash text-danger"></i>
-            </button>
-        </form>
-    @endcan
+    {{-- Delete role disembunyikan - role tetap (fixed) --}}
 </td>

@@ -51,33 +51,20 @@ class RoleAndPermissionController extends Controller implements HasMiddleware
 
     /**
      * Show the form for creating a new resource.
+     * Disabled: role tetap (fixed), create disembunyikan.
      */
     public function create(): View
     {
-        return view(view: 'roles.create');
+        abort(404);
     }
 
     /**
      * Store a newly created resource in storage.
+     * Disabled: role tetap (fixed), create disembunyikan.
      */
     public function store(StoreRoleRequest $request): RedirectResponse
     {
-        return DB::transaction(callback: function () use ($request): RedirectResponse {
-            $role = Role::create(attributes: ['name' => $request->name]);
-            $role->givePermissionTo(permissions: $request->permissions);
-
-            ActivityLogHelper::log(
-                description: 'Role created',
-                logName: 'role',
-                properties: [
-                    'before' => null,
-                    'after' => ['role_id' => $role->id, 'name' => $role->name, 'permissions' => $request->permissions],
-                ],
-                subject: $role
-            );
-
-            return to_route(route: 'roles.index')->with(key: 'success', value: __(key: 'The role was created successfully.'));
-        });
+        abort(404);
     }
 
     /**
@@ -128,29 +115,10 @@ class RoleAndPermissionController extends Controller implements HasMiddleware
 
     /**
      * Remove the specified resource from storage.
+     * Disabled: role tetap (fixed), delete disembunyikan.
      */
     public function destroy(string $id): RedirectResponse
     {
-        return DB::transaction(callback: function () use ($id): RedirectResponse {
-            $role = Role::withCount(relations: 'users')->findOrFail(id: $id);
-
-            if ($role->users_count < 1) {
-                $roleData = ['id' => $role->id, 'name' => $role->name];
-                $role->delete();
-
-                ActivityLogHelper::log(
-                    description: 'Role deleted',
-                    logName: 'role',
-                    properties: [
-                        'before' => $roleData,
-                        'after' => null,
-                    ]
-                );
-
-                return to_route(route: 'roles.index')->with(key: 'success', value: __(key: 'The role was deleted successfully.'));
-            }
-
-            return to_route(route: 'roles.index')->with(key: 'error', value: __(key: 'Can`t delete role.'));
-        });
+        abort(404);
     }
 }

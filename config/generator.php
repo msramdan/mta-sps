@@ -27,9 +27,18 @@ return [
             'header' => 'Utilities',
             'permissions' => [
                 'user view',
-                'role & permission view'
+                'role & permission view',
+                'company view'
             ],
             'menus' => [
+                [
+                    'title' => 'Perusahaan',
+                    'icon' => '<i class="ti ti-building fs-5 me-2"></i>',
+                    'route' => 'companies',
+                    'permission' => 'company view',
+                    'permissions' => ['company view'],
+                    'submenus' => []
+                ],
                 [
                     'title' => 'User & Roles',
                     'icon' => '<i class="ti ti-users fs-5 me-2"></i>',

@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginOtpController;
 use App\Http\Controllers\{
+    CompanyController,
     DashboardController,
     ProfileController,
     UserController,
@@ -35,4 +36,7 @@ Route::middleware(['auth', 'web'])->group(function () {
 
     // Role & Permission Management
     Route::resource('roles', RoleAndPermissionController::class);
+
+    // Company (Multi-company)
+    Route::resource('companies', CompanyController::class);
 });

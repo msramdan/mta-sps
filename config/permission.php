@@ -219,5 +219,14 @@ return [
                 'role & permission delete',
             ],
         ],
+        [
+            'group' => 'companies',
+            'access' => [
+                'company view',
+                'company create',
+                'company edit',
+                'company delete',
+            ],
+        ],
     ],
 ];
