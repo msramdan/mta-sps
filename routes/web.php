@@ -7,6 +7,7 @@ use App\Http\Controllers\{
     DashboardController,
     JadwalTeknisiController,
     KunjunganSalesController,
+    PenagihanController,
     ProfileController,
     RoleAndPermissionController,
     SphController,
@@ -60,6 +61,13 @@ Route::middleware(['auth', 'web'])->group(function () {
     Route::get('working', [WorkingController::class, 'index'])->name('working.index');
     Route::get('working/{jadwal_teknisi}', [WorkingController::class, 'show'])->name('working.show');
     Route::post('working/{jadwal_teknisi}', [WorkingController::class, 'store'])->name('working.store');
+
+    // Proses Penagihan
+    Route::get('penagihan', [PenagihanController::class, 'index'])->name('penagihan.index');
+    Route::get('penagihan/spk/{spk}', [PenagihanController::class, 'show'])->name('penagihan.show');
+    Route::put('penagihan/{penagihan}', [PenagihanController::class, 'update'])->name('penagihan.update');
+    Route::post('penagihan/{penagihan}/upload/{jenis_dokumen}', [PenagihanController::class, 'upload'])->name('penagihan.upload');
+    Route::get('penagihan/{penagihan}/dokumen/{dokumen}/download', [PenagihanController::class, 'download'])->name('penagihan.download');
 
     // SPH (custom routes first agar tidak tertimpa resource)
     Route::get('sph/{sph}/revision', [SphController::class, 'revision'])->name('sph.revision');

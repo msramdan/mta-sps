@@ -94,6 +94,11 @@
                         <a href="{{ route('spk.index') }}" class="btn btn-outline-secondary">
                             <i class="ti ti-arrow-left me-1"></i>{{ __('Kembali') }}
                         </a>
+                        @can('penagihan view')
+                            <a href="{{ route('penagihan.show', $spk) }}" class="btn btn-outline-primary">
+                                <i class="ti ti-file-invoice me-1"></i>{{ __('Proses Penagihan') }}
+                            </a>
+                        @endcan
                         @can('spk edit')
                             <a href="{{ route('spk.edit', $spk) }}" class="btn btn-primary">
                                 <i class="ti ti-edit me-1"></i>{{ __('Edit') }}

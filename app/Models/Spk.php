@@ -61,6 +61,11 @@ class Spk extends Model
         return $this->hasMany(JadwalTeknisi::class);
     }
 
+    public function penagihan(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(Penagihan::class);
+    }
+
     public function getNilaiKontrakFormattedAttribute(): string
     {
         return number_format($this->nilai_kontrak, 2, ',', '.');

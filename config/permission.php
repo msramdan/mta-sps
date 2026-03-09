@@ -271,5 +271,13 @@ return [
                 'working create',
             ],
         ],
+        [
+            'group' => 'penagihan',
+            'access' => [
+                'penagihan view',
+                'penagihan create',
+                'penagihan edit',
+            ],
+        ],
     ],
 ];

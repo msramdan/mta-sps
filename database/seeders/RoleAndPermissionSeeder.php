@@ -122,6 +122,28 @@ class RoleAndPermissionSeeder extends Seeder
             $salesRole->givePermissionTo(['working view']);
         }
 
+        // Penagihan: Finance & Administrasi full; others view only
+        $financeRole = Role::where('name', 'Finance')->first();
+        if ($financeRole) {
+            $financeRole->givePermissionTo(['penagihan view', 'penagihan create', 'penagihan edit']);
+        }
+        $administrasi = Role::where('name', 'Administrasi')->first();
+        if ($administrasi) {
+            $administrasi->givePermissionTo(['penagihan view', 'penagihan create', 'penagihan edit']);
+        }
+        $managerTeknikRole = Role::where('name', 'Manager Teknik')->first();
+        if ($managerTeknikRole) {
+            $managerTeknikRole->givePermissionTo(['penagihan view']);
+        }
+        $salesRole = Role::where('name', 'Sales Marketing')->first();
+        if ($salesRole) {
+            $salesRole->givePermissionTo(['penagihan view']);
+        }
+        $teknisRole = Role::where('name', 'Teknisi')->first();
+        if ($teknisRole) {
+            $teknisRole->givePermissionTo(['penagihan view']);
+        }
+
         $firstUser = User::first();
         if ($firstUser && $superAdmin) {
             $firstUser->syncRoles([$superAdmin]);

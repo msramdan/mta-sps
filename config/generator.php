@@ -25,7 +25,7 @@ return [
     'sidebars' => [
         [
             'header' => 'Progress Penjualan',
-            'permissions' => ['kunjungan sales view', 'sph view', 'spk view', 'jadwal teknisi view', 'working view'],
+            'permissions' => ['kunjungan sales view', 'sph view', 'spk view', 'jadwal teknisi view', 'working view', 'penagihan view'],
             'menus' => [
                 [
                     'title' => 'Kunjungan Sales',
@@ -65,6 +65,14 @@ return [
                     'route' => 'working',
                     'permission' => 'working view',
                     'permissions' => ['working view'],
+                    'submenus' => []
+                ],
+                [
+                    'title' => 'Proses Penagihan',
+                    'icon' => '<i class="ti ti-file-invoice fs-5 me-2"></i>',
+                    'route' => 'penagihan',
+                    'permission' => 'penagihan view',
+                    'permissions' => ['penagihan view'],
                     'submenus' => []
                 ]
             ]
