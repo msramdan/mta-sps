@@ -228,5 +228,14 @@ return [
                 'company delete',
             ],
         ],
+        [
+            'group' => 'visitor sales',
+            'access' => [
+                'visitor view',
+                'visitor create',
+                'visitor edit',
+                'visitor delete',
+            ],
+        ],
     ],
 ];

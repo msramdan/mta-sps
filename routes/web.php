@@ -9,6 +9,7 @@ use App\Http\Controllers\{
     RoleAndPermissionController,
     SwitchCompanyController,
     UserController,
+    VisitorController,
 };
 
 // Login OTP verification (before auth)
@@ -40,6 +41,9 @@ Route::middleware(['auth', 'web'])->group(function () {
 
     // Company (Multi-company)
     Route::resource('companies', CompanyController::class);
+
+    // Visitor Sales / Kunjungan Sales
+    Route::resource('visitors', VisitorController::class);
 
     // Switch perusahaan (session)
     Route::post('/switch-company', SwitchCompanyController::class)->name('switch-company');

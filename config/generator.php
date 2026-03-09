@@ -24,6 +24,20 @@ return [
 
     'sidebars' => [
         [
+            'header' => 'Progress Penjualan',
+            'permissions' => ['visitor view'],
+            'menus' => [
+                [
+                    'title' => 'Visitor Sales',
+                    'icon' => '<i class="ti ti-report-search fs-5 me-2"></i>',
+                    'route' => 'visitors',
+                    'permission' => 'visitor view',
+                    'permissions' => ['visitor view'],
+                    'submenus' => []
+                ]
+            ]
+        ],
+        [
             'header' => 'Utilities',
             'permissions' => [
                 'user view',

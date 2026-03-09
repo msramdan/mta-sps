@@ -41,6 +41,25 @@ class RoleAndPermissionSeeder extends Seeder
             $admin->givePermissionTo(Permission::all());
         }
 
+        // Visitor Sales: create, edit, delete hanya Sales Marketing & Admin; lainnya view only
+        $visitorPermissions = ['visitor view', 'visitor create', 'visitor edit', 'visitor delete'];
+        $salesRole = Role::where('name', 'Sales Marketing')->first();
+        if ($salesRole) {
+            $salesRole->givePermissionTo($visitorPermissions);
+        }
+        $teknisRole = Role::where('name', 'Teknisi')->first();
+        if ($teknisRole) {
+            $teknisRole->givePermissionTo(['visitor view']);
+        }
+        $financeRole = Role::where('name', 'Finance')->first();
+        if ($financeRole) {
+            $financeRole->givePermissionTo(['visitor view']);
+        }
+        $managerTeknikRole = Role::where('name', 'Manager Teknik')->first();
+        if ($managerTeknikRole) {
+            $managerTeknikRole->givePermissionTo(['visitor view']);
+        }
+
         $firstUser = User::first();
         if ($firstUser && $admin) {
             $firstUser->syncRoles([$admin]);
