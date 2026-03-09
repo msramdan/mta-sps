@@ -25,7 +25,7 @@ return [
     'sidebars' => [
         [
             'header' => 'Progress Penjualan',
-            'permissions' => ['kunjungan sales view'],
+            'permissions' => ['kunjungan sales view', 'sph view'],
             'menus' => [
                 [
                     'title' => 'Kunjungan Sales',
@@ -33,6 +33,14 @@ return [
                     'route' => 'kunjungan-sales',
                     'permission' => 'kunjungan sales view',
                     'permissions' => ['kunjungan sales view'],
+                    'submenus' => []
+                ],
+                [
+                    'title' => 'SPH',
+                    'icon' => '<i class="ti ti-file-certificate fs-5 me-2"></i>',
+                    'route' => 'sph',
+                    'permission' => 'sph view',
+                    'permissions' => ['sph view'],
                     'submenus' => []
                 ]
             ]

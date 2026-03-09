@@ -1,27 +1,23 @@
 @extends('layouts.app')
 
-@section('title', __('Kunjungan Sales'))
+@section('title', __('SPH'))
 
 @section('content')
     <main>
         <div class="container-fluid">
             <div class="row m-1">
                 <div class="col-12">
-                    <h4 class="main-title">{{ __('Kunjungan Sales') }}</h4>
+                    <h4 class="main-title">{{ __('SPH') }}</h4>
                     <ul class="app-line-breadcrumbs mb-3">
-                        <li>
-                            <a class="f-s-14 f-w-500" href="{{ route('dashboard') }}">{{ __('Dashboard') }}</a>
-                        </li>
-                        <li class="active">
-                            <a class="f-s-14 f-w-500" href="#">{{ __('Kunjungan Sales') }}</a>
-                        </li>
+                        <li><a class="f-s-14 f-w-500" href="{{ route('dashboard') }}">{{ __('Dashboard') }}</a></li>
+                        <li class="active"><a class="f-s-14 f-w-500" href="#">{{ __('SPH') }}</a></li>
                     </ul>
                 </div>
             </div>
-            @can('kunjungan sales create')
+            @can('sph create')
                 <div class="d-flex justify-content-end">
-                    <a href="{{ route('kunjungan-sales.create') }}" class="btn btn-primary mb-3">
-                        <i class="fas fa-plus"></i> {{ __('Tambah') }}
+                    <a href="{{ route('sph.create') }}" class="btn btn-primary mb-3">
+                        <i class="ti ti-plus"></i> {{ __('Tambah') }}
                     </a>
                 </div>
             @endcan
@@ -34,11 +30,10 @@
                                 <table class="display w-100 row-border-table table-responsive" id="data-table">
                                     <thead>
                                         <tr>
+                                            <th>No. SPH</th>
                                             <th>User Created</th>
-                                            <th>Nama RS</th>
-                                            <th>PIC RS</th>
-                                            <th>No. Telp PIC</th>
-                                            <th>Tanggal Kunjungan</th>
+                                            <th>Tanggal SPH</th>
+                                            <th>Versi</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
@@ -57,13 +52,12 @@
     $('#data-table').DataTable({
         processing: true,
         serverSide: true,
-        ajax: "{{ route('kunjungan-sales.index') }}",
+        ajax: "{{ route('sph.index') }}",
         columns: [
+            { data: 'no_sph', name: 'no_sph' },
             { data: 'sales_name', name: 'user.name' },
-            { data: 'nama_rs', name: 'nama_rs' },
-            { data: 'pic_rs', name: 'pic_rs' },
-            { data: 'no_telp_pic', name: 'no_telp_pic' },
-            { data: 'tanggal_visit_formatted', name: 'tanggal_visit' },
+            { data: 'tanggal_sph_formatted', name: 'tanggal_sph' },
+            { data: 'latest_version', name: 'latest_version', orderable: false, searchable: false },
             { data: 'action', name: 'action', orderable: false, searchable: false }
         ]
     });

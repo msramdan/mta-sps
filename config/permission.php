@@ -237,5 +237,14 @@ return [
                 'kunjungan sales delete',
             ],
         ],
+        [
+            'group' => 'sph',
+            'access' => [
+                'sph view',
+                'sph create',
+                'sph edit',
+                'sph delete',
+            ],
+        ],
     ],
 ];

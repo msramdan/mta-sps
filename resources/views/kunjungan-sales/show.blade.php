@@ -57,7 +57,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="border rounded-3 p-3 h-100">
-                                        <div class="text-muted small mb-1"><i class="ti ti-user me-1"></i>{{ __('Sales Marketing') }}</div>
+                                        <div class="text-muted small mb-1"><i class="ti ti-user me-1"></i>{{ __('User Created') }}</div>
                                         <div class="fw-semibold">{{ $kunjungan_sale->user?->name ?? '-' }}</div>
                                     </div>
                                 </div>

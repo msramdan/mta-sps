@@ -60,6 +60,9 @@ class RoleAndPermissionSeeder extends Seeder
             $managerTeknikRole->givePermissionTo(['kunjungan sales view']);
         }
 
+        // SPH: hanya Admin (via Permission::all() di atas)
+        // Tidak perlu assign ke role lain - Admin saja
+
         $firstUser = User::first();
         if ($firstUser && $admin) {
             $firstUser->syncRoles([$admin]);

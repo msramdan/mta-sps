@@ -8,6 +8,7 @@ use App\Http\Controllers\{
     KunjunganSalesController,
     ProfileController,
     RoleAndPermissionController,
+    SphController,
     SwitchCompanyController,
     UserController,
 };
@@ -44,6 +45,12 @@ Route::middleware(['auth', 'web'])->group(function () {
 
     // Kunjungan Sales
     Route::resource('kunjungan-sales', KunjunganSalesController::class);
+
+    // SPH (custom routes first agar tidak tertimpa resource)
+    Route::get('sph/{sph}/revision', [SphController::class, 'revision'])->name('sph.revision');
+    Route::post('sph/{sph}/revision', [SphController::class, 'storeRevision'])->name('sph.store-revision');
+    Route::get('sph/{sph}/detail/{detail}/download', [SphController::class, 'downloadDetail'])->name('sph.download-detail');
+    Route::resource('sph', SphController::class)->except(['edit', 'update']);
 
     // Switch perusahaan (session)
     Route::post('/switch-company', SwitchCompanyController::class)->name('switch-company');
