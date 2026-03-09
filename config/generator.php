@@ -25,7 +25,7 @@ return [
     'sidebars' => [
         [
             'header' => 'Progress Penjualan',
-            'permissions' => ['kunjungan sales view', 'sph view', 'spk view', 'jadwal teknisi view'],
+            'permissions' => ['kunjungan sales view', 'sph view', 'spk view', 'jadwal teknisi view', 'working view'],
             'menus' => [
                 [
                     'title' => 'Kunjungan Sales',
@@ -57,6 +57,14 @@ return [
                     'route' => 'jadwal-teknisi',
                     'permission' => 'jadwal teknisi view',
                     'permissions' => ['jadwal teknisi view'],
+                    'submenus' => []
+                ],
+                [
+                    'title' => 'Working',
+                    'icon' => '<i class="ti ti-progress fs-5 me-2"></i>',
+                    'route' => 'working',
+                    'permission' => 'working view',
+                    'permissions' => ['working view'],
                     'submenus' => []
                 ]
             ]

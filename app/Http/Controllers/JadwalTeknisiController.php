@@ -191,7 +191,7 @@ class JadwalTeknisiController extends Controller implements HasMiddleware
     public function show(JadwalTeknisi $jadwal_teknisi): View
     {
         $this->ensureBelongsToCompany($jadwal_teknisi);
-        $jadwal_teknisi->load(['creator:id,name', 'teknisi:id,name', 'estimasiBiaya', 'spk:id,no_spk']);
+        $jadwal_teknisi->load(['creator:id,name', 'teknisi:id,name', 'estimasiBiaya', 'spk:id,no_spk,jumlah_alat']);
 
         return view('jadwal-teknisi.show', ['jadwal' => $jadwal_teknisi]);
     }

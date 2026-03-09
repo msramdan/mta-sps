@@ -264,5 +264,12 @@ return [
                 'jadwal teknisi delete',
             ],
         ],
+        [
+            'group' => 'working',
+            'access' => [
+                'working view',
+                'working create',
+            ],
+        ],
     ],
 ];

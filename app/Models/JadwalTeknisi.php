@@ -63,6 +63,34 @@ class JadwalTeknisi extends Model
         return $this->hasMany(EstimasiBiayaJadwalTeknisi::class);
     }
 
+    public function workingProgress(): HasMany
+    {
+        return $this->hasMany(WorkingProgress::class)->orderBy('tanggal');
+    }
+
+    /** Total alat dari SPK (0 jika tidak ada SPK) */
+    public function getTotalAlatAttribute(): int
+    {
+        return (int) ($this->spk?->jumlah_alat ?? 0);
+    }
+
+    /** Jumlah alat sudah selesai (dari working progress) */
+    public function getJumlahSelesaiAttribute(): int
+    {
+        return (int) $this->workingProgress()->sum('jumlah_selesai');
+    }
+
+    /** Progress persentase (0-100) */
+    public function getProgressPercentAttribute(): float
+    {
+        $total = $this->total_alat;
+        if ($total <= 0) {
+            return 0.0;
+        }
+
+        return min(100, round(($this->jumlah_selesai / $total) * 100, 2));
+    }
+
     public function getTotalEstimasiAttribute(): float
     {
         return (float) $this->estimasiBiaya()->sum('estimasi_total');

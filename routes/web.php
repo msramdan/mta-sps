@@ -13,6 +13,7 @@ use App\Http\Controllers\{
     SpkController,
     SwitchCompanyController,
     UserController,
+    WorkingController,
 };
 
 // Login OTP verification (before auth)
@@ -54,6 +55,11 @@ Route::middleware(['auth', 'web'])->group(function () {
     // Jadwal Teknisi
     Route::get('jadwal-teknisi/events', [JadwalTeknisiController::class, 'events'])->name('jadwal-teknisi.events');
     Route::resource('jadwal-teknisi', JadwalTeknisiController::class);
+
+    // Working / Progress Pekerjaan
+    Route::get('working', [WorkingController::class, 'index'])->name('working.index');
+    Route::get('working/{jadwal_teknisi}', [WorkingController::class, 'show'])->name('working.show');
+    Route::post('working/{jadwal_teknisi}', [WorkingController::class, 'store'])->name('working.store');
 
     // SPH (custom routes first agar tidak tertimpa resource)
     Route::get('sph/{sph}/revision', [SphController::class, 'revision'])->name('sph.revision');

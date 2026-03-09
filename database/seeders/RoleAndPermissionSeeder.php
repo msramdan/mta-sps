@@ -100,6 +100,28 @@ class RoleAndPermissionSeeder extends Seeder
             $managerTeknikRole->givePermissionTo(['kunjungan sales view']);
         }
 
+        // Working: Teknisi input progress; others view only
+        $teknisRole = Role::where('name', 'Teknisi')->first();
+        if ($teknisRole) {
+            $teknisRole->givePermissionTo(['working view', 'working create']);
+        }
+        $managerTeknikRole = Role::where('name', 'Manager Teknik')->first();
+        if ($managerTeknikRole) {
+            $managerTeknikRole->givePermissionTo(['working view']);
+        }
+        $financeRole = Role::where('name', 'Finance')->first();
+        if ($financeRole) {
+            $financeRole->givePermissionTo(['working view']);
+        }
+        $administrasi = Role::where('name', 'Administrasi')->first();
+        if ($administrasi) {
+            $administrasi->givePermissionTo(['working view']);
+        }
+        $salesRole = Role::where('name', 'Sales Marketing')->first();
+        if ($salesRole) {
+            $salesRole->givePermissionTo(['working view']);
+        }
+
         $firstUser = User::first();
         if ($firstUser && $superAdmin) {
             $firstUser->syncRoles([$superAdmin]);

@@ -127,6 +127,13 @@
                         <a href="{{ route('jadwal-teknisi.index') }}" class="btn btn-outline-secondary">
                             <i class="ti ti-arrow-left me-1"></i>{{ __('Kembali') }}
                         </a>
+                        @if($jadwal->spk)
+                            @can('working view')
+                                <a href="{{ route('working.show', $jadwal) }}" class="btn btn-outline-primary">
+                                    <i class="ti ti-progress me-1"></i>{{ __('Progress Pekerjaan') }}
+                                </a>
+                            @endcan
+                        @endif
                         @can('jadwal teknisi edit')
                             <a href="{{ route('jadwal-teknisi.edit', $jadwal->id) }}" class="btn btn-primary">
                                 <i class="ti ti-edit me-1"></i>{{ __('Edit') }}
