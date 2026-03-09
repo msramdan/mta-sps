@@ -2,24 +2,24 @@
 <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - {{ config('app.name', 'MTA-SPS') }} Admin</title>
+    <title>Dashboard - {{ config('app.name', 'marketrax') }} Admin</title>
     <meta name="description"
-        content="Dashboard Admin MTA-SPS - MTA Sales Management System. Kelola user, role, dan aktivitas dari satu platform.">
+        content="Dashboard Admin Marketrax. Kelola user, role, dan aktivitas dari satu platform.">
     <meta name="keywords"
-        content="MTA-SPS, sales management, dashboard admin, manajemen penjualan">
+        content="marketrax, sales management, dashboard admin, manajemen penjualan">
     <meta name="author" content="{{ config('app.name') }}">
     <meta name="robots" content="noindex, nofollow">
     <meta property="og:type" content="website">
-    <meta property="og:site_name" content="MTA-SPS - MTA Sales Management System">
+    <meta property="og:site_name" content="Marketrax">
     <meta property="og:title" content="Dashboard Admin - {{ config('app.name') }}">
     <meta property="og:description"
-        content="Dashboard admin MTA-SPS untuk mengelola user, role, dan permission.">
+        content="Dashboard admin Marketrax untuk mengelola user, role, dan permission.">
     <meta property="og:image" content="{{ asset('frontend') }}/og-image.jpg">
     <meta property="og:locale" content="id_ID">
     <meta name="twitter:card" content="summary">
     <meta name="twitter:title" content="Dashboard Admin {{ config('app.name') }}">
     <meta name="twitter:description"
-        content="Panel admin MTA-SPS - User Management, Role & Permission.">
+        content="Panel admin Marketrax - User Management, Role & Permission.">
     <meta name="twitter:image" content="{{ asset('frontend') }}/twitter-image.jpg">
     <link rel="canonical" href="{{ url()->current() }}">
     <meta name="theme-color" content="#13737D">

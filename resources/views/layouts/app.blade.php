@@ -24,7 +24,7 @@
                     <div class="container-fluid">
                         <div class="row">
                             <div class="col-md-9 col-12">
-                                <p class="footer-text f-w-600 mb-0">© {{ date('Y') }} {{ config('app.name') }} - MTA Sales Management System.</p>
+                                <p class="footer-text f-w-600 mb-0">© {{ date('Y') }} {{ config('app.name') }}.</p>
                             </div>
                         </div>
                     </div>

@@ -1,6 +1,6 @@
 @php
     $waNumber = '6283874731480';
-    $waText = 'Halo admin, saya mau tanya terkait MTA-SPS';
+    $waText = 'Halo admin, saya mau tanya terkait Marketrax';
     $waUrl = 'https://wa.me/' . $waNumber . '?text=' . rawurlencode($waText);
 @endphp
 <a href="{{ $waUrl }}" target="_blank" rel="noopener noreferrer" class="whatsapp-float">

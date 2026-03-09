@@ -16,7 +16,7 @@
                                         <div class="mb-3 text-center">
                                             <img alt="#" src="{{ asset('frontend/logo.png') }}"
                                                 style="width: 240px; margin-bottom:15px">
-                                            <p class="f-s-12 text-secondary">Masuk untuk mengakses MTA-SPS (MTA Sales Management System) dan dashboard Anda.</p>
+                                            <p class="f-s-12 text-secondary">Masuk untuk mengakses Marketrax dan dashboard Anda.</p>
                                         </div>
                                         @if ($errors->any())
                                             <div class="alert alert-danger alert-dismissible show fade">

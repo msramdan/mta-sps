@@ -7,31 +7,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- Primary Meta Tags -->
-    <title>@yield('title') - {{ config('app.name', 'MTA-SPS') }}</title>
+    <title>@yield('title') - {{ config('app.name', 'marketrax') }}</title>
     <meta name="description"
-        content="MTA-SPS - MTA Sales Management System. Aplikasi manajemen penjualan untuk bisnis Anda.">
+        content="Marketrax - Aplikasi manajemen penjualan untuk bisnis Anda.">
     <meta name="keywords"
-        content="MTA-SPS, sales management, manajemen penjualan, sistem penjualan">
+        content="marketrax, sales management, manajemen penjualan, sistem penjualan">
     <meta name="author" content="{{ config('app.name') }}">
     <meta name="robots" content="index, follow">
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
-    <meta property="og:site_name" content="MTA-SPS - MTA Sales Management System">
-    <meta property="og:title" content="@yield('title') - MTA-SPS">
+    <meta property="og:site_name" content="Marketrax">
+    <meta property="og:title" content="@yield('title') - Marketrax">
     <meta property="og:description"
-        content="MTA Sales Management System - Aplikasi manajemen penjualan.">
+        content="Marketrax - Aplikasi manajemen penjualan.">
     <meta property="og:image" content="{{ asset('frontend') }}/og-image.jpg">
     <meta property="og:url" content="{{ url()->current() }}">
     <meta property="og:locale" content="id_ID">
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="@yield('title') - MTA-SPS">
+    <meta name="twitter:title" content="@yield('title') - Marketrax">
     <meta name="twitter:description"
-        content="MTA Sales Management System - Aplikasi manajemen penjualan.">
+        content="Marketrax - Aplikasi manajemen penjualan.">
     <meta name="twitter:image" content="{{ asset('frontend') }}/twitter-image.jpg">
-    <meta name="twitter:image:alt" content="MTA-SPS Dashboard">
+    <meta name="twitter:image:alt" content="Marketrax Dashboard">
 
     <!-- Canonical URL -->
     <link rel="canonical" href="{{ url()->current() }}">
@@ -51,8 +51,8 @@
     <meta name="msapplication-TileColor" content="#13737D">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
-    <meta name="application-name" content="MTA-SPS">
-    <meta name="apple-mobile-web-app-title" content="MTA-SPS">
+    <meta name="application-name" content="Marketrax">
+    <meta name="apple-mobile-web-app-title" content="Marketrax">
 
     <!-- Preconnect untuk optimasi loading -->
     <link rel="preconnect" href="https://fonts.googleapis.com">

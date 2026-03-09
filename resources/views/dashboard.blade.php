@@ -45,7 +45,7 @@
                                         {{ $greeting }}, <span class="text-primary">{{ auth()->user()->name }}</span>!
                                     </h2>
                                     <p class="mb-0">
-                                        Selamat beraktivitas di <strong>MTA-SPS (MTA Sales Management System)</strong>. Semoga hari Anda menyenangkan!
+                                        Selamat beraktivitas di <strong>Marketrax</strong>. Semoga hari Anda menyenangkan!
                                     </p>
                                 </div>
                             </div>
