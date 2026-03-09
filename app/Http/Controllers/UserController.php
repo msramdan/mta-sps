@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Generators\Services\ImageServiceV2;
 use App\Http\Requests\Users\StoreUserRequest;
 use App\Http\Requests\Users\UpdateUserRequest;
+use App\Models\Company;
 use App\Models\User;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
@@ -61,8 +62,9 @@ class UserController extends Controller implements HasMiddleware
     public function create(): View
     {
         $roles = Role::all();
+        $companies = Company::orderBy('name')->get();
 
-        return view(view: 'users.create', data: compact('roles'));
+        return view(view: 'users.create', data: compact('roles', 'companies'));
     }
 
     /**
@@ -81,10 +83,14 @@ class UserController extends Controller implements HasMiddleware
             $validated['password'] = bcrypt(value: $request->password);
             $validated['log_otp'] = ($request->log_otp ?? 'No') === 'Yes' ? 'Yes' : 'No';
 
+            $companies = $validated['companies'] ?? [];
+            unset($validated['companies']);
+
             $user = User::create(attributes: $validated);
 
             $role = Role::select(columns: ['id', 'name'])->find(id: $request->role);
             $user->assignRole(roles: $role->name);
+            $user->companies()->sync($companies);
 
             Alert::success('Berhasil', 'User berhasil dibuat.');
             return redirect()->route('users.index');
@@ -96,7 +102,7 @@ class UserController extends Controller implements HasMiddleware
      */
     public function show(User $user): View
     {
-        $user->load(relations: ['roles:id,name']);
+        $user->load(relations: ['roles:id,name', 'companies:id,name']);
 
         return view(view: 'users.show', data: compact('user'));
     }
@@ -106,10 +112,11 @@ class UserController extends Controller implements HasMiddleware
      */
     public function edit(User $user): View
     {
-        $user->load(relations: ['roles:id,name']);
+        $user->load(relations: ['roles:id,name', 'companies:id,name']);
         $roles = Role::all();
+        $companies = Company::orderBy('name')->get();
 
-        return view(view: 'users.edit', data: compact('user', 'roles'));
+        return view(view: 'users.edit', data: compact('user', 'roles', 'companies'));
     }
 
     /**
@@ -139,10 +146,14 @@ class UserController extends Controller implements HasMiddleware
                 $validated['password'] = bcrypt(value: $request->password);
             }
 
+            $companies = $validated['companies'] ?? [];
+            unset($validated['companies']);
+
             $user->update(attributes: $validated);
 
             $role = Role::select(columns: ['id', 'name'])->find(id: $request->role);
             $user->syncRoles(roles: $role->name);
+            $user->companies()->sync($companies);
 
             Alert::success('Berhasil', 'User berhasil diperbarui.');
             return redirect()->route('users.index');

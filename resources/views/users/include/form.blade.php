@@ -91,6 +91,7 @@
             @enderror
         </div>
     </div>
+
     <div class="col-12 mb-3">
         <div class="form-group">
             <label class="form-label">{{ __('Login OTP') }}</label>
@@ -133,4 +134,54 @@
             </div>
         </div>
     </div>
+
+    <div class="col-12 mb-4">
+        <div class="form-group">
+            <label class="form-label fw-bold mb-2">{{ __('Assign Perusahaan') }} <span class="text-danger">*</span></label>
+            @error('companies')
+                <div class="invalid-feedback d-block">{{ $message }}</div>
+            @enderror
+            <div class="rounded-3 border p-4 shadow-sm" style="background-color: #f8f9fa;">
+                <div class="form-check mb-3 py-1">
+                    <input class="form-check-input" type="checkbox" id="company-check-all" title="Pilih semua">
+                    <label class="form-check-label fw-bold" for="company-check-all">{{ __('Pilih Semua Perusahaan') }}</label>
+                </div>
+                <div class="row g-3" id="company-checkboxes">
+                    @foreach ($companies as $company)
+                        @php
+                            $companyIds = old('companies', isset($user) ? $user->companies->pluck('id')->toArray() : []);
+                            $checked = in_array($company->id, $companyIds);
+                        @endphp
+                        <div class="col-md-6">
+                            <div class="form-check">
+                                <input class="form-check-input company-checkbox" type="checkbox" name="companies[]"
+                                    value="{{ $company->id }}" id="company-{{ $company->id }}" {{ $checked ? 'checked' : '' }}>
+                                <label class="form-check-label" for="company-{{ $company->id }}">{{ $company->name }}</label>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+@push('js')
+<script>
+(function() {
+    document.addEventListener('DOMContentLoaded', function() {
+        var checkAll = document.getElementById('company-check-all');
+        var checkboxes = document.querySelectorAll('.company-checkbox');
+        if (!checkAll || !checkboxes.length) return;
+        checkAll.addEventListener('change', function() {
+            checkboxes.forEach(function(cb) { cb.checked = checkAll.checked; });
+        });
+        checkboxes.forEach(function(cb) {
+            cb.addEventListener('change', function() {
+                checkAll.checked = Array.from(checkboxes).every(function(c) { return c.checked; });
+            });
+        });
+    });
+})();
+</script>
+@endpush

@@ -30,8 +30,8 @@ class StoreUserRequest extends FormRequest
             'avatar' => ['nullable', 'image', 'max:1024'],
             'role' => ['required', 'exists:roles,id'],
             'password' => ['required', ...$this->passwordRules()],
-            'merchants' => ['required', 'array', 'min:1'],
-            'merchants.*' => ['exists:merchants,id'],
+            'companies' => ['required', 'array', 'min:1'],
+            'companies.*' => ['exists:companies,id'],
             'log_otp' => ['nullable', 'in:Yes,No'],
         ];
     }
@@ -42,8 +42,8 @@ class StoreUserRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'merchants.required' => 'Pilih minimal 1 merchant.',
-            'merchants.min' => 'Pilih minimal 1 merchant.',
+            'companies.required' => 'Pilih minimal 1 perusahaan.',
+            'companies.min' => 'Pilih minimal 1 perusahaan.',
             'no_wa.required' => 'Nomor WhatsApp wajib diisi.',
             'no_wa.regex' => 'Nomor WhatsApp harus diawali 08 atau 62, minimal 8 digit, maksimal 13 digit.',
             'no_wa.unique' => 'Nomor WhatsApp sudah terdaftar.',

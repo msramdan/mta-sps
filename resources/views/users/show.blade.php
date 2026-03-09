@@ -82,6 +82,18 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="col-12">
+                                    <div class="border rounded-3 p-3 h-100">
+                                        <div class="text-muted small mb-1">{{ __('Perusahaan') }}</div>
+                                        <div class="fw-semibold">
+                                            @if ($user->companies->isNotEmpty())
+                                                {{ $user->companies->pluck('name')->join(', ') }}
+                                            @else
+                                                -
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
